@@ -18,3 +18,5 @@ class openAIAlchemy:
     def getRuns(self, thread_id):
         runs = self.client.beta.threads.runs.list(thread_id)
         return runs
+
+    # edit
