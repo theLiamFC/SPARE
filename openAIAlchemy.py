@@ -2,11 +2,24 @@ from openai import OpenAI
 import time
 import asyncio
 
+# assistant_id
+# thread_id
+# clien
+
 
 class openAIAlchemy:
-    def __init__():
-        client = OpenAI()
+    def __init__(self, assistant_id, thread_id=None):
+        self.client = OpenAI()
 
+        if thread_id == None:
+            newThread = self.client.beta.threads.create()
+            self.threadID = newThread.id
+        else:
+            self.threadID = thread_id
+
+        self.assistant_id = assistant_id
+
+    # Public Debugging Function
     # Retreive assistants for purpose of finding IDs
     def getAssistants(self):
         my_assistants = self.client.beta.assistants.list(
@@ -15,33 +28,39 @@ class openAIAlchemy:
         )
         return my_assistants.data
 
+    # Public Debugging Function
     # Retrieve runs in a given thread
     def getRuns(self, thread_id):
         runs = self.client.beta.threads.runs.list(thread_id)
         return runs
 
-    # Make a call to specific ChatGPT assistant
-    # Returns response
-    # BUG Should make asynchronous in the future
-    # JESSE WAS HERE
-    def callChad(self, assistantID, threadID, prompt):
+    # add message from help desk or human input
+    # how do we distinguish function responses?
+    def addMessage(self, message):
         self.client.beta.threads.messages.create(
-            threadID,
+            self.thread_id,
             role="user",
-            content=prompt,
+            content=message,
         )
+
+    # must begin new run whenever a message is added to the thread
+    async def __runManager(self):
         run = self.client.beta.threads.runs.create(
-            thread_id=threadID, assistant_id=assistantID
+            thread_id=self.thread_id, assistant_id=self.assistant_id
         )
         status = "in_progress"
         while status != "completed" and status != "failed":
-            time.sleep(0.5)
             status = self.client.beta.threads.runs.retrieve(
-                thread_id=threadID, run_id=run.id
+                thread_id=self.thread_id, run_id=run.id
             ).status
-        return (
-            self.client.beta.threads.messages.list(threadID)
-            .data[0]
-            .content[0]
-            .text.value
-        )
+            await asyncio.sleep(100)
+
+    # must parse between user, assistant, function
+    def __getMessage(self):
+        messages = self.client.beta.threads.messages.list(self.thread_id)
+
+        # get role of most recent message
+        messages.data[0].role
+
+        # get content of most recent message
+        messages.data[0].content[0].text.value
