@@ -25,11 +25,16 @@ def callChad(assistantID, threadID, prompt):
     )
     run = client.beta.threads.runs.create(thread_id=threadID, assistant_id=assistantID)
     status = "in_progress"
+    temp = None
     while status != "completed" and status != "failed":
         time.sleep(0.5)
         status = client.beta.threads.runs.retrieve(
             thread_id=threadID, run_id=run.id
         ).status
+        temp = client.beta.threads.runs.retrieve(thread_id=threadID, run_id=run.id)
+    if status == "failed":
+        print("Something went wrong")
+        print(temp)
     return client.beta.threads.messages.list(threadID).data[0].content[0].text.value
 
 
@@ -53,10 +58,13 @@ thread_id = "thread_UbU1hougFO6WE4kJCmK0ylRR"
 # )
 # print(thread_message)
 
-print(
-    callChad(
-        bb_id,
-        thread_id,
-        "write me a code for a spike prime with a color sensor in port A to detect the color blue.",
-    )
-)
+# print(
+#     callChad(
+#         bb_id,
+#         thread_id,
+#         "write me a code for a spike prime with a color sensor in port A to detect the color blue.",
+#     )
+# )
+
+# thread_messages = client.beta.threads.messages.list(thread_id)
+# print(thread_messages.data[1].role)

@@ -8,14 +8,17 @@ import asyncio
 
 
 class openAIAlchemy:
-    def __init__(self, assistant_id, thread_id=None):
+    def __init__(self, assistant_id, thread_id=None, debug=False):
         self.client = OpenAI()
+        self.debug = debug
 
         if thread_id == None:
             newThread = self.client.beta.threads.create()
             self.threadID = newThread.id
+            if self.debug:
+                print("THREAD_ID: ", self.threadID)
         else:
-            self.threadID = thread_id
+            self.thread_id = thread_id
 
         self.assistant_id = assistant_id
 
@@ -30,8 +33,8 @@ class openAIAlchemy:
 
     # Public Debugging Function
     # Retrieve runs in a given thread
-    def getRuns(self, thread_id):
-        runs = self.client.beta.threads.runs.list(thread_id)
+    def getRuns(self):
+        runs = self.client.beta.threads.runs.list(self.thread_id)
         return runs
 
     # add message from help desk or human input
@@ -64,3 +67,20 @@ class openAIAlchemy:
                 thread_id=self.thread_id, run_id=run.id
             ).status
             await asyncio.sleep(100)
+        if status == "failed":
+            # throw exception
+            print("Run Failed")
+            print(
+                self.client.beta.threads.runs.retrieve(
+                    thread_id=self.thread_id, run_id=run.id
+                )
+            )
+
+    # Public method to start the OpenAI run asynchronously
+    def run(self, message):
+        if self.debug:
+            print("running message")
+        # First, add the message to the thread
+        self.addMessage(message)
+        # Then, run the asynchronous method using asyncio
+        asyncio.run(self.__runManager())
