@@ -23,6 +23,7 @@ class openAIAlchemy:
     # Make a call to specific ChatGPT assistant
     # Returns response
     # BUG Should make asynchronous in the future
+    # JESSE WAS HERE
     def callChad(self, assistantID, threadID, prompt):
         self.client.beta.threads.messages.create(
             threadID,
