@@ -43,6 +43,16 @@ class openAIAlchemy:
             content=message,
         )
 
+    # must parse between user, assistant, function
+    def getMessage(self):
+        messages = self.client.beta.threads.messages.list(self.thread_id)
+
+        # get role of most recent message
+        messages.data[0].role
+
+        # get content of most recent message
+        messages.data[0].content[0].text.value
+
     # must begin new run whenever a message is added to the thread
     async def __runManager(self):
         run = self.client.beta.threads.runs.create(
@@ -54,13 +64,3 @@ class openAIAlchemy:
                 thread_id=self.thread_id, run_id=run.id
             ).status
             await asyncio.sleep(100)
-
-    # must parse between user, assistant, function
-    def __getMessage(self):
-        messages = self.client.beta.threads.messages.list(self.thread_id)
-
-        # get role of most recent message
-        messages.data[0].role
-
-        # get content of most recent message
-        messages.data[0].content[0].text.value
