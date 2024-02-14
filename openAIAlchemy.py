@@ -1,5 +1,6 @@
 from openai import OpenAI
 import time
+import asyncio
 
 
 class openAIAlchemy:
@@ -19,4 +20,27 @@ class openAIAlchemy:
         runs = self.client.beta.threads.runs.list(thread_id)
         return runs
 
-    # edit
+    # Make a call to specific ChatGPT assistant
+    # Returns response
+    # BUG Should make asynchronous in the future
+    def callChad(self, assistantID, threadID, prompt):
+        self.client.beta.threads.messages.create(
+            threadID,
+            role="user",
+            content=prompt,
+        )
+        run = self.client.beta.threads.runs.create(
+            thread_id=threadID, assistant_id=assistantID
+        )
+        status = "in_progress"
+        while status != "completed" and status != "failed":
+            time.sleep(0.5)
+            status = self.client.beta.threads.runs.retrieve(
+                thread_id=threadID, run_id=run.id
+            ).status
+        return (
+            self.client.beta.threads.messages.list(threadID)
+            .data[0]
+            .content[0]
+            .text.value
+        )
