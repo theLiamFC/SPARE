@@ -14,9 +14,9 @@ class openAIAlchemy:
 
         if thread_id == None:
             newThread = self.client.beta.threads.create()
-            self.threadID = newThread.id
+            self.thread_id = newThread.id
             if self.debug:
-                print("THREAD_ID: ", self.threadID)
+                print("THREAD_ID: ", self.thread_id)
         else:
             self.thread_id = thread_id
 
@@ -37,6 +37,9 @@ class openAIAlchemy:
         runs = self.client.beta.threads.runs.list(self.thread_id)
         return runs
 
+    def killRun(self, run_id):
+        self.client.beta.threads.runs.cancel(thread_id=self.thread_id, run_id=run_id)
+
     # add message from help desk or human input
     # how do we distinguish function responses?
     def addMessage(self, message):
@@ -45,6 +48,7 @@ class openAIAlchemy:
             role="user",
             content=message,
         )
+        self.__runManager()
 
     # must parse between user, assistant, function
     def getMessage(self):
@@ -54,19 +58,22 @@ class openAIAlchemy:
         messages.data[0].role
 
         # get content of most recent message
-        messages.data[0].content[0].text.value
+        return messages.data[0].content[0].text.value
 
     # must begin new run whenever a message is added to the thread
-    async def __runManager(self):
+    def __runManager(self):
         run = self.client.beta.threads.runs.create(
             thread_id=self.thread_id, assistant_id=self.assistant_id
         )
+
+        if self.debug:
+            print("Run in progress")
         status = "in_progress"
         while status != "completed" and status != "failed":
             status = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=run.id
             ).status
-            await asyncio.sleep(100)
+            time.sleep(0.01)
         if status == "failed":
             # throw exception
             print("Run Failed")
@@ -77,10 +84,10 @@ class openAIAlchemy:
             )
 
     # Public method to start the OpenAI run asynchronously
-    def run(self, message):
-        if self.debug:
-            print("running message")
-        # First, add the message to the thread
-        self.addMessage(message)
-        # Then, run the asynchronous method using asyncio
-        asyncio.run(self.__runManager())
+    # def run(self, message):
+    #     if self.debug:
+    #         print("running message")
+    #     # First, add the message to the thread
+    #     self.addMessage(message)
+    #     # Then, run the asynchronous method using asyncio
+    #     asyncio.run(self.__runManager())
