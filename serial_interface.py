@@ -1,3 +1,6 @@
+import serial
+import time
+
 def serial_read():
     reply = b""
     while ser.in_waiting:
@@ -13,7 +16,7 @@ def serial_write(string):
 
 
 ser = serial.Serial(
-    port="COM13",  ## <----------- REPLACE with your SPIKE's port from!!!##
+    port="COM15",  ## <----------- REPLACE with your SPIKE's port from!!!##
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
