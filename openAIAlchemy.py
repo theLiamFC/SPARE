@@ -3,6 +3,12 @@ import time
 import asyncio
 import json
 
+#### private variables
+# assistant_id
+# thread_id
+# client_id
+# debug
+
 
 class openAIAlchemy:
     def __init__(self, assistant_id, thread_id=None, debug=False):
@@ -66,11 +72,7 @@ class openAIAlchemy:
         # get content of most recent message
         return messages.data[0].content[0].text.value
 
-    def gotFunction(self):
-        pass
-
-    # must begin new run whenever a message is added to the thread
-    def __runManager(self):
+    async def __runManager(self):
         run = self.client.beta.threads.runs.create(
             thread_id=self.thread_id, assistant_id=self.assistant_id
         )
@@ -78,9 +80,9 @@ class openAIAlchemy:
         if self.debug:
             print("Run in progress")
         status = "in_progress"
-        while (
-            status != "completed" and status != "failed" and status != "requires_action"
-        ):
+        
+        # non asyncio version
+        while status not in ["completed", "failed","requires_action]:
             status = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=run.id
             ).status
@@ -97,7 +99,20 @@ class openAIAlchemy:
                 self.client.beta.threads.runs.retrieve(
                     thread_id=self.thread_id, run_id=run.id
                 )
+        # Asyncio version
+        while status not in ["completed", "failed"]:
+            run_details = self.client.beta.threads.runs.retrieve(
+                thread_id=self.thread_id, run_id=run.id
             )
+            status = run_details.status
+            print(status)
+            await asyncio.sleep(1)  # Use asyncio.sleep for async code
+        if status == "completed":
+            # Assuming run_details contains a 'result' attribute with the data you need
+            return self.client.beta.threads.messages.list(self.thread_id).data[0].content[0].text.value  # Return the actual result here
+        elif status == "failed":
+            # Handle failure, possibly returning an error message or details
+            return "Run failed"
 
     def __functionManager(self, calls):
         for toolCall in calls.submit_tool_outputs.tool_calls:
@@ -119,3 +134,9 @@ class openAIAlchemy:
     #     self.addMessage(message)
     #     # Then, run the asynchronous method using asyncio
     #     asyncio.run(self.__runManager())
+    async def run(self, message):
+        if self.debug:
+            print("running message")
+        self.addMessage(message)
+        result = await self.__runManager()  # Await the result from __runManager
+        return result  # Return the

@@ -1,0 +1,344 @@
+# Sample Codes
+
+So here are some of their examples:
+
+- Tell All
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    if alvik.begin() < 0:
+        sys.exit()
+
+    speed = 0
+
+    while True:
+        try:
+            print(f'VER: {alvik.version}')
+            print(f'LSP: {alvik.left_wheel.get_speed()}')
+            print(f'RSP: {alvik.right_wheel.get_speed()}')
+            print(f'LPOS: {alvik.left_wheel.get_position()}')
+            print(f'RPOS: {alvik.right_wheel.get_position()}')
+            print(f'TOUCH: {alvik.touch_bits}')
+            print(f'RGB: {alvik.red} {alvik.green} {alvik.blue}')
+            print(f'LINE: {alvik.left_line} {alvik.center_line} {alvik.right_line}')
+
+            alvik.set_wheels_speed(speed, speed)
+            speed = (speed + 1) % 60
+            sleep_ms(1000)
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- LEDs
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+
+    while True:
+        alvik.left_led.set_color(1, 0, 0)
+        alvik.right_led.set_color(1, 0, 0)
+        sleep(1)
+        alvik.left_led.set_color(0, 0, 0)
+        alvik.right_led.set_color(0, 0, 0)
+        sleep(1)
+    ```
+
+- Wheels
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+
+    while True:
+        try:
+            alvik.set_wheels_speed(10, 10)
+            sleep_ms(1000)
+
+            alvik.set_wheels_speed(30, 60)
+            sleep_ms(1000)
+
+            alvik.set_wheels_speed(60, 30)
+            sleep_ms(1000)
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- Wheel Position Control
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+
+    alvik.left_wheel.reset()
+    alvik.right_wheel.reset()
+
+    while True:
+        try:
+            alvik.left_wheel.set_position(30)
+            sleep(2)
+            print(f'Left wheel degs: {alvik.left_wheel.get_position()}')
+            print(f'Right wheel degs: {alvik.right_wheel.get_position()}')
+
+            alvik.right_wheel.set_position(10)
+            sleep(2)
+            print(f'Left wheel degs: {alvik.left_wheel.get_position()}')
+            print(f'Right wheel degs: {alvik.right_wheel.get_position()}')
+
+            alvik.left_wheel.set_position(180)
+            sleep(2)
+            print(f'Left wheel degs: {alvik.left_wheel.get_position()}')
+            print(f'Right wheel degs: {alvik.right_wheel.get_position()}')
+
+            alvik.right_wheel.set_position(270)
+            sleep(2)
+            print(f'Left wheel degs: {alvik.left_wheel.get_position()}')
+            print(f'Right wheel degs: {alvik.right_wheel.get_position()}')
+
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- Wheel Speed Control
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+
+    while True:
+        try:
+            alvik.left_wheel.set_speed(10)
+            sleep_ms(1000)
+            print(f'LSP: {alvik.left_wheel.get_speed()}')
+            print(f'RSP: {alvik.right_wheel.get_speed()}')
+
+            alvik.right_wheel.set_speed(10)
+            sleep_ms(1000)
+
+            print(f'LSP: {alvik.left_wheel.get_speed()}')
+            print(f'RSP: {alvik.right_wheel.get_speed()}')
+
+            alvik.left_wheel.set_speed(20)
+            sleep_ms(1000)
+
+            print(f'LSP: {alvik.left_wheel.get_speed()}')
+            print(f'RSP: {alvik.right_wheel.get_speed()}')
+
+            alvik.right_wheel.set_speed(20)
+            sleep_ms(1000)
+
+            print(f'LSP: {alvik.left_wheel.get_speed()}')
+            print(f'RSP: {alvik.right_wheel.get_speed()}')
+
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- Read Touch
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+    speed = 0
+
+    while True:
+        try:
+            if alvik.get_touch_any():
+                if alvik.get_touch_up():
+                    print("UP")
+                if alvik.get_touch_down():
+                    print("DOWN")
+                if alvik.get_touch_left():
+                    print("LEFT")
+                if alvik.get_touch_right():
+                    print("RIGHT")
+                if alvik.get_touch_ok():
+                    print("OK")
+                if alvik.get_touch_cancel():
+                    print("CANCEL")
+                if alvik.get_touch_center():
+                    print("CENTER")
+
+            sleep_ms(100)
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- Color Sensor
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+    speed = 0
+
+    while True:
+        try:
+            r, g, b = alvik.get_color_raw()
+            print(f'RED: {r}, Green: {g}, Blue: {b}')
+            sleep_ms(100)
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- IMU
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+    speed = 0
+
+    while True:
+        try:
+            ax, ay, az = alvik.get_accelerations()
+            gx, gy, gz = alvik.get_gyros()
+            print(f'ax: {ax}, ay: {ay}, az: {az}, gx: {gx}, gy: {gy}, gz: {gz}')
+            sleep_ms(100)
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- Pose
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+
+    while True:
+        try:
+
+            alvik.move(100.0)
+            print("on target after move")
+
+            alvik.move(50.0)
+            print("on target after move")
+
+            alvik.rotate(90.0)
+            print("on target after rotation")
+
+            alvik.rotate(-45.00)
+            print("on target after rotation")
+
+            x, y, theta = alvik.get_pose()
+            print(f'Current pose is x={x}, y={y} ,theta={theta}')
+
+            alvik.reset_pose(0, 0, 0)
+
+            x, y, theta = alvik.get_pose()
+            print(f'Updated pose is x={x}, y={y} ,theta={theta}')
+            sleep_ms(500)
+
+            print("___________NON-BLOCKING__________________")
+
+            alvik.move(50.0, blocking=False)
+            while not alvik.is_target_reached():
+                print(f"Not yet on target received:{alvik.last_ack}")
+            print("on target after move")
+
+            alvik.rotate(45.0, blocking=False)
+            while not alvik.is_target_reached():
+                print(f"Not yet on target received:{alvik.last_ack}")
+            print("on target after rotation")
+
+            alvik.move(100.0, blocking=False)
+            while not alvik.is_target_reached():
+                print(f"Not yet on target received:{alvik.last_ack}")
+            print("on target after move")
+
+            alvik.rotate(-90.00, blocking=False)
+            while not alvik.is_target_reached():
+                print(f"Not yet on target received:{alvik.last_ack}")
+            print("on target after rotation")
+
+            x, y, theta = alvik.get_pose()
+            print(f'Current pose is x={x}, y={y} ,theta={theta}')
+
+            alvik.reset_pose(0, 0, 0)
+
+            x, y, theta = alvik.get_pose()
+            print(f'Updated pose is x={x}, y={y} ,theta={theta}')
+            sleep_ms(500)
+
+            alvik.stop()
+            sys.exit()
+
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+- PID Adjust
+
+    ```python
+    from arduino_alvik import ArduinoAlvik
+    from time import sleep_ms
+    import sys
+
+    alvik = ArduinoAlvik()
+    alvik.begin()
+    speed = 0
+
+    while True:
+        try:
+            alvik.left_wheel.set_pid_gains(10.0, 1.3, 4.2)
+            sleep_ms(100)
+            alvik.right_wheel.set_pid_gains(4.0, 13, 1.9)
+            sleep_ms(100)
+        except KeyboardInterrupt as e:
+            print('over')
+            alvik.stop()
+            sys.exit()
+    ```
+
+
+And you can download all of these here.
