@@ -1,10 +1,7 @@
 from openai import OpenAI
 import time
 import asyncio
-
-# assistant_id
-# thread_id
-# clien
+import json
 
 
 class openAIAlchemy:
@@ -37,12 +34,19 @@ class openAIAlchemy:
         runs = self.client.beta.threads.runs.list(self.thread_id)
         return runs
 
-    def killRun(self, run_id):
-        self.client.beta.threads.runs.cancel(thread_id=self.thread_id, run_id=run_id)
+    def killAllRuns(self):
+        runs = self.getRuns()
+        for run in runs.data:
+            if run.status == "in_progress" or run.status == "requires_action":
+                self.client.beta.threads.runs.cancel(
+                    thread_id=self.thread_id, run_id=run.id
+                )
 
     # add message from help desk or human input
     # how do we distinguish function responses?
     def addMessage(self, message):
+        if self.debug:
+            print("Adding Message")
         self.client.beta.threads.messages.create(
             self.thread_id,
             role="user",
@@ -55,10 +59,15 @@ class openAIAlchemy:
         messages = self.client.beta.threads.messages.list(self.thread_id)
 
         # get role of most recent message
-        messages.data[0].role
+        if messages.data[0].role == "function":
+            # call function to deal with functions
+            pass
 
         # get content of most recent message
         return messages.data[0].content[0].text.value
+
+    def gotFunction(self):
+        pass
 
     # must begin new run whenever a message is added to the thread
     def __runManager(self):
@@ -69,11 +78,18 @@ class openAIAlchemy:
         if self.debug:
             print("Run in progress")
         status = "in_progress"
-        while status != "completed" and status != "failed":
+        while (
+            status != "completed" and status != "failed" and status != "requires_action"
+        ):
             status = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=run.id
             ).status
             time.sleep(0.01)
+        if status == "requires_action":
+            calls = self.client.beta.threads.runs.retrieve(
+                thread_id=self.thread_id, run_id=run.id
+            ).required_action
+            self.__functionManager(calls)
         if status == "failed":
             # throw exception
             print("Run Failed")
@@ -82,6 +98,18 @@ class openAIAlchemy:
                     thread_id=self.thread_id, run_id=run.id
                 )
             )
+
+    def __functionManager(self, calls):
+        for toolCall in calls.submit_tool_outputs.tool_calls:
+            name = toolCall.function.name
+            args = toolCall.function.arguments
+            if name == "get_feedback":
+                # print arg to command line and get written feedback
+                pass
+            elif name == "get_documentation":
+                # search database for term and subsequent documentation
+                pass
+        print(calls.submit_tool_outputs.tool_calls)
 
     # Public method to start the OpenAI run asynchronously
     # def run(self, message):
