@@ -1,0 +1,83 @@
+<!-- Drawing on code from this link https://robocoast.tech/wp-content/uploads/2021/05/Lego-Spike-Python-Booklet.pdf-->
+
+<codingGuide>
+    <!-- INITIAL IMPORTS -->
+    <import>
+        <name>Motor Class</name>
+        <syntax>import motor</syntax>
+        <dependents>motor</dependents>
+    </import>
+    <import>
+        <name>Port Class</name>
+        <syntax>from hub import port</syntax>
+        <dependents>motor</dependents>
+    </import>
+    <import>
+        <name>Color Sensor Class</name>
+        <syntax>import color_sensor</syntax>
+        <dependents>color_sensor</dependents>
+    </import>
+    <!-- CLASSES OF THE SPIKE PRIME -->
+    <class>
+        <name>motor</name>
+        <description>an class that allows access to spike prime motors</description>
+        <initialization>none</initialization>
+        <function>
+            <name>Run motor for degrees</name>
+            <syntax>motor.run_for_degrees(port.B,360, 75)</syntax>
+            <parameters>
+                <parameter>
+                    <name>Port</name>
+                    <description>Port of spike prime to which motor is connected</description>
+                    <values>port.A,port.B,port.C,port.D,port.E,port.F</values>
+                </parameter>
+                <parameter>
+                    <name>Degrees</name>
+                    <description>Degrees for which the motor should turn.</description>
+                    <values>any integer</values>
+                </parameter>
+                <parameter>
+                    <name>Speed</name>
+                    <description>Speed at which the motor should run in degrees per second.</description>
+                    <values>any integer</values>
+                </parameter>
+            </parameters>
+        </function>
+    </class>
+    <class>
+        <name>color_sensor</name>
+        <description>an class that allows access to spike prime color sensors</description>
+        <initialization>none</initialization>
+        <function>
+            <name>Color</name>
+            <syntax>color_sensor.color(port.A)</syntax>
+            <parameters>
+                <parameter>
+                    <name>Port</name>
+                    <description>Port of spike prime to which color sensor is connected</description>
+                    <values>port.A,port.B,port.C,port.D,port.E,port.F</values>
+                </parameter>
+            </parameters>
+            <returns>
+                <name>the color sensed by the color sensor</name>
+                <values>color.RED,color.GREEN,color.BLUE,color.MAGENTA,color.YELLOW,color.ORANGE,color.AZURE,color.BLACK,color.WHITE</values>
+            </returns>
+        </function>
+        <function>
+            <name>Reflection</name>
+            <syntax>color_sensor.reflection(port.A)</syntax>
+            <initialization>none</initialization>
+            <parameters>
+                <parameter>
+                    <name>Port</name>
+                    <description>Port of spike prime to which color sensor is connected</description>
+                    <values>port.A,port.B,port.C,port.D,port.E,port.F</values>
+                </parameter>
+            </parameters>
+            <returns>
+                <name>the intensity of light sensed by the color sensor</name>
+                <values>integer 1:100</values>
+            </returns>
+        </function>
+    </class>
+</codingGuide>

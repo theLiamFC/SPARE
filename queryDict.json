@@ -1,0 +1,74 @@
+{
+  "codingGuide": {
+    "class": [
+      {
+        "name": "motor",
+        "description": "a class that allows access to spike prime motors",
+        "initialization": "none",
+        "required imports": "import motor \n from hub import port",
+        "function": {
+          "name": "Run motor for degrees",
+          "syntax": "motor.run_for_degrees(port.B,360, 75)",
+          "parameters": {
+            "parameter": [
+              {
+                "name": "Port",
+                "description": "Port of spike prime to which motor is connected",
+                "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+              },
+              {
+                "name": "Degrees",
+                "description": "Degrees for which the motor should turn.",
+                "values": "any integer"
+              },
+              {
+                "name": "Speed",
+                "description": "Speed at which the motor should run in degrees per second.",
+                "values": "any integer"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "color_sensor",
+        "description": "a class that allows access to spike prime color sensors",
+        "initialization": "none",
+        "required imports": "import color_sensor \n from hub import port",
+        "function": [
+          {
+            "name": "Color",
+            "syntax": "color_sensor.color(port.A)",
+            "parameters": {
+              "parameter": {
+                "name": "Port",
+                "description": "Port of spike prime to which color sensor is connected",
+                "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+              }
+            },
+            "returns": {
+              "name": "the color sensed by the color sensor",
+              "values": "color.RED,color.GREEN,color.BLUE,color.MAGENTA,color.YELLOW,color.ORANGE,color.AZURE,color.BLACK,color.WHITE"
+            }
+          },
+          {
+            "name": "Reflection",
+            "syntax": "color_sensor.reflection(port.A)",
+            "initialization": "none",
+            "parameters": {
+              "parameter": {
+                "name": "Port",
+                "description": "Port of spike prime to which color sensor is connected",
+                "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+              }
+            },
+            "returns": {
+              "name": "the intensity of light sensed by the color sensor",
+              "values": "integer 1:100"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

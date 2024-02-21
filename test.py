@@ -24,4 +24,4 @@ AI_interface.killAllRuns()
 AI_interface.addMessage(
     "write code that will drive a car and move around obstacles using an ultrasonic sensor. make sure to check with a human to ensure the car is driving correctly"
 )
-# print(AI_interface.getMessage())
+print(AI_interface.getMessage())
