@@ -15,9 +15,11 @@ import serial_interface
 ### ACTION ITEMS
 # - create functionality for a debug log exported as txt file
 # - build out interface loop to communicate over multiple runs
-# - integrate json file for automated documentation returns
-# - expand json file with more SPIKE syntax
-# - improve commenting and readability
+#
+# - NEEDS TESTING: integrate json file for automated documentation returns
+#
+# - ALWAYS: expand json file with more SPIKE syntax
+# - ALWAYS: improve commenting and readability
 
 
 class openAIAlchemy:
