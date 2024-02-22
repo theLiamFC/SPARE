@@ -105,8 +105,7 @@
           {
             "name": "move motor pair for time",
             "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
-            "parameters": {
-              "parameter": [
+            "parameters": [
                 {
                   "name": "motor Pair",
                   "description": "Specification of which motor pair to move",
@@ -128,7 +127,6 @@
                   "values": "any integer"
                 }
               ]
-            }
           }
         ]
       },
@@ -215,6 +213,85 @@
               }
             ],
             "returns": "none"
+          }
+        ]
+      },
+      {
+        "name": "light_matrix",
+        "description": "a class that enables control of built in SPIKE Prime led matrix",
+        "initialization": "none",
+        "required imports": "from hub import light_matrix",
+        "function": [
+          {
+            "name": "clear",
+            "syntax": "color_matrix.clear()",
+            "parameters": "none",
+            "returns": "none"
+          },
+          {
+            "name":"set_pixel",
+            "syntax":"light_matrix.set_pixel(2,2,100)",
+            "parameters":[
+              {
+                "name":"x value",
+                "description":"the x position of led on the matrix",
+                "values":"integer 0:4"
+              },
+              {
+                "name":"y value",
+                "description":"the y position of led on the matrix",
+                "values":"integer 0:4"
+              },
+              {
+                "name":"brightness",
+                "description":"the light intensity of the pixel",
+                "values":"integer 1:100"
+              }
+            ]
+          },
+          {
+            "name":"show",
+            "syntax":"light_matrix.show(list[int])",
+            "parameters":[
+              {
+                "name":"pixel list",
+                "description":"a list of length 25 corresponding to each pixel in the 5x5 led matrix",
+                "values":"legnth 25 list of integers with values 1:100"
+              }
+            ],
+            "example":"# Create a list with 25 identical intensity values \r\n pixels = [100] * 25 \r\n # Update all pixels to show same intensity \r\n light_matrix.show(pixels)"
+          },
+          {
+            "name":"show_image",
+            "syntax":"light_matrix.show_image(light_matrix.IMAGE_HAPPY)",
+            "parameters":[
+              {
+                "name":"image id",
+                "description":"The id of the image to show. The range of available images is 1 to 67. There are consts on the light_matrix module for these.",
+                "values":"int 1:67"
+              }
+            ]
+          },
+          {
+            "name":"write",
+            "syntax":"light_matrix.write(text: str, intensity: int = 100, time_per_character: int = 500)",
+            "parameters":[
+              {
+                "name":"text",
+                "description":"the text to display on the matrix",
+                "values":"string"
+              },
+              {
+                "name":"intensity",
+                "description":"the brightness of the leds",
+                "values":"integer 1:100"
+              },
+              {
+                "name":"time per character",
+                "description":"How long to show each character on the display in milliseconds",
+                "values":"positive integer"
+              }
+            ]
           }
         ]
       }
