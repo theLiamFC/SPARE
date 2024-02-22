@@ -25,6 +25,7 @@ import serial_interface
 class openAIAlchemy:
     def __init__(self, assistant_id, thread_id=None, debug=False):
         self.client = OpenAI()
+        self.assistant_id = assistant_id
         self.debug = debug
         self.run_id = None
         self.queryDict = json.load(open("queryDict.json", "r"))
@@ -37,7 +38,14 @@ class openAIAlchemy:
         else:
             self.thread_id = thread_id
 
-        self.assistant_id = assistant_id
+    # Change model of current assistant
+    # "gpt-4", gpt
+    def changeModel(self, modelNum):
+        models = ["gpt-4-turbo-preview", "gpt-4", "gpt-3.5-turbo-0125"]
+        self.client.beta.assistants.update(
+            self.assistant_id,
+            model=models[modelNum],
+        )
 
     # Public Debugging Function
     # Retreive assistants for purpose of finding IDs
