@@ -17,5 +17,7 @@ To use this repository, follow these steps:
 **File Descriptions**
 
 openAIAlchemy.py: Contains the main class openAIAlchemy, which interfaces with the OpenAI API for communication.
+
 main.py: Orchestrates the interaction between the user, ChatGPT, and the robot coding interface.
+
 queryDict.json: Contains valuable syntax and documentation for MicroPython coding on the LEGO SPIKE Prime platform.
