@@ -8,7 +8,7 @@
         "required imports": "import motor \n from hub import port",
         "function": {
           "name": "Run motor for degrees",
-          "syntax": "motor.run_for_degrees(port.B,360, 75)",
+          "syntax": "motor.run_for_degrees(port.B, 360, 75)",
           "parameters": {
             "parameter": [
               {
@@ -34,7 +34,7 @@
         "name": "color_sensor",
         "description": "a class that allows access to spike prime color sensors",
         "initialization": "none",
-        "required imports": "import color_sensor \n from hub import port",
+        "required imports": "from hub import color_sensor \n from hub import port",
         "function": [
           {
             "name": "Color",
@@ -65,6 +65,126 @@
             "returns": {
               "name": "the intensity of light sensed by the color sensor",
               "values": "integer 1:100"
+            }
+          }
+        ]
+      },
+      {
+        "name": "motor_pair",
+        "description": "a class that allows controlling two spike prime motors together",
+        "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)",
+        "required imports": "import motor_pair \n from hub import port",
+        "function": [
+          {
+            "name": "Move motor pair for degrees",
+            "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
+            "parameters": {
+              "parameter": [
+                {
+                  "name": "Motor Pair",
+                  "description": "Specification of which motor pair to move",
+                  "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+                },
+                {
+                  "name": "Degrees",
+                  "description": "Degrees for which the motor pair should turn.",
+                  "values": "any integer"
+                },
+                {
+                  "name": "Steering",
+                  "description": "How much the motor pair should alter motor speeds to turn",
+                  "values": "an integer -100:100"
+                },
+                {
+                  "name": "Velocity",
+                  "description": "Speed at which the motors should run in degrees per second.",
+                  "values": "any integer"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Move motor pair for time",
+            "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
+            "parameters": {
+              "parameter": [
+                {
+                  "name": "Motor Pair",
+                  "description": "Specification of which motor pair to move",
+                  "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+                },
+                {
+                  "name": "Time",
+                  "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)",
+                  "values": "any integer"
+                },
+                {
+                  "name": "Steering",
+                  "description": "How much the motor pair should alter motor speeds to turn",
+                  "values": "an integer -100:100"
+                },
+                {
+                  "name": "Velocity",
+                  "description": "Speed at which the motors should run in degrees per second.",
+                  "values": "any integer"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "distance_sensor",
+        "description": "a class that allows access to spike prime distance sensors",
+        "initialization": "none",
+        "required imports": "from hub import distance_sensor \n from hub import port",
+        "function": {
+          "name": "Get distance",
+          "syntax": "distance_sensor.distance(port.A)",
+          "parameters": {
+            "parameter": {
+              "name": "Port",
+              "description": "Port of spike prime to which distance sensor is connected",
+              "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+            }
+          },
+          "returns": {
+            "name": "the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1",
+            "values": "integer"
+          }
+        }
+      },
+      {
+        "name": "motion_sensor",
+        "description": "a class that allows access to spike prime motion sensors",
+        "initialization": "none",
+        "required imports": "from hub import motion_sensor \n from hub import port",
+        "function": [
+          {
+            "name": "Acceleration",
+            "syntax": "motion_sensor.acceleration()",
+            "parameters": "none",
+            "returns": {
+              "name": "a tuple containing x, y & z acceleration values as integers. The values are mili G, so 1 / 1000 G",
+              "values": "[int, int, int]"
+            }
+          },
+          {
+            "name": "Tilt angles",
+            "syntax": "motion_sensor.tilt_angles()",
+            "parameters": "none",
+            "returns": {
+              "name": "a tuple containing yaw pitch and roll values as integers. Values are decidegrees",
+              "values": "[int, int, int]"
+            }
+          },
+          {
+            "name": "Angular Velocity",
+            "syntax": "motion_sensor.angular_velocity()",
+            "parameters": "none",
+            "returns": {
+              "name": "a tuple containing x, y & z angular velocity values as integers. The values are decidegrees per second",
+              "values": "[int, int, int]"
             }
           }
         ]
