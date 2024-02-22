@@ -10,7 +10,7 @@ import serial_interface
 # thread_id
 # client_id
 # run_id
-# debug
+# queryDict
 
 ### ACTION ITEMS
 # - create functionality for a debug log exported as txt file
@@ -47,11 +47,13 @@ class openAIAlchemy:
         return my_assistants.data
 
     # Public Debugging Function
-    # Retrieve runs in a given thread
+    # Retrieve all runs in a current thread
     def getRuns(self):
         runs = self.client.beta.threads.runs.list(self.thread_id)
         return runs
 
+    # Public Debugging Function
+    # Kills all runs that are in progress or requiring action
     def killAllRuns(self):
         runs = self.getRuns()
         for run in runs.data:
@@ -60,8 +62,8 @@ class openAIAlchemy:
                     thread_id=self.thread_id, run_id=run.id
                 )
 
-    # add message from help desk or human input
-    # how do we distinguish function responses?
+    # Public Debugging Function
+    # Add message to current thread
     def addMessage(self, message):
         if self.debug:
             print("Adding Message")
@@ -70,22 +72,16 @@ class openAIAlchemy:
             role="user",
             content=message,
         )
-        # self.__runManager()
 
-    # must parse between user, assistant, function
+    # Public Debugging Function
+    # Get most recent message from the thread
     def getMessage(self):
         messages = self.client.beta.threads.messages.list(self.thread_id)
-
-        # get role of most recent message
-        if messages.data[0].role == "function":
-            # call function to deal with functions
-            pass
-
-        # get content of most recent message
         return messages.data[0].content[0].text.value
 
+    # Start and or manage run of current thread
     async def __runManager(self):
-        if self.run_id == None:
+        if self.run_id == None:  # check for existing run
             if self.debug:
                 print("Creating new run")
             run = self.client.beta.threads.runs.create(
@@ -99,35 +95,40 @@ class openAIAlchemy:
             print("Run in progress")
         status = "in_progress"
 
-        # non asyncio version
+        # entering status monitoring loop
+        # exits upon completion, failure, or tool call response required
         lastTime = time.time()
         while status not in ["completed", "failed", "requires_action"]:
             status = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
-            ).status
+            ).status  # get status of run
             if self.debug and time.time() - lastTime > 5:
                 print("Longer than normal runtime: ", status)
                 lastTime = time.time()
             await asyncio.sleep(1)
+
         if self.debug:
             print("Status: " + status)
-        if status == "requires_action":
+
+        # run no longer in progress, handle each possible run condition
+        if status == "requires_action":  # delegate tool calls to __functionManager()
             calls = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
             ).required_action
             self.__functionManager(calls)
             return await self.__runManager()
-        elif status == "completed":
-            # Assuming run_details contains a 'result' attribute with the data you need
+        elif status == "completed":  # return response
             self.run_id = None
             return (
                 self.client.beta.threads.messages.list(self.thread_id)
                 .data[0]
                 .content[0]
                 .text.value
-            )  # Return the actual result here
-        elif status == "failed":
-            # throw exception
+            )
+        elif status == "failed":  # something went wrong
+            # BUG should probably handle this better
+            # though we have not seen a run fail yet
+            # would likely be network / API issue
             self.run_id = None
             print("Run Failed")
             print(
@@ -136,36 +137,40 @@ class openAIAlchemy:
                 )
             )
 
-    def print_break(self, name, body):
+    # Format content for text output
+    def __print_break(self, name, body):
         print("==================== " + name + " ====================")
         print(body)
         print("==================== " + "end" + " ====================")
 
+    # Handle tool call responses
     def __functionManager(self, calls):
         if self.debug:
             print("Managing functions")
+
+        # empty array to hold multiple tool calls
         tool_outputs = []
 
+        # iterate through all tool calls in run
         for toolCall in calls.submit_tool_outputs.tool_calls:
-            # print(toolCall)
+            # get attributes of tool call: id, function, arguments
             id = toolCall.id
-            # print(id)
             name = toolCall.function.name
             args = json.loads(toolCall.function.arguments)
-            # case for every function available to assistant
+
+            # handling for each available function call
             if name == "get_feedback":
-                # print arg to command line and get written feedback
-                print("Hey Human: ", args["prompt"])
+                # print arg to command line and get written response from human
+                print("Hey Human, ", args["prompt"])
                 human_response = input()
-                tool_outputs.append(
-                    {
-                        "tool_call_id": id,
-                        "output": human_response,
-                    }
-                )
+                tool_outputs.append({"tool_call_id": id, "output": human_response})
             elif name == "get_documentation":
                 if self.debug:
                     print("Querying Documentation for: ", args["query"].lower())
+
+                # search queryDict json file for requested term
+                # BUG if chat has issues requesting exact term we could introduce
+                # a semantic relation search upon 0 zero result
                 for aClass in self.queryDict["class"]:
                     if aClass["name"] == args["query"].lower():
                         query_response = aClass
@@ -181,15 +186,16 @@ class openAIAlchemy:
                 tool_outputs.append({"tool_call_id": id, "output": query_response})
             elif name == "run_code":
                 code = args["code"]
-                self.print_break("CODE", code)
+                self.__print_break("RUNNING CODE", code)
                 code = code.replace("\n", "\r\n")
 
                 serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
 
                 if self.debug:
-                    self.print_break("SERIAL OUTPUT", serial_response)
+                    self.__print_break("SERIAL OUTPUT", serial_response)
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
 
+        # submit all collected tool call responses
         self.client.beta.threads.runs.submit_tool_outputs(
             thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
         )
