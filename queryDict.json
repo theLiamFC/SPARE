@@ -1,5 +1,4 @@
 {
-  "codingGuide": {
     "class": [
       {
         "name": "motor",
@@ -37,7 +36,7 @@
         "required imports": "from hub import color_sensor \n from hub import port",
         "function": [
           {
-            "name": "Color",
+            "name": "color",
             "syntax": "color_sensor.color(port.A)",
             "parameters": {
               "parameter": {
@@ -52,7 +51,7 @@
             }
           },
           {
-            "name": "Reflection",
+            "name": "reflection",
             "syntax": "color_sensor.reflection(port.A)",
             "initialization": "none",
             "parameters": {
@@ -76,27 +75,27 @@
         "required imports": "import motor_pair \n from hub import port",
         "function": [
           {
-            "name": "Move motor pair for degrees",
+            "name": "move motor pair for degrees",
             "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
             "parameters": {
               "parameter": [
                 {
-                  "name": "Motor Pair",
+                  "name": "motor pair",
                   "description": "Specification of which motor pair to move",
                   "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
                 },
                 {
-                  "name": "Degrees",
+                  "name": "degrees",
                   "description": "Degrees for which the motor pair should turn.",
                   "values": "any integer"
                 },
                 {
-                  "name": "Steering",
+                  "name": "steering",
                   "description": "How much the motor pair should alter motor speeds to turn",
                   "values": "an integer -100:100"
                 },
                 {
-                  "name": "Velocity",
+                  "name": "velocity",
                   "description": "Speed at which the motors should run in degrees per second.",
                   "values": "any integer"
                 }
@@ -104,27 +103,27 @@
             }
           },
           {
-            "name": "Move motor pair for time",
+            "name": "move motor pair for time",
             "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
             "parameters": {
               "parameter": [
                 {
-                  "name": "Motor Pair",
+                  "name": "motor Pair",
                   "description": "Specification of which motor pair to move",
                   "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
                 },
                 {
-                  "name": "Time",
+                  "name": "time",
                   "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)",
                   "values": "any integer"
                 },
                 {
-                  "name": "Steering",
+                  "name": "steering",
                   "description": "How much the motor pair should alter motor speeds to turn",
                   "values": "an integer -100:100"
                 },
                 {
-                  "name": "Velocity",
+                  "name": "velocity",
                   "description": "Speed at which the motors should run in degrees per second.",
                   "values": "any integer"
                 }
@@ -139,7 +138,7 @@
         "initialization": "none",
         "required imports": "from hub import distance_sensor \n from hub import port",
         "function": {
-          "name": "Get distance",
+          "name": "get distance",
           "syntax": "distance_sensor.distance(port.A)",
           "parameters": {
             "parameter": {
@@ -161,7 +160,7 @@
         "required imports": "from hub import motion_sensor \n from hub import port",
         "function": [
           {
-            "name": "Acceleration",
+            "name": "acceleration",
             "syntax": "motion_sensor.acceleration()",
             "parameters": "none",
             "returns": {
@@ -170,7 +169,7 @@
             }
           },
           {
-            "name": "Tilt angles",
+            "name": "tilt angles",
             "syntax": "motion_sensor.tilt_angles()",
             "parameters": "none",
             "returns": {
@@ -179,7 +178,7 @@
             }
           },
           {
-            "name": "Angular Velocity",
+            "name": "angular velocity",
             "syntax": "motion_sensor.angular_velocity()",
             "parameters": "none",
             "returns": {
@@ -188,7 +187,36 @@
             }
           }
         ]
+      },
+      {
+        "name": "sound",
+        "description": "a class that enables control of built in SPIKE Prime speakers",
+        "initialization": "none",
+        "required imports": "from hub import sound \n from hub import port",
+        "function": [
+          {
+            "name": "beep",
+            "syntax": "sound.beep(freq: int = 440, duration: int = 500, volume: int = 100)",
+            "parameters": [
+              {
+                "name": "freq",
+                "description": "Frequency of beep",
+                "values": "positive integer"
+              },
+              {
+                "name": "duration",
+                "description": "length of beep in milliseconds",
+                "values": "positive integer"
+              },
+              {
+                "name": "volume",
+                "description": "volume of beep",
+                "values": "integer 1:100"
+              }
+            ],
+            "returns": "none"
+          }
+        ]
       }
     ]
-  }
 }
