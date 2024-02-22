@@ -25,7 +25,7 @@ class openAIAlchemy:
         self.client = OpenAI()
         self.debug = debug
         self.run_id = None
-        # self.debugText # build out logging functionality and export to txt file
+        self.queryDict = json.load(open("queryDict.json", "r"))
 
         if thread_id == None:
             newThread = self.client.beta.threads.create()
@@ -164,8 +164,20 @@ class openAIAlchemy:
                     }
                 )
             elif name == "get_documentation":
-                print("Query Dict: ", args["query"])
-                query_response = input()
+                if self.debug:
+                    print("Querying Documentation for: ", args["query"].lower())
+                for aClass in self.queryDict["class"]:
+                    if aClass["name"] == args["query"].lower():
+                        query_response = aClass
+                        break
+                    else:
+                        query_response = (
+                            "No available information on "
+                            + args["query"].lower()
+                            + ". Try rephrasing the term you are querying, for example changing underscores or phrasing, or alternatively ask the human for help."
+                        )
+                if self.debug:
+                    print(query_response)
                 tool_outputs.append({"tool_call_id": id, "output": query_response})
             elif name == "run_code":
                 code = args["code"]
