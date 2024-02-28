@@ -1,9 +1,11 @@
 from openai import OpenAI
+import cv2 as cv
 import time
 import asyncio
 import json
 import sys
 import serial_interface
+import base64
 
 #### private variables
 # assistant_id
@@ -30,6 +32,7 @@ class openAIAlchemy:
         self.debug = debug
         self.run_id = None
         self.queryDict = json.load(open("queryDict.json", "r"))
+        self.cam = cv.VideoCapture(0)
 
         if thread_id == None:
             newThread = self.client.beta.threads.create()
@@ -217,20 +220,21 @@ class openAIAlchemy:
 
                 if self.debug:
                     print("Getting visual feedback for: ", query.lower())
-                #### get images
+                images = self.__imgCollection(num_images, time_between_images)
                 content = []
                 content.append({"type": "text", "text": query})
-                for image_num in num_images:
+                for img in images:
                     # capture image
                     # save image
                     # make url for image
                     # add to dict
-                    url = ""
-                    new_image = {"type": "image_url",
-                                    "image_url": {
-                                        "url": url,
-                                    },
-                                }
+                    new_image = {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": img,
+                        },
+                    }
+
                     content.append(new_image)
                     time.sleep(time_between_images)
 
@@ -243,17 +247,34 @@ class openAIAlchemy:
                         }
                     ],
                     max_tokens=300,
+
                 )   
                 image_response = response.choices[0].message.content
 
                 if self.debug:
                     print(image_response)
+
                 tool_outputs.append({"tool_call_id": id, "output": json.dumps(image_response)})
 
         # submit all collected tool call responses
         self.client.beta.threads.runs.submit_tool_outputs(
             thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
         )
+
+    def __encode_image(self, image_path):
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode("utf-8")
+
+    def __imgCollection(self, num, interval):
+        images = []
+        for i in range(num):
+            ret, frame = self.cam.read()
+            cv.imwrite("image" + str(i) + ".jpg", frame)
+            base64_image = self.__encode_image("image" + str(i) + ".jpg")
+            url = f"data:image/jpeg;base64,{base64_image}"
+            images.append(url)
+            time.sleep(interval)
+        return images
 
     def extract_code(self, result):
         idx1 = result.find("```") + 3 + 7
