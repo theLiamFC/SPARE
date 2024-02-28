@@ -12,30 +12,19 @@ aa_id = "asst_NiIdeWySoj4RYIRU7t6r2mpG"
 ### Ai Alchemist ID
 aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
+### General test thread
+# thread_id = "thread_UbU1hougFO6WE4kJCmK0ylRR"
 
-### TESTING SERIAL
-# test = '''import motor
-# from hub import port
-
-# # Run both motors to move forward
-# motor.run_for_degrees(port.A,-360, 75)
-# motor.run_for_degrees(port.B,360, 75)
-# '''
-# test = test.replace("\n", "\r\n")
-# reply = serial_interface.serial_write(bytes(test, 'utf-8'))
-# print(reply)
-
-# sys.exit()
-##############################
+# response = openAI_assistant.callChad(
+#     bb_id, thread_id, "what is the weather in lexington MA"
+# )
 
 
-async def main():
+async def main(AI_interface):
     # Assuming `instance` is an instance of the class containing your run method
-    AI_interface = openAIAlchemy(aa_id, debug=True)
-
-    result = await AI_interface.run(
-        "write code to move the bot forward. There are motors in ports A and B."
-    )
+    command = input("What would like me to do?")
+    # command = "write code to move the bot forward. There are motors in ports A and B"
+    result = await AI_interface.run(command)
     print(result)
 
     # code, response = AI_interface.extract_code(result)
@@ -44,13 +33,21 @@ async def main():
     # print(serial_response)
 
 
-# async def interfaceLoop(AI_interface):
-#     userPrompt = input("What would you like your spike prime to do today?")
-#         while userPrompt != "E":
-#         result = await AI_interface.run(userPrompt)
-#         code, response = AI_interface.extract_code(result)
-#         replReply = serial_interface.serial_write(bytes(code, 'utf-8'))
+async def interfaceLoop(AI_interface):
+    userPrompt = input("What would you like your spike prime to do today?")
+    userPrompt = "write code to move the bot forward. There are motors in ports A and B"
+    while userPrompt != "E":
+        result = await AI_interface.run(userPrompt)
+        print(result)
+        userPrompt = input("What would you like your spike prime to do today?")
+        # code, response = AI_interface.extract_code(result)
+        # replReply = serial_interface.serial_write(bytes(code, 'utf-8'))
 
 # Run the main function in the event loop
 if __name__ == "__main__":
-    asyncio.run(main())
+    # serial_interface.test_serial()
+    AI_interface = openAIAlchemy(aa_id, debug=True)
+
+    # asyncio.run(main(AI_interface))
+    asyncio.run(interfaceLoop(AI_interface))
+    
