@@ -33,7 +33,7 @@
         "name": "color_sensor",
         "description": "a class that allows access to spike prime color sensors",
         "initialization": "none",
-        "required imports": "from hub import color_sensor \n from hub import port",
+        "required imports": "import color_sensor \n from hub import port",
         "function": [
           {
             "name": "color",

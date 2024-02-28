@@ -195,17 +195,60 @@ class openAIAlchemy:
                         )
                 if self.debug:
                     print(query_response)
-                tool_outputs.append({"tool_call_id": id, "output": query_response})
+                tool_outputs.append({"tool_call_id": id, "output": json.dumps(query_response)})
             elif name == "run_code":
                 code = args["code"]
-                self.__print_break("RUNNING CODE", code)
+                runtime = int(args["runtime"]) # in seconds
                 code = code.replace("\n", "\r\n")
+                self.__print_break("RUNNING CODE", code)
 
                 serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
-
                 if self.debug:
                     self.__print_break("SERIAL OUTPUT", serial_response)
+
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
+                time.sleep(runtime)
+                print("ending program")
+                serial_interface.serial_write(bytes("\x03", 'utf-8'))
+            elif name == "get_visual_feedback":
+                query = args["query"]
+                num_images = int(args["num_images"])
+                time_between_images = int(args["interval"])
+
+                if self.debug:
+                    print("Getting visual feedback for: ", query.lower())
+                #### get images
+                content = []
+                content.append({"type": "text", "text": query})
+                for image_num in num_images:
+                    # capture image
+                    # save image
+                    # make url for image
+                    # add to dict
+                    url = ""
+                    new_image = {"type": "image_url",
+                                    "image_url": {
+                                        "url": url,
+                                    },
+                                }
+                    content.append(new_image)
+                    time.sleep(time_between_images)
+
+                response = self.client.chat.completions.create(
+                    model="gpt-4-vision-preview",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": content,
+                        }
+                    ],
+                    max_tokens=300,
+                )   
+                image_response = response.choices[0].message.content
+
+                if self.debug:
+                    print(image_response)
+                tool_outputs.append({"tool_call_id": id, "output": json.dumps(image_response)})
 
         # submit all collected tool call responses
         self.client.beta.threads.runs.submit_tool_outputs(

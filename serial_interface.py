@@ -1,6 +1,6 @@
 import serial
 import time
-
+import sys
 
 def serial_read():
     reply = b""
@@ -35,14 +35,50 @@ print(serial_read())
 
 def test_serial():
 
-    test = '''print("hello world")
-    import motor
-    from hub import port
+    test = \
+'''import motor
+from hub import port
+import time
+i = 0
+while i < 1000:
+print("hello world")
+# motor.run_for_degrees(port.A,-360, 75)
+# motor.run_for_degrees(port.B,360, 75)
+time.sleep(.5)
+i = i + 1'''
 
-    # Run both motors to move forward
-    motor.run_for_degrees(port.A,-360, 75)
-    motor.run_for_degrees(port.B,360, 75)
-    '''
+#     test = \
+# '''for i in range(10):
+#     print("hello world")'''
+    
+    test = \
+'''import motor
+from hub import port
+import runloop
+import time
+
+async def main():
+print("hello world")
+await motor.run_for_degrees(port.A,-360, 75)
+await motor.run_for_degrees(port.B,360, 75)
+time.sleep(3)
+await motor.run_for_degrees(port.A,-360, 75)
+await motor.run_for_degrees(port.B,360, 75)
+
+
+
+runloop.run(main())
+'''
+
+    # reply = serial_write(bytes("\x05", 'utf-8'))
+    # print(reply)
+
     test = test.replace("\n", "\r\n")
-    reply = serial_interface.serial_write(bytes(test, 'utf-8'))
+    reply = serial_write(bytes(test, 'utf-8'))
     print(reply)
+    time.sleep(1)
+    # reply = serial_write(bytes("\x03", 'utf-8'))
+    print(reply)
+    
+    
+    sys.exit()
