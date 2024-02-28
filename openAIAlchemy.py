@@ -1,9 +1,11 @@
 from openai import OpenAI
+import cv2 as cv
 import time
 import asyncio
 import json
 import sys
 import serial_interface
+import base64
 
 #### private variables
 # assistant_id
@@ -25,10 +27,12 @@ import serial_interface
 class openAIAlchemy:
     def __init__(self, assistant_id, thread_id=None, debug=False):
         self.client = OpenAI()
+        # self.killAllRuns()
         self.assistant_id = assistant_id
         self.debug = debug
         self.run_id = None
         self.queryDict = json.load(open("queryDict.json", "r"))
+        self.cam = cv.VideoCapture(0)
 
         if thread_id == None:
             newThread = self.client.beta.threads.create()
@@ -166,6 +170,7 @@ class openAIAlchemy:
             # get attributes of tool call: id, function, arguments
             id = toolCall.id
             name = toolCall.function.name
+            print(toolCall.function.arguments)
             args = json.loads(toolCall.function.arguments)
 
             # handling for each available function call
@@ -193,22 +198,84 @@ class openAIAlchemy:
                         )
                 if self.debug:
                     print(query_response)
-                tool_outputs.append({"tool_call_id": id, "output": query_response})
+                tool_outputs.append(
+                    {"tool_call_id": id, "output": json.dumps(query_response)}
+                )
             elif name == "run_code":
                 code = args["code"]
-                self.__print_break("RUNNING CODE", code)
+                runtime = int(args["runtime"])  # in seconds
                 code = code.replace("\n", "\r\n")
+                self.__print_break("RUNNING CODE", code)
 
                 serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
-
                 if self.debug:
                     self.__print_break("SERIAL OUTPUT", serial_response)
+
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
+                time.sleep(runtime)
+                print("ending program")
+                serial_interface.serial_write(bytes("\x03", "utf-8"))
+            elif name == "get_visual_feedback":
+                query = args["query"]
+                num_images = int(args["num_images"])
+                time_between_images = int(args["interval"])
+
+                if self.debug:
+                    print("Getting visual feedback for: ", query.lower())
+                images = self.__imgCollection(num_images, time_between_images)
+                content = []
+                content.append({"type": "text", "text": query})
+                for img in images:
+                    # capture image
+                    # save image
+                    # make url for image
+                    # add to dict
+                    new_image = {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": img,
+                        },
+                    }
+                    content.append(new_image)
+                    time.sleep(time_between_images)
+
+                response = self.client.chat.completions.create(
+                    model="gpt-4-vision-preview",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": content,
+                        }
+                    ],
+                    max_tokens=300,
+                )
+                image_response = response.choices[0].message.content
+
+                if self.debug:
+                    print(image_response)
+                tool_outputs.append(
+                    {"tool_call_id": id, "output": json.dumps(image_response)}
+                )
 
         # submit all collected tool call responses
         self.client.beta.threads.runs.submit_tool_outputs(
             thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
         )
+
+    def __encode_image(self, image_path):
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode("utf-8")
+
+    def __imgCollection(self, num, interval):
+        images = []
+        for i in range(num):
+            ret, frame = self.cam.read()
+            cv.imwrite("image" + str(i) + ".jpg", frame)
+            base64_image = self.__encode_image("image" + str(i) + ".jpg")
+            url = f"data:image/jpeg;base64,{base64_image}"
+            images.append(url)
+            time.sleep(interval)
+        return images
 
     def extract_code(self, result):
         idx1 = result.find("```") + 3 + 7
