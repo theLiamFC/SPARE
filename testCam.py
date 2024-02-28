@@ -17,19 +17,26 @@ def encode_image(image_path):
 def imgCollection(cam, num, interval):
     images = []
     for i in range(num):
+        for j in range(5):
+            print(str(5 - j))
+            time.sleep(1)
+        print("Say cheese")
         ret, frame = cam.read()
+        print("image" + str(i) + ".jpg")
         cv.imwrite("image" + str(i) + ".jpg", frame)
         base64_image = encode_image("image" + str(i) + ".jpg")
         url = f"data:image/jpeg;base64,{base64_image}"
         images.append(url)
-        time.sleep(interval)
     return images
 
 
-images = imgCollection(cam, 3, 1)
+images = imgCollection(cam, 3, 3)
 content = []
 content.append(
-    {"type": "text", "text": "describe the images and any differences between them"}
+    {
+        "type": "text",
+        "text": "describe differences in the primary subject between images",
+    }
 )
 
 for img in images:

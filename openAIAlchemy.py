@@ -198,10 +198,12 @@ class openAIAlchemy:
                         )
                 if self.debug:
                     print(query_response)
-                tool_outputs.append({"tool_call_id": id, "output": json.dumps(query_response)})
+                tool_outputs.append(
+                    {"tool_call_id": id, "output": json.dumps(query_response)}
+                )
             elif name == "run_code":
                 code = args["code"]
-                runtime = int(args["runtime"]) # in seconds
+                runtime = int(args["runtime"])  # in seconds
                 code = code.replace("\n", "\r\n")
                 self.__print_break("RUNNING CODE", code)
 
@@ -212,7 +214,7 @@ class openAIAlchemy:
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
                 time.sleep(runtime)
                 print("ending program")
-                serial_interface.serial_write(bytes("\x03", 'utf-8'))
+                serial_interface.serial_write(bytes("\x03", "utf-8"))
             elif name == "get_visual_feedback":
                 query = args["query"]
                 num_images = int(args["num_images"])
@@ -230,9 +232,7 @@ class openAIAlchemy:
                             "url": img,
                         },
                     }
-
                     content.append(new_image)
-                    time.sleep(time_between_images)
 
                 response = self.client.chat.completions.create(
                     model="gpt-4-vision-preview",
@@ -243,14 +243,15 @@ class openAIAlchemy:
                         }
                     ],
                     max_tokens=300,
-
-                )   
+                )
                 image_response = response.choices[0].message.content
 
                 if self.debug:
                     print(image_response)
 
-                tool_outputs.append({"tool_call_id": id, "output": json.dumps(image_response)})
+                tool_outputs.append(
+                    {"tool_call_id": id, "output": json.dumps(image_response)}
+                )
 
         # submit all collected tool call responses
         self.client.beta.threads.runs.submit_tool_outputs(
