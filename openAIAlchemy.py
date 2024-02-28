@@ -224,10 +224,6 @@ class openAIAlchemy:
                 content = []
                 content.append({"type": "text", "text": query})
                 for img in images:
-                    # capture image
-                    # save image
-                    # make url for image
-                    # add to dict
                     new_image = {
                         "type": "image_url",
                         "image_url": {
