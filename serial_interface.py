@@ -32,3 +32,17 @@ ser = serial.Serial(
 ser.isOpen()
 ser.write(b"\x03")
 print(serial_read())
+
+def test_serial():
+
+    test = '''print("hello world")
+    import motor
+    from hub import port
+
+    # Run both motors to move forward
+    motor.run_for_degrees(port.A,-360, 75)
+    motor.run_for_degrees(port.B,360, 75)
+    '''
+    test = test.replace("\n", "\r\n")
+    reply = serial_interface.serial_write(bytes(test, 'utf-8'))
+    print(reply)

@@ -25,6 +25,7 @@ import serial_interface
 class openAIAlchemy:
     def __init__(self, assistant_id, thread_id=None, debug=False):
         self.client = OpenAI()
+        # self.killAllRuns()
         self.assistant_id = assistant_id
         self.debug = debug
         self.run_id = None
@@ -166,6 +167,7 @@ class openAIAlchemy:
             # get attributes of tool call: id, function, arguments
             id = toolCall.id
             name = toolCall.function.name
+            print(toolCall.function.arguments)
             args = json.loads(toolCall.function.arguments)
 
             # handling for each available function call

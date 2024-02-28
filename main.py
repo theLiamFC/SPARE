@@ -12,21 +12,12 @@ aa_id = "asst_NiIdeWySoj4RYIRU7t6r2mpG"
 ### Ai Alchemist ID
 aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
+### General test thread
+# thread_id = "thread_UbU1hougFO6WE4kJCmK0ylRR"
 
-### TESTING SERIAL
-# test = '''import motor
-# from hub import port
-
-# # Run both motors to move forward
-# motor.run_for_degrees(port.A,-360, 75)
-# motor.run_for_degrees(port.B,360, 75)
-# '''
-# test = test.replace("\n", "\r\n")
-# reply = serial_interface.serial_write(bytes(test, 'utf-8'))
-# print(reply)
-
-# sys.exit()
-##############################
+# response = openAI_assistant.callChad(
+#     bb_id, thread_id, "what is the weather in lexington MA"
+# )
 
 
 async def main():
@@ -53,4 +44,5 @@ async def main():
 
 # Run the main function in the event loop
 if __name__ == "__main__":
+    # serial_interface.test_serial()
     asyncio.run(main())
