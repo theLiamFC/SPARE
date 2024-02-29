@@ -21,7 +21,7 @@ aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
 
 async def main(AI_interface):
-    # Assuming `instance` is an instance of the class containing your run method
+    # Assuming `instance` is an instance of the class containing your method
     command = input("What would like me to do?")
     # command = "write code to move the bot forward. There are motors in ports A and B"
     result = await AI_interface.run(command)

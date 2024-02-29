@@ -220,9 +220,10 @@ class openAIAlchemy:
                 time.sleep(runtime)
                 print("ending program")
                 serial_interface.serial_write(bytes("\x03", "utf-8"))
+                print("Program successfully ended")
             elif name == "get_visual_feedback":
                 query = args["query"]  # desired information about images
-                num_images = int(args["num_images"])  # number of images to be taken
+                num_images = int(args["image_num"])  # number of images to be taken
                 interval = int(args["interval"])  # time interval between images
 
                 if self.debug:
@@ -255,6 +256,7 @@ class openAIAlchemy:
         if self.debug:
             print("TAKING IMAGES IN 3 SECONDS")
             time.sleep(3)
+            print("Say Cheese!")
         images = []
         for i in range(num):
             ret, frame = self.cam.read()
@@ -277,7 +279,7 @@ class openAIAlchemy:
             content.append(new_image)
 
         # send images and query to vision api
-        return self.client.chat.completions.create(
+        response = self.client.chat.completions.create(
             model="gpt-4-vision-preview",
             messages=[
                 {
@@ -287,6 +289,9 @@ class openAIAlchemy:
             ],
             max_tokens=300,
         )
+        if self.debug:
+            print("Sent photos")
+        return response
 
     def extract_code(self, result):
         idx1 = result.find("```") + 3 + 7
