@@ -164,6 +164,7 @@ class openAIAlchemy:
 
         # empty array to hold multiple tool calls
         tool_outputs = []
+        code = ""
 
         # iterate through all tool calls in run
         for toolCall in calls.submit_tool_outputs.tool_calls:
@@ -204,6 +205,7 @@ class openAIAlchemy:
             elif name == "run_code":
                 code = args["code"]
                 runtime = int(args["runtime"])  # in seconds
+                code = code.replace("\n ", "\n")
                 code = code.replace("\n", "\r\n")
                 self.__print_break("RUNNING CODE", code)
 
@@ -217,11 +219,13 @@ class openAIAlchemy:
                 serial_interface.serial_write(bytes("\x03", "utf-8"))
             elif name == "get_visual_feedback":
                 query = args["query"]
-                num_images = int(args["num_images"])
+                num_images = int(args["image_num"])
                 time_between_images = int(args["interval"])
-
+                
                 if self.debug:
                     print("Getting visual feedback for: ", query.lower())
+
+                serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
                 images = self.__imgCollection(num_images, time_between_images)
                 content = []
                 content.append({"type": "text", "text": query})

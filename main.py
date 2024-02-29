@@ -25,7 +25,7 @@ async def main(AI_interface):
     command = input("What would like me to do?")
     # command = "write code to move the bot forward. There are motors in ports A and B"
     result = await AI_interface.run(command)
-    print(result)
+    # print(result)
 
     # code, response = AI_interface.extract_code(result)
     # print(response)
@@ -34,8 +34,11 @@ async def main(AI_interface):
 
 
 async def interfaceLoop(AI_interface):
-    userPrompt = input("What would you like your spike prime to do today?")
-    userPrompt = "write code to move the bot forward. There are motors in ports A and B"
+    # userPrompt = input("What would you like your spike prime to do today?")
+    userPrompt = "write code to move the robot forward using motors in ports \
+        A and B. Use the motor class. Get the robot to move as close to the \
+        lego minifugre as possible without touching it. \
+        You ask the human to rese the robot. Use the camera to verify performancs"
     while userPrompt != "E":
         result = await AI_interface.run(userPrompt)
         print(result)

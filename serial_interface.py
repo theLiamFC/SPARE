@@ -20,6 +20,7 @@ def serial_write(string):
 portL = "/dev/cu.usbmodem3356396133381"
 # Jesse's port:
 portJ = "COM13"
+portJ = "COM16"
 
 ser = serial.Serial(
     port=portJ,  ## <----------- REPLACE with your SPIKE's port from!!!##
