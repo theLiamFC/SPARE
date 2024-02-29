@@ -202,55 +202,42 @@ class openAIAlchemy:
                     {"tool_call_id": id, "output": json.dumps(query_response)}
                 )
             elif name == "run_code":
-                code = args["code"]
-                runtime = int(args["runtime"])  # in seconds
+                code = args["code"]  # micro python formatted code
+                runtime = int(args["runtime"])  # runtime in seconds until kill code
                 code = code.replace("\n", "\r\n")
                 self.__print_break("RUNNING CODE", code)
 
+                # send code to serial and get repl output
                 serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
                 if self.debug:
                     self.__print_break("SERIAL OUTPUT", serial_response)
 
+                # send repl output back to assistant
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
+
+                # kill code after runtime duration
                 time.sleep(runtime)
                 print("ending program")
                 serial_interface.serial_write(bytes("\x03", "utf-8"))
             elif name == "get_visual_feedback":
-                query = args["query"]
-                num_images = int(args["num_images"])
-                time_between_images = int(args["interval"])
+                query = args["query"]  # desired information about images
+                num_images = int(args["num_images"])  # number of images to be taken
+                interval = int(args["interval"])  # time interval between images
 
                 if self.debug:
                     print("Getting visual feedback for: ", query.lower())
-                images = self.__imgCollection(num_images, time_between_images)
-                content = []
-                content.append({"type": "text", "text": query})
-                for img in images:
-                    new_image = {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": img,
-                        },
-                    }
-                    content.append(new_image)
 
-                response = self.client.chat.completions.create(
-                    model="gpt-4-vision-preview",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": content,
-                        }
-                    ],
-                    max_tokens=300,
+                img_response = (
+                    self.__imgCollection(query, num_images, interval)
+                    .choices[0]
+                    .message.content
                 )
-                image_response = response.choices[0].message.content
 
+                # attach response to tool outputs
                 if self.debug:
-                    print(image_response)
-
+                    print(img_response)
                 tool_outputs.append(
-                    {"tool_call_id": id, "output": json.dumps(image_response)}
+                    {"tool_call_id": id, "output": json.dumps(img_response)}
                 )
 
         # submit all collected tool call responses
@@ -262,7 +249,8 @@ class openAIAlchemy:
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
-    def __imgCollection(self, num, interval):
+    def __imgCollection(self, query, num, interval):
+        # collect images from webcam
         images = []
         for i in range(num):
             ret, frame = self.cam.read()
@@ -271,7 +259,30 @@ class openAIAlchemy:
             url = f"data:image/jpeg;base64,{base64_image}"
             images.append(url)
             time.sleep(interval)
-        return images
+
+        # format images and query together for api call
+        content = []
+        content.append({"type": "text", "text": query})
+        for img in images:
+            new_image = {
+                "type": "image_url",
+                "image_url": {
+                    "url": img,
+                },
+            }
+            content.append(new_image)
+
+        # send images and query to vision api
+        return self.client.chat.completions.create(
+            model="gpt-4-vision-preview",
+            messages=[
+                {
+                    "role": "user",
+                    "content": content,
+                }
+            ],
+            max_tokens=300,
+        )
 
     def extract_code(self, result):
         idx1 = result.find("```") + 3 + 7
