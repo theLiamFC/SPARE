@@ -16,7 +16,8 @@ import base64
 
 ### ACTION ITEMS
 # - create functionality for a debug log exported as txt file
-# - build out interface loop to communicate over multiple runs
+# - fix ERROR: json.decoder.JSONDecodeError: Invalid \escape: line 2 column 41 (char 42)
+# - ERROR occurs in __functionManager on line 174
 #
 # - NEEDS TESTING: integrate json file for automated documentation returns
 #
@@ -251,6 +252,9 @@ class openAIAlchemy:
 
     def __imgCollection(self, query, num, interval):
         # collect images from webcam
+        if self.debug:
+            print("TAKING IMAGES IN 3 SECONDS")
+            time.sleep(3)
         images = []
         for i in range(num):
             ret, frame = self.cam.read()

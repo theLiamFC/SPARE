@@ -34,14 +34,20 @@ async def main(AI_interface):
 
 
 async def interfaceLoop(AI_interface):
-    userPrompt = input("What would you like your spike prime to do today?")
-    userPrompt = "write code to move the bot forward. There are motors in ports A and B"
-    while userPrompt != "E":
+    userPrompt = input(
+        "What would you like your spike prime to do today?\n[Enter 'e' or 'exit' to stop the program.]\n"
+    )
+    if userPrompt == "":
+        userPrompt = (
+            "write code to move the bot forward. There are motors in ports A and B"
+        )
+    while userPrompt.lower() != "e" and userPrompt.lower() != "exit":
         result = await AI_interface.run(userPrompt)
         print(result)
         userPrompt = input("What would you like your spike prime to do today?")
         # code, response = AI_interface.extract_code(result)
         # replReply = serial_interface.serial_write(bytes(code, 'utf-8'))
+
 
 # Run the main function in the event loop
 if __name__ == "__main__":
@@ -50,4 +56,3 @@ if __name__ == "__main__":
 
     # asyncio.run(main(AI_interface))
     asyncio.run(interfaceLoop(AI_interface))
-    
