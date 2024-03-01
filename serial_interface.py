@@ -2,6 +2,7 @@ import serial
 import time
 import sys
 
+
 def serial_read():
     reply = b""
     while ser.in_waiting:
@@ -22,21 +23,22 @@ portL = "/dev/cu.usbmodem3356396133381"
 portJ = "COM13"
 
 ser = serial.Serial(
-    port=portJ,  ## <----------- REPLACE with your SPIKE's port from!!!##
+    port=portL,  ## <----------- REPLACE with your SPIKE's port from!!!##
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,
 )
 
+# BUG catch serial not open error
 ser.isOpen()
 ser.write(b"\x03")
 print(serial_read())
 
+
 def test_serial():
 
-    test = \
-'''import motor
+    test = """import motor
 from hub import port
 import time
 i = 0
@@ -45,14 +47,13 @@ print("hello world")
 # motor.run_for_degrees(port.A,-360, 75)
 # motor.run_for_degrees(port.B,360, 75)
 time.sleep(.5)
-i = i + 1'''
+i = i + 1"""
 
-#     test = \
-# '''for i in range(10):
-#     print("hello world")'''
-    
-    test = \
-'''import motor
+    #     test = \
+    # '''for i in range(10):
+    #     print("hello world")'''
+
+    test = """import motor
 from hub import port
 import runloop
 import time
@@ -68,17 +69,16 @@ await motor.run_for_degrees(port.B,360, 75)
 
 
 runloop.run(main())
-'''
+"""
 
     # reply = serial_write(bytes("\x05", 'utf-8'))
     # print(reply)
 
     test = test.replace("\n", "\r\n")
-    reply = serial_write(bytes(test, 'utf-8'))
+    reply = serial_write(bytes(test, "utf-8"))
     print(reply)
     time.sleep(1)
     # reply = serial_write(bytes("\x03", 'utf-8'))
     print(reply)
-    
-    
+
     sys.exit()
