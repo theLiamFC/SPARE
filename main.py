@@ -44,9 +44,7 @@ async def interfaceLoop(AI_interface):
     while userPrompt.lower() != "e" and userPrompt.lower() != "exit":
         result = await AI_interface.run(userPrompt)
         print(result)
-        userPrompt = input(
-            "What would you like your spike prime to do today?\n[Enter 'e' or 'exit' to stop the program.]\n"
-        )
+        userPrompt = input("[Enter 'e' or 'exit' to stop the program.]\n")
         # code, response = AI_interface.extract_code(result)
         # replReply = serial_interface.serial_write(bytes(code, 'utf-8'))
 
