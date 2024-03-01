@@ -134,7 +134,7 @@
       "name": "distance_sensor",
       "description": "a class that allows access to spike prime distance sensors",
       "initialization": "none",
-      "required imports": "from hub import distance_sensor \n from hub import port",
+      "required imports": "import distance_sensor \n from hub import port",
       "function": {
         "name": "get distance",
         "syntax": "distance_sensor.distance(port.A)",
