@@ -14,15 +14,20 @@ import base64
 # run_id
 # queryDict
 
-### ACTION ITEMS
-# - create functionality for a debug log exported as txt file
-# - fix ERROR: json.decoder.JSONDecodeError: Invalid \escape: line 2 column 41 (char 42)
-# - ERROR occurs in __functionManager on line 174
-#
-# - NEEDS TESTING: integrate json file for automated documentation returns
-#
+### ACTION ITEMS ###
 # - ALWAYS: expand json file with more SPIKE syntax
 # - ALWAYS: improve commenting and readability
+#
+# - TODO: create functionality for a debug log exported as txt file
+#
+# - BUG: json.decoder.JSONDecodeError: Invalid \escape: line 2 column 41 (char 42)
+#        occurs in __functionManager() on line 174
+# - BUG: freezing after "Run in Progress"
+#        seems to be an issue on the openAI end
+# - BUG: chatGPT indentaton does not mesh well with REPL
+#        might be best to always parse the response and delete all spaces after new line if possible
+# - BUG: code does not seem to be properly uploaded to SPIKE when running on Liam's Mac
+#
 
 
 class openAIAlchemy:
@@ -116,7 +121,7 @@ class openAIAlchemy:
         while status not in ["completed", "failed", "requires_action"]:
             status = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
-            ).status  # get status of run
+            ).status  # BUG this api call seems to be freezing code occasionally
             if self.debug and time.time() - lastTime > 5:
                 print("Longer than normal runtime: ", status)
                 lastTime = time.time()
