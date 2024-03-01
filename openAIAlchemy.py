@@ -18,8 +18,10 @@ import base64
 # - ALWAYS: expand json file with more SPIKE syntax
 # - ALWAYS: improve commenting and readability
 #
-# - TODO: create functionality for a debug log exported as txt file
+# - TODO: !!! handle errors and hanging api calls
+# - TODO: !!! Clean up text output and make more presentable
 # - TODO: tailor assistant instructions to get better function calling behavior
+# - TODO: create functionality for a debug log exported as txt file
 #
 # - BUG: json.decoder.JSONDecodeError: Invalid \escape: line 2 column 41 (char 42)
 #        occurs in __functionManager() on line 174
