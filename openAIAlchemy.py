@@ -7,21 +7,31 @@ import sys
 import serial_interface
 import base64
 
-#### private variables
+### private variables
 # assistant_id
 # thread_id
 # client_id
 # run_id
 # queryDict
 
-### ACTION ITEMS
-# - create functionality for a debug log exported as txt file
-# - build out interface loop to communicate over multiple runs
-#
-# - NEEDS TESTING: integrate json file for automated documentation returns
-#
+### ACTION ITEMS ###
 # - ALWAYS: expand json file with more SPIKE syntax
 # - ALWAYS: improve commenting and readability
+#
+# - TODO: !!! handle errors and hanging api calls
+# - TODO: !!! Clean up text output and make more presentable
+# - TODO: tailor assistant instructions to get better function calling behavior
+# - TODO: create functionality for a debug log exported as txt file
+#
+# - BUG: json.decoder.JSONDecodeError: Invalid \escape: line 2 column 41 (char 42)
+#        occurs in __functionManager() on line 174
+# - BUG: freezing after "Run in Progress" and "Submitting tool outputs"
+#        seems to be an issue on the openAI end
+#        search file for "FREEZING" to find occurances
+# - BUG: chatGPT indentaton does not mesh well with REPL
+#        might be best to always parse the response and delete all spaces after new line if possible
+# - BUG: code does not seem to be properly uploaded to SPIKE when running on Liam's Mac
+#
 
 
 class openAIAlchemy:
@@ -100,7 +110,7 @@ class openAIAlchemy:
                 print("Creating new run")
             run = self.client.beta.threads.runs.create(
                 thread_id=self.thread_id, assistant_id=self.assistant_id
-            )
+            )  # BUG FREEZING HERE
             self.run_id = run.id
         else:
             if self.debug:
@@ -115,7 +125,7 @@ class openAIAlchemy:
         while status not in ["completed", "failed", "requires_action"]:
             status = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
-            ).status  # get status of run
+            ).status  # BUG this api call seems to be FREEZING code occasionally
             if self.debug and time.time() - lastTime > 5:
                 print("Longer than normal runtime: ", status)
                 lastTime = time.time()
@@ -128,7 +138,7 @@ class openAIAlchemy:
         if status == "requires_action":  # delegate tool calls to __functionManager()
             calls = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
-            ).required_action
+            ).required_action  # also FREEZING after this call
             self.__functionManager(calls)
             return await self.__runManager()
         elif status == "completed":  # return response
@@ -141,8 +151,8 @@ class openAIAlchemy:
             )
         elif status == "failed":  # something went wrong
             # BUG should probably handle this better
+            # and retry run up to max attempts
             # though we have not seen a run fail yet
-            # would likely be network / API issue
             self.run_id = None
             print("Run Failed")
             print(
@@ -172,7 +182,9 @@ class openAIAlchemy:
             id = toolCall.id
             name = toolCall.function.name
             print(toolCall.function.arguments)
-            args = json.loads(toolCall.function.arguments)
+            args = json.loads(
+                toolCall.function.arguments
+            )  # BUG source of some errors, put into try and catch
 
             # handling for each available function call
             if name == "get_feedback":
@@ -209,64 +221,59 @@ class openAIAlchemy:
                 code = code.replace("\n", "\r\n")
                 self.__print_break("RUNNING CODE", code)
 
+                # send code to serial and get repl output
                 serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
                 if self.debug:
                     self.__print_break("SERIAL OUTPUT", serial_response)
 
+                # send repl output back to assistant
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
+
+                # kill code after runtime duration
                 time.sleep(runtime)
                 print("ending program")
                 serial_interface.serial_write(bytes("\x03", "utf-8"))
+                print("Program successfully ended")
             elif name == "get_visual_feedback":
-                query = args["query"]
-                num_images = int(args["image_num"])
-                time_between_images = int(args["interval"])
-                
+                # BUG need to time running code with photos
+                query = args["query"]  # desired information about images
+                num_images = int(args["image_num"])  # number of images to be taken
+                interval = int(args["interval"])  # time interval between images
+
                 if self.debug:
                     print("Getting visual feedback for: ", query.lower())
 
-                serial_response = serial_interface.serial_write(bytes(code, "utf-8"))
-                images = self.__imgCollection(num_images, time_between_images)
-                content = []
-                content.append({"type": "text", "text": query})
-                for img in images:
-                    new_image = {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": img,
-                        },
-                    }
-                    content.append(new_image)
-
-                response = self.client.chat.completions.create(
-                    model="gpt-4-vision-preview",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": content,
-                        }
-                    ],
-                    max_tokens=300,
+                img_response = (
+                    self.__imgCollection(query, num_images, interval)
+                    .choices[0]
+                    .message.content
                 )
-                image_response = response.choices[0].message.content
 
+                # attach response to tool outputs
                 if self.debug:
-                    print(image_response)
-
+                    print(img_response)
                 tool_outputs.append(
-                    {"tool_call_id": id, "output": json.dumps(image_response)}
+                    {"tool_call_id": id, "output": json.dumps(img_response)}
                 )
 
         # submit all collected tool call responses
+        if self.debug:
+            print("Submitting Tool Outputs: ", tool_outputs)
         self.client.beta.threads.runs.submit_tool_outputs(
             thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
-        )
+        )  # BUG also FREEZING here
+        print("done submitting outputs")
 
     def __encode_image(self, image_path):
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
-    def __imgCollection(self, num, interval):
+    def __imgCollection(self, query, num, interval):
+        # collect images from webcam
+        if self.debug:
+            print("TAKING IMAGES IN 3 SECONDS")
+            time.sleep(3)
+            print("Say Cheese!")
         images = []
         for i in range(num):
             ret, frame = self.cam.read()
@@ -275,7 +282,33 @@ class openAIAlchemy:
             url = f"data:image/jpeg;base64,{base64_image}"
             images.append(url)
             time.sleep(interval)
-        return images
+
+        # format images and query together for api call
+        content = []
+        content.append({"type": "text", "text": query})
+        for img in images:
+            new_image = {
+                "type": "image_url",
+                "image_url": {
+                    "url": img,
+                },
+            }
+            content.append(new_image)
+
+        # send images and query to vision api
+        response = self.client.chat.completions.create(
+            model="gpt-4-vision-preview",
+            messages=[
+                {
+                    "role": "user",
+                    "content": content,
+                }
+            ],
+            max_tokens=300,
+        )
+        if self.debug:
+            print("Sent photos")
+        return response
 
     def extract_code(self, result):
         idx1 = result.find("```") + 3 + 7
