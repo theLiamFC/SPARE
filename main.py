@@ -21,8 +21,9 @@ aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
 
 async def interface_loop(ai_interface, serial_interface):
-    additional_instructions = "\nAdditional instructions: Make sure to run code before returning. \
-        Use the get_visual_feedback function to confirm what the robot is doing"
+    # additional_instructions = "\nAdditional instructions: Make sure to run code before returning. \
+    #     Use the get_visual_feedback function to confirm what the robot is doing"
+    additional_instructions = "don't use the get_visul_feedback, just use get_feedback"
     user_prompt = input(
         "What would you like your spike prime to do today?\n[Enter 'e' or 'exit' to stop the program.]\n"
     )
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     port_l = "/dev/cu.usbmodem3356396133381"
     port_j = "COM13"
 
-    serial = serial_interface.serial_interface(port_l)
+    serial = serial_interface.serial_interface(port_j)
     # serial.test_serial()
 
     ai_interface = openAIAlchemy(aa_id, serial, debug=True, verbose=False)

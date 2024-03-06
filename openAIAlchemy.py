@@ -207,7 +207,13 @@ class openAIAlchemy:
 
                 # send code to serial and get repl output
                 # self.debug_print(self.__print_break("SERIAL OUTPUT", serial_response))
-                self.verbose_print(self.serial_interface.serial_write(b"\x04"))
+    #             reset_code = '''for name in dir():
+    # if not name[0] == '_':
+    #     del globals()[name]'''
+                # self.verbose_print(self.serial_interface.serial_write(bytes(reset_code, "utf-8")))
+                # time.sleep(1)
+                # self.verbose_print(self.serial_interface.serial_write(b"\n"))
+
                 self.debug_print("\n================== SERIAL OUPUT ==================")
                 serial_response = self.serial_interface.serial_write(
                     bytes(code, "utf-8")
