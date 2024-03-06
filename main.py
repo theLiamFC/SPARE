@@ -21,6 +21,8 @@ aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
 
 async def interface_loop(ai_interface, serial_interface):
+    additional_instructions = "\nAdditional instructions: Make sure to run code before returning. \
+        Use the get_visual_feedback function to confirm what the robot is doing"
     user_prompt = input(
         "What would you like your spike prime to do today?\n[Enter 'e' or 'exit' to stop the program.]\n"
     )
@@ -30,7 +32,7 @@ async def interface_loop(ai_interface, serial_interface):
         )
         print(f"Using defult message: {user_prompt}")
     while user_prompt.lower() != "e" and user_prompt.lower() != "exit":
-        result = await ai_interface.run(user_prompt)
+        result = await ai_interface.run(user_prompt + additional_instructions)
         print(result)
         # code, response = ai_interface.extract_code(result)
         # print(response)

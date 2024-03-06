@@ -13,29 +13,11 @@ import base64
 # run_id
 # queryDict
 
-### ACTION ITEMS ### NOW IN NOTION
-# - ALWAYS: expand json file with more SPIKE syntax
-# - ALWAYS: improve commenting and readability
-#
-# - TODO: !!! handle errors and hanging api calls
-# - TODO: !!! Clean up text output and make more presentable
-# - TODO: tailor assistant instructions to get better function calling behavior
-# - TODO: create functionality for a debug log exported as txt file
-#
-# - BUG: json.decoder.JSONDecodeError: Invalid \escape: line 2 column 41 (char 42)
-#        occurs in __function_manager() on line 174
-# - BUG: freezing after "Run in Progress" and "Submitting tool outputs"
-#        seems to be an issue on the openAI end
-#        search file for "FREEZING" to find occurances
-# - BUG: chatGPT indentaton does not mesh well with REPL
-#        might be best to always parse the response and delete all spaces after new line if possible 
-# - BUG: code does not seem to be properly uploaded to SPIKE when running on Liam's Mac
-#
-
-
 class openAIAlchemy:
     def __init__(self, assistant_id, serial, thread_id=None, debug=False, verbose=False):
+        print("dsfsdf")
         self.client = OpenAI()
+        print("dsfsdf")
         # self.kill_all_runs()  #  causes errors
         self.assistant_id = assistant_id
         self.serial_interface = serial
@@ -43,9 +25,14 @@ class openAIAlchemy:
         self.verbose = verbose
         self.run_id = None
         self.queryDict = json.load(open("queryDict.json", "r"))
-        self.cam = cv.VideoCapture(0)
-        self.this_log = open("this_log.txt", "w")  # write over this file
+        print("dsfsdf")
+        self.cam = cv.VideoCapture(1)
+        time.sleep(1)
+        print("dsfsdf")
+        self.this_log = open("this_log.txt", "w+")  # write over this file
+        self.good_log = open("good_log.txt", "a")  # append to this files
         self.all_log = open("all_log.txt", "a")  # append to this files
+        print("dsfsdf")
 
 
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -58,6 +45,7 @@ class openAIAlchemy:
             self.debug_print(f"THREAD_ID: {self.thread_id}")
         else:
             self.thread_id = thread_id
+        print("dsfsdf")
 
     # Change model of current assistant
     # "gpt-4", gpt
@@ -251,7 +239,7 @@ class openAIAlchemy:
                 self.debug_print(f"Getting visual feedback for: {query.lower()}")
 
                 img_response = (
-                    self.__img_collection(query, num_images, interval)
+                    self.__img_collection(query, code, num_images, interval)
                     .choices[0]
                     .message.content
                 )
@@ -273,10 +261,13 @@ class openAIAlchemy:
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
-    def __img_collection(self, query, num, interval):
+    def __img_collection(self, code, query, num, interval):
         # collect images from webcam
         self.debug_print("TAKING IMAGES IN 3 SECONDS")
         time.sleep(3)
+        self.debug_print("Running code")
+
+        self.serial_interface.serial_write(bytes(code, "utf-8"))
         self.debug_print("Say cheese!")
         images = []
         for i in range(num):
@@ -363,8 +354,17 @@ class openAIAlchemy:
     
     def close(self):
         self.debug_print("Closing")
+        self.this_log.flush()
+        self.this_log.seek(0)
+
+        save = input("Would you like to save this run to the good_log.txt? (y/n)")
+        if save.lower() == "y":
+            self.good_log.write(self.this_log.read())
+            print("saved to good_log.txt")
         self.this_log.close()
+        self.good_log.close()
         self.all_log.close()
+
         self.kill_all_runs()
         print("Files closed and runs killed")
 
