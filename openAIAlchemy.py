@@ -290,8 +290,8 @@ class openAIAlchemy:
         images = []
         for i in range(num):
             _, frame = self.cam.read()
-            cv.imwrite("image" + str(i) + ".jpg", frame)
-            base64_image = self.__encode_image("image" + str(i) + ".jpg")
+            cv.imwrite("images/image" + str(i) + ".jpg", frame)
+            base64_image = self.__encode_image("images/image" + str(i) + ".jpg")
             url = f"data:image/jpeg;base64,{base64_image}"
             images.append(url)
             time.sleep(interval)
