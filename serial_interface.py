@@ -5,37 +5,40 @@ import sys
 
 class serial_interface:
 
-    def __init__(self, port):
+    def __init__(self, port, fake_serial=False):
         self.port = port
-        self.ser = serial.Serial(
-            port=self.port,  ## <----------- REPLACE with your SPIKE's port from!!!##
-            baudrate=115200,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.EIGHTBITS,
-        )
-
-        # BUG catch serial not open error
-        self.ser.isOpen()
-        self.ser.write(b"\x03")
-        # self.serial_write(b"\x05")
-
-        print(self.serial_read())
-
+        self.fake_serial = fake_serial
+        if not fake_serial:
+            self.ser = serial.Serial(
+                port=self.port,  ## <----------- REPLACE with your SPIKE's port from!!!##
+                baudrate=115200,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                bytesize=serial.EIGHTBITS,
+            )
+            # BUG catch serial not open error
+            self.ser.isOpen()
+            self.ser.write(b"\x03")
+            # self.serial_write(b"\x05")
+            print(self.serial_read())
 
     def serial_read(self):
-        reply = b""
-        while self.ser.in_waiting:
-            reply += self.ser.read(self.ser.in_waiting)
-            time.sleep(0.1)
-        return reply.decode()
-
+        if self.fake_serial:
+            return input("Enter the simulated serial output")
+        else:
+            reply = b""
+            while self.ser.in_waiting:
+                reply += self.ser.read(self.ser.in_waiting)
+                time.sleep(0.1)
+            return reply.decode()
 
     def serial_write(self, string):
-        self.ser.write(string + b"\r\n")
-        time.sleep(0.1)
+        if self.fake_serial:
+            print(f"Sending to serial: {string}")
+        else:
+            self.ser.write(string + b"\r\n")
+            time.sleep(0.1)
         return self.serial_read()
-
 
     def test_serial(self):
 
@@ -50,9 +53,9 @@ print("hello world")
 time.sleep(.5)
 i = i + 1"""
 
-    #     test = \
-    # '''for i in range(10):
-    #     print("hello world")'''
+        #     test = \
+        # '''for i in range(10):
+        #     print("hello world")'''
 
         test = """import motor
 from hub import port

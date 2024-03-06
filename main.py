@@ -30,13 +30,13 @@ async def interface_loop(ai_interface, serial_interface):
         user_prompt = (
             "Write code to move the bot forward. There are motors in ports A and B"
         )
-        print(f"Using defult message: {user_prompt}")
+        print(f"Using default message: {user_prompt}")
     while user_prompt.lower() != "e" and user_prompt.lower() != "exit":
         result = await ai_interface.run(user_prompt + additional_instructions)
         print(result)
         # code, response = ai_interface.extract_code(result)
         # print(response)
-        # repl_reply = serial_interface.serial_write(bytes(code, 'utf-8'))
+        # _reply = serial_interface.serial_write(bytes(code, 'utf-8'))
         user_prompt = input("[Enter 'e' or 'exit' to stop the program.]\n")
 
 
@@ -45,11 +45,13 @@ if __name__ == "__main__":
     port_l = "/dev/cu.usbmodem3356396133381"
     port_j = "COM13"
 
-    serial = serial_interface.serial_interface(port_j)
+    serial = serial_interface.serial_interface(port_l)
     # serial.test_serial()
-    
-    ai_interface = openAIAlchemy(aa_id, serial, debug=True, verbose=True)
+
+    ai_interface = openAIAlchemy(aa_id, serial, debug=True, verbose=False)
     try:
         asyncio.run(interface_loop(ai_interface, serial))
+    except Exception as e:
+        print(e)
     finally:
         ai_interface.close()

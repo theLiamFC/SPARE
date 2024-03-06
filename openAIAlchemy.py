@@ -5,47 +5,40 @@ import asyncio
 import json
 import sys
 import base64
+from PIL import Image
+from io import BytesIO
 
-### private variables
-# assistant_id
-# thread_id
-# client_id
-# run_id
-# queryDict
 
 class openAIAlchemy:
-    def __init__(self, assistant_id, serial, thread_id=None, debug=False, verbose=False):
-        print("dsfsdf")
+    def __init__(
+        self, assistant_id, serial, thread_id=None, debug=False, verbose=False
+    ):
         self.client = OpenAI()
-        print("dsfsdf")
-        # self.kill_all_runs()  #  causes errors
         self.assistant_id = assistant_id
         self.serial_interface = serial
-        self.debug = debug
         self.verbose = verbose
+        if verbose:
+            self.debug = True
+        else:
+            self.debug = debug
         self.run_id = None
         self.queryDict = json.load(open("queryDict.json", "r"))
-        print("dsfsdf")
-        self.cam = cv.VideoCapture(1)
-        time.sleep(1)
-        print("dsfsdf")
-        self.this_log = open("this_log.txt", "w+")  # write over this file
+        self.cam = cv.VideoCapture(0)
+        self.curr_code = ""
+        self.this_log = open("this_log.txt", "w+")  # write (and read) over this file
         self.good_log = open("good_log.txt", "a")  # append to this files
         self.all_log = open("all_log.txt", "a")  # append to this files
-        print("dsfsdf")
-
 
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
         if thread_id == None:
-            newThread = self.client.beta.threads.create()
-            self.thread_id = newThread.id
+            new_thread = self.client.beta.threads.create()
+            self.thread_id = new_thread.id
             self.debug_print(f"THREAD_ID: {self.thread_id}")
         else:
             self.thread_id = thread_id
-        print("dsfsdf")
 
     # Change model of current assistant
     # "gpt-4", gpt
@@ -166,11 +159,13 @@ class openAIAlchemy:
             name = toolCall.function.name
             self.verbose_print(toolCall.function.arguments)
             try:
-                args = json.loads(toolCall.function.arguments) 
+                args = json.loads(toolCall.function.arguments)
             except:
                 self.debug_print("Error loading json, retyring")  # untested
                 self.client.beta.threads.runs.submit_tool_outputs(
-                    thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
+                    thread_id=self.thread_id,
+                    run_id=self.run_id,
+                    tool_outputs=tool_outputs,
                 )
                 return
             # handling for each available function call
@@ -207,12 +202,16 @@ class openAIAlchemy:
                 code = code.replace("\n ", "\n")
                 code = "\n" + code + "\n\n"
                 code = code.replace("\n", "\r\n")
+                self.curr_code = code
                 self.debug_print(self.__print_break("RUNNING CODE", code))
 
                 # send code to serial and get repl output
                 # self.debug_print(self.__print_break("SERIAL OUTPUT", serial_response))
+                self.verbose_print(self.serial_interface.serial_write(b"\x04"))
                 self.debug_print("\n================== SERIAL OUPUT ==================")
-                serial_response = self.serial_interface.serial_write(bytes(code, "utf-8"))
+                serial_response = self.serial_interface.serial_write(
+                    bytes(code, "utf-8")
+                )
                 self.debug_print(serial_response)
                 # send repl output back to assistant
 
@@ -223,7 +222,7 @@ class openAIAlchemy:
                     if temp_response != "":
                         self.debug_print(temp_response)
                         serial_response = serial_response + "\n" + temp_response
-                    time.sleep(.5)
+                    time.sleep(0.5)
 
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
                 self.debug_print("==================== END ====================")
@@ -234,12 +233,12 @@ class openAIAlchemy:
                 # BUG need to time running code with photos
                 query = args["query"]  # desired information about images
                 num_images = int(args["image_num"])  # number of images to be taken
-                interval = int(args["interval"])  # time interval between images
+                interval = float(args["interval"])  # time interval between images
 
                 self.debug_print(f"Getting visual feedback for: {query.lower()}")
 
                 img_response = (
-                    self.__img_collection(query, code, num_images, interval)
+                    self.__img_collection(query, num_images, interval)
                     .choices[0]
                     .message.content
                 )
@@ -257,21 +256,34 @@ class openAIAlchemy:
         )  # BUG also FREEZING here
         self.debug_print("Done submitting outputs")
 
-    def __encode_image(self, image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
+    def __encode_image(self, image_path, max_image=512):
+        with Image.open(image_path) as img:
+            width, height = img.size
+            max_dim = max(width, height)
+            if max_dim > max_image:
+                scale_factor = max_image / max_dim
+                new_width = int(width * scale_factor)
+                new_height = int(height * scale_factor)
+                img = img.resize((new_width, new_height))
 
-    def __img_collection(self, code, query, num, interval):
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            return img_str
+
+    def __img_collection(self, query, num, interval):
         # collect images from webcam
         self.debug_print("TAKING IMAGES IN 3 SECONDS")
         time.sleep(3)
-        self.debug_print("Running code")
+        self.debug_print(f"Running code: {self.curr_code}")
 
-        self.serial_interface.serial_write(bytes(code, "utf-8"))
+        repl = self.serial_interface.serial_write(bytes(self.curr_code, "utf-8"))
+        self.verbose_print(f"REPL response: {repl}")
+
         self.debug_print("Say cheese!")
         images = []
         for i in range(num):
-            ret, frame = self.cam.read()
+            _, frame = self.cam.read()
             cv.imwrite("image" + str(i) + ".jpg", frame)
             base64_image = self.__encode_image("image" + str(i) + ".jpg")
             url = f"data:image/jpeg;base64,{base64_image}"
@@ -280,8 +292,10 @@ class openAIAlchemy:
 
         # format images and query together for api call
         content = []
-        prefix = f"These are {num} images taking with {interval} seconds in between. "
-        content.append({"type": "text", "text": prefix + query})
+        prefix = f"Here are {num} images taken with {interval} seconds in between.\
+                    You can deduce motion by comparing differences between images. "
+        new_query = prefix + query
+        content.append({"type": "text", "text": new_query})
         for img in images:
             new_image = {
                 "type": "image_url",
@@ -292,6 +306,7 @@ class openAIAlchemy:
             content.append(new_image)
 
         # send images and query to vision api
+        self.debug_print("Processing images")
         response = self.client.chat.completions.create(
             model="gpt-4-vision-preview",
             messages=[
@@ -302,7 +317,7 @@ class openAIAlchemy:
             ],
             max_tokens=300,
         )
-        self.debug_print("Sent photos")
+        self.debug_print("Done")
         return response
 
     # Formtting functions
@@ -312,16 +327,18 @@ class openAIAlchemy:
         idx1 = result.find("```") + 3 + 7
         idx2 = result[idx1:].find("```") + idx1
         code = result[idx1:idx2]
-        response = result[: idx1 - 10] + self.__print_break("CODE", code) + result[idx2 + 3 :]
+        response = (
+            result[: idx1 - 10] + self.__print_break("CODE", code) + result[idx2 + 3 :]
+        )
         return (code, response)
 
     # Format content for text output
     def __print_break(self, name, body):
-        result = f'''\n================== {name} ==================
+        result = f"""\n================== {name} ==================
         {body}
-==================== END ===================='''
+==================== END ===================="""
         return result
-    
+
     # Printing functions (also write to the log file)
     def reg_print(self, text):
         self.log_print(text)
@@ -351,7 +368,7 @@ class openAIAlchemy:
         self.add_message(message)
         result = await self.__run_manager()  # Await the result from __run_manager
         return result
-    
+
     def close(self):
         self.debug_print("Closing")
         self.this_log.flush()
@@ -367,4 +384,3 @@ class openAIAlchemy:
 
         self.kill_all_runs()
         print("Files closed and runs killed")
-
