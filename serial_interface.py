@@ -40,6 +40,13 @@ class serial_interface:
             time.sleep(0.1)
         return self.serial_read()
 
+    def serial_write_no_read(self, string):
+        if self.fake_serial:
+            print(f"Sending to serial: {string}")
+        else:
+            self.ser.write(string + b"\r\n")
+            time.sleep(0.1)
+
     def test_serial(self):
 
         test = """import motor

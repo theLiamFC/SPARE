@@ -2,53 +2,7 @@
 
 
 
-PROGRAM OUTPUT FROM 2024-03-06 13:12:29
+PROGRAM OUTPUT FROM 2024-03-07 13:13:19
 
- - Status: THREAD_ID: thread_feSPhQwvwWZg06J4cLsMa3n8
- - Status: Adding message
- - Status: Creating new run
- - Status: Run in progress
- - Status: Status: requires_action
- - Status: Managing functions
-{
-"query": "motor_pair"
-}
- - Status: Querying documentation for: motor_pair
-{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}]}
-Submitting tool outputs: [{'tool_call_id': 'call_c9W3XCqLmDtk1mlVDxlDuazB', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}]}'}]
- - Status: Done submitting outputs
- - Status: Using existing run
- - Status: Run in progress
- - Status: Longer than normal runtime: requires_action
- - Status: Status: requires_action
- - Status: Managing functions
-{
-"code": "import motor_pair \n from hub import port \n motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \n motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
-"runtime": "5"
-}
-
-================== RUNNING CODE ==================
-        
-import motor_pair 
-from hub import port 
-motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) 
-motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)
-
-
-==================== END ====================
-
-================== SERIAL OUPUT ==================
- - Status: 
-==================== END ====================
- - Status: Program ended
-Submitting tool outputs: [{'tool_call_id': 'call_J2BjW4lQnyBbHk45s8BMnW3L', 'output': ''}]
- - Status: Done submitting outputs
- - Status: Using existing run
- - Status: Run in progress
- - Status: Status: requires_action
- - Status: Managing functions
-{
-"prompt": "Did the robot move forward?"
-}
-Hey Human, Did the robot move forward?
+ - Status: THREAD_ID: thread_5hcXgtLjQ5XEJwgelXA9VE8N
  - Status: Closing

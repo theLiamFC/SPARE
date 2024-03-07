@@ -28,10 +28,14 @@ async def interface_loop(ai_interface, serial_interface):
         "What would you like your spike prime to do today?\n[Enter 'e' or 'exit' to stop the program.]\n"
     )
     if user_prompt == "":
-        user_prompt = (
-            "Write code to move the bot forward. There are motors in ports A and B"
-        )
+        user_prompt = ("Write code to move the bot forward. There are motors in ports E and F")
+    elif user_prompt == "1":
+        user_prompt = "Write code to maintin a distance of 100 using distance senor in port D and motors in ports E and F"
         print(f"Using default message: {user_prompt}")
+    elif user_prompt == "2":
+        user_prompt = "Write code to maintin a distance of 100 using distance senor in port D and motors in ports E and F"
+        print(f"Using default message: {user_prompt}")
+
     while user_prompt.lower() != "e" and user_prompt.lower() != "exit":
         result = await ai_interface.run(user_prompt + additional_instructions)
         print(result)
@@ -44,15 +48,15 @@ async def interface_loop(ai_interface, serial_interface):
 # Run the main function in the event loop
 if __name__ == "__main__":
     port_l = "/dev/cu.usbmodem3356396133381"
-    port_j = "COM13"
-
+    port_j = "COM18"
+    
     serial = serial_interface.serial_interface(port_j)
     # serial.test_serial()
 
-    ai_interface = openAIAlchemy(aa_id, serial, debug=True, verbose=False)
+    ai_interface = openAIAlchemy(aa_id, serial, debug=True, verbose=True)
     try:
         asyncio.run(interface_loop(ai_interface, serial))
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
     finally:
         ai_interface.close()

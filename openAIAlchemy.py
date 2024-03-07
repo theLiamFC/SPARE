@@ -147,6 +147,8 @@ class openAIAlchemy:
     # Handle tool call responses
     def __function_manager(self, calls):
         self.debug_print("Managing functions")
+        self.this_log.flush()
+
 
         # empty array to hold multiple tool calls
         tool_outputs = []
@@ -200,7 +202,8 @@ class openAIAlchemy:
                 code = args["code"]
                 runtime = int(args["runtime"])  # in seconds
                 code = code.replace("\n ", "\n")
-                code = "\n" + code + "\n\n"
+                # code = "\n" + code + "\n\n"
+                code = "\n" + code
                 code = code.replace("\n", "\r\n")
                 self.curr_code = code
                 self.debug_print(self.__print_break("RUNNING CODE", code))
@@ -213,12 +216,26 @@ class openAIAlchemy:
                 # self.verbose_print(self.serial_interface.serial_write(bytes(reset_code, "utf-8")))
                 # time.sleep(1)
                 # self.verbose_print(self.serial_interface.serial_write(b"\n"))
+                
+                # ctrl D: reset the robot
+                self.debug_print(self.serial_interface.serial_write(bytes("\x04\x03\x03\x05", "utf-8")))
 
+                # ctrl C: reset terminal
+                # self.debug_print(self.serial_interface.serial_write(bytes("\x03", "utf-8")))
+                # self.debug_print(self.serial_interface.serial_write(bytes("\x03", "utf-8")))
+
+                # # ctrl E: paste mode       
+                # self.debug_print(self.serial_interface.serial_write(bytes("\x05", "utf-8")))
+                time.sleep(3)
+                print(f"not using: {self.serial_interface.serial_read()}")
                 self.debug_print("\n================== SERIAL OUPUT ==================")
                 serial_response = self.serial_interface.serial_write(
                     bytes(code, "utf-8")
                 )
-                self.debug_print(serial_response)
+                # ctrl D: End paste mode       
+                # self.debug_print("paste mode: "+str (self.serial_interface.serial_write(bytes('\x04', 'utf-8'))))
+                self.serial_interface.serial_write_no_read(bytes('\x04', 'utf-8'))
+                self.code_print(serial_response)
                 # send repl output back to assistant
 
                 # kill code after runtime duration
@@ -226,14 +243,16 @@ class openAIAlchemy:
                 while time.time() < last_time + runtime:
                     temp_response = str(self.serial_interface.serial_read())
                     if temp_response != "":
-                        self.debug_print(temp_response)
+                        self.code_print(temp_response)
                         serial_response = serial_response + "\n" + temp_response
                     time.sleep(0.5)
 
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
-                self.debug_print("==================== END ====================")
 
-                self.serial_interface.serial_write(bytes("\x03", "utf-8"))
+                self.debug_print("==================== END ====================")
+                # sends ctrl c to force end the program
+                self.log_print(self.serial_interface.serial_write(bytes("\x03", "utf-8")))
+
                 self.debug_print("Program ended")
             elif name == "get_visual_feedback":
                 # BUG need to time running code with photos
@@ -350,6 +369,12 @@ class openAIAlchemy:
         self.log_print(text)
         print(text)
 
+
+    def code_print(self, text):
+        self.log_print(text)
+        if self.debug:
+            print(text)
+
     def debug_print(self, text):
         if text.find("===") == -1 and text.find(">>>") == -1:
             prefix = " - Status: "
@@ -382,8 +407,10 @@ class openAIAlchemy:
 
         save = input("Would you like to save this run to the good_log.txt? (y/n)")
         if save.lower() == "y":
+            message = input("Write saved message: ")
+            self.good_log.write(f"\n\n\nThe run was good because: {message}\n\n")
             self.good_log.write(self.this_log.read())
-            print("saved to good_log.txt")
+            print("Saved to good_log.txt")
         self.this_log.close()
         self.good_log.close()
         self.all_log.close()
