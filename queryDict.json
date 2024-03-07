@@ -309,6 +309,30 @@
       ]
     },
     {
+      "name": "runloop",
+      "description": "The runloop module contains all functions and constants to use the Runloop. To effectively use awaitable code with the flexibility to run commands either concurrently or sequentially, you must run your code in an asynchronous function using a run loop. The runloop module controls the run loop on the Hub, and lets you run asynchronous functions with its run() function. An asynchronous function, also known as a coroutine, is an awaitable that uses the async keyword before the function definition. The convention is to name the coroutine containing your main program main(). In the body of a coroutine, you can use the await keyword before calling an awaitable command. This pauses the coroutine until the command completes. Without the keyword, the program immediately continues to the next line of code in the coroutine. You can still use regular (not awaitable) code inside the coroutine. However, doing so will always pause or block the whole program until the command completes.",
+      "initialization": "none",
+      "required imports": "import runloop",
+      "function": [
+        {
+          "name": "run",
+          "description":"Start any number of parallel async functions. This is the function you should use to create programs with a similar structure to Word Blocks.",
+          "syntax": "runloop.run(some_async_function())",
+          "parameters": "none",
+          "returns": "none",
+          "example":"import runloop\r\nasync def main():\r\n    # Write your program here.\r\n        runloop.run(main())"
+        },
+        {
+          "name": "sleep",
+          "description":"Pause the execution of the application for any amount of milliseconds.",
+          "syntax": "await runloop.sleep_ms(10000)",
+          "parameters": "time in milliseconds",
+          "returns": "none",
+          "example":"from hub import light_matrix\r\nimport runloop\r\nasync def main():\r\n    light_matrix.write('Hi!')\r\n    # Wait for ten seconds \r\n    await runloop.sleep_ms(10000)\r\n    light_matrix.write('Are you still here?')                \r\nrunloop.run(main())"
+        }
+      ]
+    },
+    {
       "name": "light_matrix",
       "description": "a class that enables control of built in SPIKE Prime led matrix",
       "initialization": "none",
@@ -360,29 +384,19 @@
             {
               "name": "image id",
               "description": "The id of the image to show. The range of available images is 1 to 67. There are consts on the light_matrix module for these.",
-              "values": "int 1:67"
+              "values": "IMAGE_HEART = 1, IMAGE_HEART_SMALL = 2, IMAGE_HAPPY = 3, IMAGE_SMILE = 4, IMAGE_SAD = 5, IMAGE_CONFUSED = 6, IMAGE_ANGRY = 7, IMAGE_ASLEEP = 8, IMAGE_SURPRISED = 9, IMAGE_SILLY = 10, IMAGE_FABULOUS = 11, IMAGE_MEH = 12, IMAGE_YES = 13, IMAGE_NO = 14"
             }
           ],
           "example":"from hub import light_matrix\r\n# Show a small heart\r\nlight_matrix.show_image(2)"
         },
         {
           "name": "write",
-          "syntax": "light_matrix.write(text: str, intensity: int = 100, time_per_character: int = 500)",
+          "syntax": "light_matrix.write(text)",
           "parameters": [
             {
               "name": "text",
               "description": "the text to display on the matrix",
               "values": "string"
-            },
-            {
-              "name": "intensity",
-              "description": "the brightness of the leds",
-              "values": "integer 1:100"
-            },
-            {
-              "name": "time per character",
-              "description": "How long to show each character on the display in milliseconds",
-              "values": "positive integer"
             }
           ]
         }

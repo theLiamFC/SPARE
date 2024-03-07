@@ -230,6 +230,7 @@ class openAIAlchemy:
                 # self.debug_print("paste mode: "+str (self.serial_interface.serial_write(bytes('\x04', 'utf-8'))))
                 self.debug_print(serial_response)
                 temp = self.serial_interface.serial_write(bytes('\x04', 'utf-8'))
+                time.sleep(0.5)
                 serial_response + "\n" + temp
                 
 
