@@ -33,7 +33,7 @@
       "name": "color_sensor",
       "description": "a class that allows access to spike prime color sensors",
       "initialization": "none",
-      "required imports": "import color_sensor \n from hub import port",
+      "required imports": "import color_sensor \n from hub import port \n import color",
       "function": [
         {
           "name": "color",
@@ -66,7 +66,8 @@
             "values": "integer 1:100"
           }
         }
-      ]
+      ],
+      "example":"if color_sensor.color(port.A) is color.RED:\r\nprint('Red detected')"
     },
     {
       "name": "motor_pair",
@@ -125,6 +126,59 @@
               "name": "velocity",
               "description": "Speed at which the motors should run in degrees per second.",
               "values": "any integer"
+            }
+          ]
+        },
+        {
+          "name": "Move a motor pair at a constant speed until a new command is given",
+          "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+            },
+            {
+              "name": "steering",
+              "description": "How much the motor pair should alter motor speeds to turn",
+              "values": "an integer -100:100"
+            },
+            {
+              "name": "velocity",
+              "description": "Speed at which the motors should run in degrees per second.",
+              "values": "any integer"
+            }
+          ]
+        },
+        {
+          "name": "Perform a tank move on a motor pair at a constant speed until a new command is given.",
+          "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+            },
+            {
+              "name": "left velocity",
+              "description": "Speed at which the right motor should run in degrees per second.",
+              "values": "an integer"
+            },
+            {
+              "name": "right velocity",
+              "description": "Speed at which the right motor should run in degrees per second.",
+              "values": "any integer"
+            }
+          ]
+        },
+        {
+          "name": "Stop a motor pair.",
+          "syntax": "motor_pair.stop(motor_pair.PAIR_1)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
             }
           ]
         }

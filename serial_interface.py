@@ -20,14 +20,15 @@ class serial_interface:
             self.ser.isOpen()
             self.ser.write(b"\x03")
             # self.serial_write(b"\x05")
-            print(self.serial_read())
+            garbage = self.serial_read()
 
     def serial_read(self):
         if self.fake_serial:
             return input("Enter the simulated serial output")
         else:
             reply = b""
-            while self.ser.in_waiting:
+            start = time.time()
+            while self.ser.in_waiting and (start+1) > time.time():
                 reply += self.ser.read(self.ser.in_waiting)
                 time.sleep(0.1)
             return reply.decode()
