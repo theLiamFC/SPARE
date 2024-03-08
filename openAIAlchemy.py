@@ -150,7 +150,6 @@ class openAIAlchemy:
         self.debug_print("Managing functions")
         self.this_log.flush()
 
-
         # empty array to hold multiple tool calls
         tool_outputs = []
         code = ""
@@ -210,12 +209,16 @@ class openAIAlchemy:
                 self.curr_code = code
                 self.reg_print(self.__print_break(f"RUNNING CODE ({runtime} seconds)"))
                 self.reg_print(original_code)
-                
+
                 # ctrl D (reset the robot), ctrl C (reset terminal), ctr E (enter paste mode)
                 self.log_print("RESETING")
-                self.debug_print(self.serial_interface.serial_write(bytes("\x04", "utf-8")))
+                self.debug_print(
+                    self.serial_interface.serial_write(bytes("\x04", "utf-8"))
+                )
                 time.sleep(1)
-                self.debug_print(self.serial_interface.serial_write(bytes("\x03\x03\x05", "utf-8")))
+                self.debug_print(
+                    self.serial_interface.serial_write(bytes("\x03\x03\x05", "utf-8"))
+                )
                 time.sleep(3)
                 self.log_print("RESETED")
                 self.reg_print(self.__print_break("SERIAL OUPUT"))
@@ -223,16 +226,15 @@ class openAIAlchemy:
                     bytes(code, "utf-8")
                 )
 
-                if re.search("error",serial_response.lower()):
+                if re.search("error", serial_response.lower()):
                     self.reg_print(serial_response)
 
-                # ctrl D: End paste mode       
+                # ctrl D: End paste mode
                 # self.debug_print("paste mode: "+str (self.serial_interface.serial_write(bytes('\x04', 'utf-8'))))
                 self.debug_print(serial_response)
-                temp = self.serial_interface.serial_write(bytes('\x04', 'utf-8'))
+                temp = self.serial_interface.serial_write(bytes("\x04", "utf-8"))
                 time.sleep(0.5)
                 serial_response + "\n" + temp
-                
 
                 # Read in Serial For Duration of Runtime
                 last_time = time.time()
@@ -241,7 +243,11 @@ class openAIAlchemy:
                     lines = temp_response.split("\n")
                     for line in lines:
                         line = line.strip()
-                        if line != "" and ">>>" not in line and "<awaitable>" not in line:
+                        if (
+                            line != ""
+                            and ">>>" not in line
+                            and "<awaitable>" not in line
+                        ):
                             self.reg_print(line)
                             serial_response = serial_response + "\n" + line
                     time.sleep(0.5)
@@ -251,8 +257,10 @@ class openAIAlchemy:
                 self.reg_print(self.__print_break("END"))
 
                 # sends ctrl c to force end the program
-                self.log_print(self.serial_interface.serial_write(bytes("\x04", "utf-8")))
-                
+                self.log_print(
+                    self.serial_interface.serial_write(bytes("\x04", "utf-8"))
+                )
+
                 self.debug_print("Program ended")
 
             # Currently uninstalled
@@ -363,7 +371,7 @@ class openAIAlchemy:
     def __print_break(self, name):
         length = len(name)
         breaker = ""
-        for i in range(30-(int(length/2))):
+        for i in range(30 - (int(length / 2))):
             breaker += "="
         if length % 2 == 0:
             suffix = "="
@@ -410,8 +418,9 @@ class openAIAlchemy:
             print(f"{text}")
 
     def log_print(self, text):
-        self.this_log.write("\n" + str(text))
-        self.all_log.write("\n" + str(text))
+        if "<awaitable>" not in text:
+            self.this_log.write("\n" + str(text))
+            self.all_log.write("\n" + str(text))
 
     # Public method to start the OpenAI run asynchronously
     async def run(self, message):
