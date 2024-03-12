@@ -173,12 +173,14 @@ class openAIAlchemy:
             # handling for each available function call
             if name == "get_feedback":
                 # print arg to command line and get written response from human
-                self.reg_print(f"Hey Human, {args['prompt']}")
-                human_response = input()
+                self.reg_print(f"AIAlchemist: Hey Human, {args['prompt']}")
+                human_response = input("Human: ")
                 print()
                 tool_outputs.append({"tool_call_id": id, "output": human_response})
             elif name == "get_documentation":
-                self.reg_print(f"Querying documentation for: {args['query'].lower()}")
+                self.reg_print(
+                    f"AIAlchemist: I am querying documentation for {args['query'].lower()}"
+                )
 
                 # search queryDict json file for requested term
                 # BUG if chat has issues requesting exact term we could introduce
@@ -211,16 +213,21 @@ class openAIAlchemy:
                 self.reg_print(original_code)
 
                 # ctrl D (reset the robot), ctrl C (reset terminal), ctr E (enter paste mode)
-                self.log_print("RESETING")
+                self.log_print("RESETTING")
                 self.debug_print(
-                    self.serial_interface.serial_write(bytes("\x04", "utf-8"))
+                    self.serial_interface.serial_write(bytes("\x03", "utf-8"))
                 )
-                time.sleep(1)
+
+                # time.sleep(0.5)
+                # self.debug_print(
+                #     self.serial_interface.serial_write(bytes("\x04", "utf-8"))
+                # )
+                time.sleep(0.5)
                 self.debug_print(
-                    self.serial_interface.serial_write(bytes("\x03\x03\x05", "utf-8"))
+                    self.serial_interface.serial_write(bytes("\x05", "utf-8"))
                 )
-                time.sleep(3)
-                self.log_print("RESETED")
+                time.sleep(0.5)
+                self.log_print("RESETTED")
                 self.reg_print(self.__print_break("SERIAL OUPUT"))
                 serial_response = self.serial_interface.serial_write(
                     bytes(code, "utf-8")
@@ -270,7 +277,9 @@ class openAIAlchemy:
                 num_images = int(args["image_num"])  # number of images to be taken
                 interval = float(args["interval"])  # time interval between images
 
-                self.debug_print(f"Getting visual feedback for: {query.lower()}")
+                self.debug_print(
+                    f"AIAlchemist: I am getting visual feedback for {query.lower()}"
+                )
 
                 img_response = (
                     self.__img_collection(query, num_images, interval)
@@ -371,7 +380,7 @@ class openAIAlchemy:
     def __print_break(self, name):
         length = len(name)
         breaker = ""
-        for i in range(30 - (int(length / 2))):
+        for i in range(40 - (int(length / 2))):
             breaker += "="
         if length % 2 == 0:
             suffix = "="
@@ -433,7 +442,7 @@ class openAIAlchemy:
         self.this_log.flush()
         self.this_log.seek(0)
 
-        save = input("Would you like to save this run to the good_log.txt? (y/n)")
+        save = input("Would you like to save this run to the good_log.txt? (y/n)\n")
         if save.lower() == "y":
             message = input("Write saved message: ")
             self.good_log.write(f"\n\n\nThe run was good because: {message}\n\n")

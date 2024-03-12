@@ -4,10 +4,11 @@
       "name": "motor",
       "description": "a class that allows access to spike prime motors",
       "initialization": "none",
-      "required imports": "import motor \n from hub import port",
+      "required imports": "import motor \n from hub import port \n import runloop",
       "function": {
         "name": "Run motor for degrees",
         "syntax": "motor.run_for_degrees(port.B, 360, 75)",
+        "awaitable":"yes, query async and runloop",
         "parameters": {
           "parameter": [
             {
@@ -78,6 +79,7 @@
         {
           "name": "move motor pair for degrees",
           "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
+          "async":"await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
           "parameters": {
             "parameter": [
               {
@@ -106,6 +108,7 @@
         {
           "name": "move motor pair for time",
           "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
+          "async":"await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
           "parameters": [
             {
               "name": "motor Pair",
@@ -132,6 +135,7 @@
         {
           "name": "Move a motor pair at a constant speed until a new command is given",
           "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)",
+          "async":"await motor_pair.move(motor_pair.PAIR_1, 0)",
           "parameters": [
             {
               "name": "motor Pair",
@@ -153,6 +157,7 @@
         {
           "name": "Perform a tank move on a motor pair at a constant speed until a new command is given.",
           "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)",
+          "async":"await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)",
           "parameters": [
             {
               "name": "motor Pair",
@@ -174,6 +179,7 @@
         {
           "name": "Stop a motor pair.",
           "syntax": "motor_pair.stop(motor_pair.PAIR_1)",
+          "async":"await motor_pair.stop(motor_pair.PAIR_1)",
           "parameters": [
             {
               "name": "motor Pair",
@@ -328,7 +334,8 @@
           "syntax": "await runloop.sleep_ms(10000)",
           "parameters": "time in milliseconds",
           "returns": "none",
-          "example":"from hub import light_matrix\r\nimport runloop\r\nasync def main():\r\n    light_matrix.write('Hi!')\r\n    # Wait for ten seconds \r\n    await runloop.sleep_ms(10000)\r\n    light_matrix.write('Are you still here?')                \r\nrunloop.run(main())"
+          "example":["from hub import light_matrix\r\nimport runloop\r\nasync def main():\r\n    light_matrix.write('Hi!')\r\n    # Wait for ten seconds \r\n    await runloop.sleep_ms(10000)\r\n    light_matrix.write('Are you still here?')                \r\nrunloop.run(main())",
+                    "import motor\r\nimport runloop\r\nfrom hub import port\r\n async def main():\r\n  # Run two motors on ports A and B for 360 degrees at 720 degrees per second.\r\n  # The motors run after each other.\r\n  await motor.run_for_degrees(port.A, 360, 720)\r\n  await motor.run_for_degrees(port.B, 360, 720)\r\nrunloop.run(main())"]
         }
       ]
     },
