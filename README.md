@@ -12,6 +12,8 @@ To use this repository, follow these steps:
 - Ensure you have Python installed on your system.
 - Clone this repository to your local machine.
 - Install the required dependencies.
+- Create an OpenAI API key
+- Set up you API key by following isntructions [here](https://platform.openai.com/docs/quickstart/step-2-set-up-your-api-key) 
 - Execute main.py to start the interactive coding session with OpenAI's ChatGPT.
 
 **File Descriptions**
