@@ -253,7 +253,7 @@
       "name": "motion_sensor",
       "description": "a class that allows access to spike prime motion sensors",
       "initialization": "none",
-      "required imports": "from hub import motion_sensor \n from hub import port",
+      "required imports": "from hub import motion_sensor",
       "function": [
         {
           "name": "acceleration",

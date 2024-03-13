@@ -13,34 +13,35 @@ aa_id = "asst_NiIdeWySoj4RYIRU7t6r2mpG"
 ### Ai Alchemist ID
 aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
-### General test thread
-# thread_id = "thread_UbU1hougFO6WE4kJCmK0ylRR"
-
-# response = openAI_assistant.callChad(
-#     bb_id, thread_id, "what is the weather in lexington MA"
-# )
 default_messages = {
-    "0": "Move forwards. There are motors in ports A and B",
+    "0": "Move forwards in a loop. There are motors in ports A and B",
     "1": "Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
     "2": "Create a theramin.using a touch sensor in port C and a distance sensor in port F",
     "3": "Print hello world to terminal: print('hello world')",
     "4": "Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
     "5": "Make roomba like robot that moves forwards until it hits something with the touch sensor \
 and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
+    "6": "I am placing the robot on a seesaw platform, write code to balance the robot at the center of the platform",
 }
 
 
-async def interface_loop(ai_interface, serial_interface):
+# Main interface loop
+async def interface_loop(ai_interface):
     # additional_instructions = "\nAdditional instructions: Make sure to run code before returning. \
     #     Use the get_visual_feedback function to confirm what the robot is doing"
     additional_instructions = "don't use the get_visul_feedback, just use get_feedback"
-    intro_input_statement = "AIAlchemist: What would you like your spike prime to do today?\n['e','exit'] to stop the program.\n['help'] to see example prompts\n"
+    intro_input_statement = "ChatGPT: What would you like your spike prime to do today?\n['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
     input_statement = (
-        "['e','exit'] to stop the program.\n['help'] to see example prompts\nHuman: "
+        "['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
     )
+
+    # Reset terminal screen
+    for i in range(20):
+        print("\n")
     user_prompt = input(intro_input_statement)
     print()
 
+    # Begin interface loop
     while True:
         if user_prompt.lower() == "help":
             print(str(json.dumps(default_messages, indent=4)) + "\n")
@@ -53,13 +54,12 @@ async def interface_loop(ai_interface, serial_interface):
 
         if user_prompt in default_messages:
             user_prompt = default_messages[user_prompt]
-            print(f"Using default message: {user_prompt}")
+            print(f"Using default message: {user_prompt}\n")
 
+        # Call chatGPT with prompt
         result = await ai_interface.run(user_prompt + additional_instructions)
-        print("AIAlchemist: " + result)
-        # code, response = ai_interface.extract_code(result)
-        # print(response)
-        # _reply = serial_interface.serial_write(bytes(code, 'utf-8'))
+        print("ChatGPT: " + result)
+
         user_prompt = input(input_statement)
         print()
 
@@ -69,17 +69,20 @@ if __name__ == "__main__":
     port_l = "/dev/cu.usbmodem3356396133381"
     port_j = "COM13"
 
+    # Initiate Serial Interface
     try:
         serial = serial_interface.serial_interface(port_l)
-        # serial.test_serial()
     except Exception as e:
-        print("There is an issue with the serial connection.")
+        print("Serial Connection Error: ", e)
         sys.exit()
 
+    # Initiate openAIAlchemy Class
     ai_interface = openAIAlchemy(aa_id, serial, debug=False, verbose=False)
+
+    # Initiate Main Loop
     try:
-        asyncio.run(interface_loop(ai_interface, serial))
+        asyncio.run(interface_loop(ai_interface))
     except Exception as e:
-        print(e)
+        print("Main Loop Error: ", e)
     finally:
         ai_interface.close()

@@ -14,26 +14,32 @@ class openAIAlchemy:
     def __init__(
         self, assistant_id, serial, thread_id=None, debug=False, verbose=False
     ):
-        self.client = OpenAI()
-        self.assistant_id = assistant_id
+        # Class assets
+        self.queryDict = json.load(open("queryDict.json", "r"))
+        self.cam = cv.VideoCapture(0)
+
+        # Serial initiation
         self.serial_interface = serial
+        self.serial_interface.open_new()
+        self.serial_interface.write_read("\x03")
         self.verbose = verbose
+
+        # Logging
         if verbose:
             self.debug = True
         else:
             self.debug = debug
-        self.run_id = None
-        self.queryDict = json.load(open("queryDict.json", "r"))
-        self.cam = cv.VideoCapture(0)
         self.curr_code = ""
         self.this_log = open("this_log.txt", "w+")  # write (and read) over this file
         self.good_log = open("good_log.txt", "a")  # append to this files
         self.all_log = open("all_log.txt", "a")  # append to this files
-
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
+        # Core variables
+        self.client = OpenAI()
+        self.assistant_id = assistant_id
+        self.run_id = None
         if thread_id == None:
             new_thread = self.client.beta.threads.create()
             self.thread_id = new_thread.id
@@ -41,8 +47,11 @@ class openAIAlchemy:
         else:
             self.thread_id = thread_id
 
+    ################################################################
+    ####################   PUBLIC FUNCTIONS   ######################
+    ################################################################
+
     # Change model of current assistant
-    # "gpt-4", gpt
     def change_model(self, modelNum):
         models = ["gpt-4-turbo-preview", "gpt-4", "gpt-3.5-turbo-0125"]
         self.client.beta.assistants.update(
@@ -50,7 +59,6 @@ class openAIAlchemy:
             model=models[modelNum],
         )
 
-    # Public Debugging Function
     # Retreive assistants for purpose of finding IDs
     def get_assistants(self):
         my_assistants = self.client.beta.assistants.list(
@@ -59,13 +67,11 @@ class openAIAlchemy:
         )
         return my_assistants.data
 
-    # Public Debugging Function
     # Retrieve all runs in a current thread
     def get_runs(self):
         runs = self.client.beta.threads.runs.list(self.thread_id)
         return runs
 
-    # Public Debugging Function
     # Kills all runs that are in progress or requiring action
     def kill_all_runs(self):
         runs = self.get_runs()
@@ -90,6 +96,10 @@ class openAIAlchemy:
     def get_message(self):
         messages = self.client.beta.threads.messages.list(self.thread_id)
         return messages.data[0].content[0].text.value
+
+    ################################################################
+    ###################   PRIVATE FUNCTIONS   ######################
+    ################################################################
 
     # Start and or manage run of current thread
     async def __run_manager(self):
@@ -173,13 +183,13 @@ class openAIAlchemy:
             # handling for each available function call
             if name == "get_feedback":
                 # print arg to command line and get written response from human
-                self.reg_print(f"AIAlchemist: Hey Human, {args['prompt']}")
+                self.reg_print(f"ChatGPT: Hey Human, {args['prompt']}")
                 human_response = input("Human: ")
                 print()
                 tool_outputs.append({"tool_call_id": id, "output": human_response})
             elif name == "get_documentation":
                 self.reg_print(
-                    f"AIAlchemist: I am querying documentation for {args['query'].lower()}"
+                    f"ChatGPT: I am querying documentation for {args['query'].lower()}"
                 )
 
                 # search queryDict json file for requested term
@@ -213,35 +223,30 @@ class openAIAlchemy:
                 self.reg_print(original_code)
 
                 # ctrl D (reset the robot), ctrl C (reset terminal), ctr E (enter paste mode)
-                self.log_print("RESETTING")
-                self.debug_print(
-                    self.serial_interface.serial_write(bytes("\x03", "utf-8"))
-                )
 
                 # time.sleep(0.5)
                 # self.debug_print(
-                #     self.serial_interface.serial_write(bytes("\x04", "utf-8"))
+                #     self.serial_interface.write_read(bytes("\x04", "utf-8"))
                 # )
-                time.sleep(0.5)
+                # time.sleep(0.5)
+                # time.sleep(0.5)
+                # self.log_print("RESETTED")
+
+                self.log_print("RESETTING")
+                self.debug_print(self.serial_interface.write_read("\x03"))
                 self.debug_print(
-                    self.serial_interface.serial_write(bytes("\x05", "utf-8"))
+                    "paste mode: " + str(self.serial_interface.write_read("\x05"))
                 )
-                time.sleep(0.5)
-                self.log_print("RESETTED")
                 self.reg_print(self.__print_break("SERIAL OUPUT"))
-                serial_response = self.serial_interface.serial_write(
-                    bytes(code, "utf-8")
+                serial_response = self.serial_interface.write_read(code)
+                self.debug_print(
+                    "paste mode: " + str(self.serial_interface.write_read("\x04"))
                 )
 
-                if re.search("error", serial_response.lower()):
-                    self.reg_print(serial_response)
-
-                # ctrl D: End paste mode
-                # self.debug_print("paste mode: "+str (self.serial_interface.serial_write(bytes('\x04', 'utf-8'))))
+                # Scan Response for ERROR and print if found
+                # if re.search("error", serial_response.lower()):
+                self.reg_print(serial_response)
                 self.debug_print(serial_response)
-                temp = self.serial_interface.serial_write(bytes("\x04", "utf-8"))
-                time.sleep(0.5)
-                serial_response + "\n" + temp
 
                 # Read in Serial For Duration of Runtime
                 last_time = time.time()
@@ -262,11 +267,13 @@ class openAIAlchemy:
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
 
                 self.reg_print(self.__print_break("END"))
+                serial_response = self.serial_interface.write_read("\x04")
 
                 # sends ctrl c to force end the program
-                self.log_print(
-                    self.serial_interface.serial_write(bytes("\x04", "utf-8"))
-                )
+                self.log_print(self.serial_interface.write_read("\x04"))
+                self.serial_interface.close()
+                self.serial_interface.open_new()
+                self.serial_interface.write_read("\x03")
 
                 self.debug_print("Program ended")
 
@@ -278,7 +285,7 @@ class openAIAlchemy:
                 interval = float(args["interval"])  # time interval between images
 
                 self.debug_print(
-                    f"AIAlchemist: I am getting visual feedback for {query.lower()}"
+                    f"ChatGPT: I am getting visual feedback for {query.lower()}"
                 )
 
                 img_response = (
@@ -299,6 +306,10 @@ class openAIAlchemy:
             thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
         )  # BUG also FREEZING here
         self.debug_print("Done submitting outputs")
+
+    ################################################################
+    #####################   IMAGE CAPTURE   ########################
+    ################################################################
 
     def __encode_image(self, image_path, max_image=512):
         with Image.open(image_path) as img:
@@ -321,7 +332,7 @@ class openAIAlchemy:
         time.sleep(3)
         self.debug_print(f"Running code: {self.curr_code}")
 
-        repl = self.serial_interface.serial_write(bytes(self.curr_code, "utf-8"))
+        repl = self.serial_interface.write_read(self.curr_code)
         self.verbose_print(f"REPL response: {repl}")
 
         self.debug_print("Say cheese!")
@@ -363,6 +374,10 @@ class openAIAlchemy:
         )
         self.debug_print("Done")
         return response
+
+    ################################################################
+    ####################   LOGGING FUNCTIONS   #####################
+    ################################################################
 
     # Formtting functions
     def extract_code(self, result):

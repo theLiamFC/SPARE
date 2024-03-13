@@ -8,19 +8,31 @@ class serial_interface:
     def __init__(self, port, fake_serial=False):
         self.port = port
         self.fake_serial = fake_serial
-        if not fake_serial:
-            self.ser = serial.Serial(
-                port=self.port,  ## <----------- REPLACE with your SPIKE's port from!!!##
-                baudrate=115200,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
-                bytesize=serial.EIGHTBITS,
-            )
-            # BUG catch serial not open error
-            self.ser.isOpen()
-            self.ser.write(b"\x03")
-            # self.serial_write(b"\x05")
-            garbage = self.serial_read()
+        # if not fake_serial:
+        #     self.ser = serial.Serial(
+        #         port=self.port,  ## <----------- REPLACE with your SPIKE's port from!!!##
+        #         baudrate=115200,
+        #         parity=serial.PARITY_NONE,
+        #         stopbits=serial.STOPBITS_ONE,
+        #         bytesize=serial.EIGHTBITS,
+        #     )
+        #     # BUG catch serial not open error
+        #     self.ser.isOpen()
+        #     self.ser.write(b"\x03")
+        #     # self.serial_write(b"\x05")
+        #     garbage = self.serial_read()
+
+    def open_new(self):
+        self.ser = serial.Serial(
+            port=self.port,
+            baudrate=115200,
+            parity=serial.PARITY_NONE,
+            stopbits=serial.STOPBITS_ONE,
+            bytesize=serial.EIGHTBITS,
+        )
+
+    def close(self):
+        self.ser.close()
 
     def serial_read(self):
         if self.fake_serial:
@@ -28,12 +40,13 @@ class serial_interface:
         else:
             reply = b""
             start = time.time()
-            while self.ser.in_waiting and (start+1) > time.time():
+            while self.ser.in_waiting and (start + 1) > time.time():
                 reply += self.ser.read(self.ser.in_waiting)
                 time.sleep(0.1)
             return reply.decode()
 
-    def serial_write(self, string):
+    def write_read(self, string):
+        string = bytes(string, "utf-8")
         if self.fake_serial:
             print(f"Sending to serial: {string}")
         else:
