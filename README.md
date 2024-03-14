@@ -1,6 +1,6 @@
 **OpenAI ChatGPT Robot Coding Interface**
 
-This repository is a work in progress authored by Jesse Gilbert and Liam Campbell for the Center for Engineering & Education Outreach ([CEEO](https://ceeo.tufts.edu/) at Tufts University.
+This repository is a work in progress authored by Jesse Gilbert and Liam Campbell for the Center for Engineering & Education Outreach ([CEEO](https://ceeo.tufts.edu/)) at Tufts University.
 
 **Introduction**
 
