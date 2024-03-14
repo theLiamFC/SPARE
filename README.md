@@ -25,4 +25,4 @@ main.py: Orchestrates the interaction between the user, ChatGPT, and the robot c
 
 serial_interfacel.py: Handles all serial communication between the computer and LEGO SPIKE Prime.
 
-queryDict.json: Contains valuable syntax and documentation for MicroPython coding on the LEGO SPIKE Prime platform.
+queryDict.json: Contains valuable syntax and documentation for MicroPython coding on the LEGO SPIKE Prime platform. It is ultimately the hope that this json file would be replaced by documentation built into the microcontroller itself. For now we are using this isolated json documentation file to mimic the idea that the AI model has no pre-established knowledge of the robotic platform it is programming.
