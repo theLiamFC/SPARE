@@ -1,6 +1,6 @@
 **OpenAI ChatGPT Robot Coding Interface**
 
-This repository provides code for an iterative learning loop where a human collaborates with OpenAI's ChatGPT to code a robot in MicroPython. The essential files are main.py, openAIAlchemy.py, serial_interface.py, and queryDict.json.
+This repository is a work in progress authored by Jesse Gilbert and Liam Campbell for the Center for Engineering & Education Outreach ([CEEO](https://ceeo.tufts.edu/) at Tufts University.
 
 **Introduction**
 
@@ -11,9 +11,9 @@ The aim of this project is to facilitate collaboration between humans and artifi
 To use this repository, follow these steps:
 - Ensure you have Python installed on your system.
 - Clone this repository to your local machine.
-- Install the required dependencies, most significantly OpenAI.
+- Install all required dependencies, most significantly OpenAI.
 - Create an OpenAI API key
-- Set up you API key by following isntructions [here](https://platform.openai.com/docs/quickstart/step-2-set-up-your-api-key)
+- Set up your API key by following isntructions [here](https://platform.openai.com/docs/quickstart/step-2-set-up-your-api-key)
 - Find the serial port of your LEGO SPIKE Prime device and update it in main.py.
 - Execute main.py to start the interactive coding session with OpenAI's ChatGPT.
 
