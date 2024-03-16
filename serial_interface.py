@@ -3,7 +3,7 @@ import time
 import sys
 
 
-class serial_interface:
+class SerialInterface:
 
     def __init__(self, port, fake_serial=False):
         self.port = port
@@ -74,9 +74,9 @@ print("hello world")
 time.sleep(.5)
 i = i + 1"""
 
-        #     test = \
-        # '''for i in range(10):
-        #     print("hello world")'''
+        test = \
+        '''for i in range(10):
+            print("hello world")'''
 
         test = """import motor
 from hub import port

@@ -1,11 +1,11 @@
-from openAIAlchemy import openAIAlchemy
-import serial_interface
+from ai_alchemy import AIAlchemy
+from serial_interface import SerialInterface
 import asyncio
 import sys
 import json
 
-### Ai Alchemist ID - this is NOT an API key
-aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
+### AI Alchemist Assistant ID - this is NOT an API key
+assitant_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
 default_messages = {
     "0": "Move forwards in a loop. There are motors in ports A and B",
@@ -63,15 +63,15 @@ if __name__ == "__main__":
     # port = "/dev/cu.usbmodem3356396133381"
     port = "COM13"
 
-    # Initiate Serial Interface
+    # Instantiate Serial Interface
     try:
-        serial = serial_interface.serial_interface(port)
+        serial = SerialInterface(port)
     except Exception as e:
         print("Serial Connection Error: ", e)
         sys.exit()
 
-    # Initiate openAIAlchemy Class
-    ai_interface = openAIAlchemy(aa_id, serial, debug=False, verbose=False)
+    # Instantiate AIAlchemy Class
+    ai_interface = AIAlchemy(assitant_id, serial, debug=False, verbose=False)
 
     # Initiate Main Loop
     try:

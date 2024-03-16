@@ -3,14 +3,12 @@ import cv2 as cv
 import time
 import asyncio
 import json
-import sys
 import base64
 from PIL import Image
 from io import BytesIO
-import re
 
 
-class openAIAlchemy:
+class AIAlchemy:
     def __init__(
         self, assistant_id, serial, thread_id=None, debug=False, verbose=False
     ):
