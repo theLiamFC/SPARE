@@ -4,6 +4,7 @@ import time
 import asyncio
 import json
 import base64
+import re
 from PIL import Image
 from io import BytesIO
 
@@ -13,7 +14,7 @@ class AIAlchemy:
         self, assistant_id, serial, thread_id=None, debug=False, verbose=False
     ):
         # Class assets
-        self.queryDict = json.load(open("queryDict.json", "r"))
+        self.query_dict = json.load(open("query_dict.json", "r"))
         self.cam = cv.VideoCapture(0)
 
         # Serial initiation
@@ -45,6 +46,7 @@ class AIAlchemy:
             self.debug_print(f"THREAD_ID: {self.thread_id}")
         else:
             self.thread_id = thread_id
+
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
@@ -95,6 +97,7 @@ class AIAlchemy:
     def get_message(self):
         messages = self.client.beta.threads.messages.list(self.thread_id)
         return messages.data[0].content[0].text.value
+
 
     ################################################################
     ###################   PRIVATE FUNCTIONS   ######################
@@ -169,16 +172,8 @@ class AIAlchemy:
             id = toolCall.id
             name = toolCall.function.name
             self.verbose_print(toolCall.function.arguments)
-            args = self.clean_json(toolCall.function.arguments)
-            # except Exception as e:
-            #     self.debug_print("Error loading json, retrying")  # untested
-            #     self.debug_print(str(e))
-            #     self.client.beta.threads.runs.submit_tool_outputs(
-            #         thread_id=self.thread_id,
-            #         run_id=self.run_id,
-            #         tool_outputs=tool_outputs,
-            #     )
-            #     return
+            args = self.__clean_json(toolCall.function.arguments)
+            
             # handling for each available function call
             if name == "get_feedback":
                 # print arg to command line and get written response from human
@@ -191,10 +186,10 @@ class AIAlchemy:
                     f"ChatGPT: I am querying documentation for {args['query'].lower()}"
                 )
 
-                # search queryDict json file for requested term
+                # search query_dict json file for requested term
                 # BUG if chat has issues requesting exact term we could introduce
                 # a semantic relation search upon 0 zero result
-                for aClass in self.queryDict["class"]:
+                for aClass in self.query_dict["class"]:
                     if aClass["name"] == args["query"].lower():
                         query_response = aClass
                         break
@@ -213,68 +208,9 @@ class AIAlchemy:
             elif name == "run_code":
                 original_code = args["code"]
                 runtime = int(args["runtime"])  # in seconds
-                original_code = original_code.replace("\n ", "\n")
-                code = "\n" + original_code
 
-                code = code.replace("\n", "\r\n")
-                self.curr_code = code
-                self.reg_print(self.__print_break(f"RUNNING CODE ({runtime} seconds)"))
-                self.reg_print(original_code)
-
-                # ctrl D (reset the robot), ctrl C (reset terminal), ctr E (enter paste mode)
-
-                # time.sleep(0.5)
-                # self.debug_print(
-                #     self.serial_interface.write_read(bytes("\x04", "utf-8"))
-                # )
-                # time.sleep(0.5)
-                # time.sleep(0.5)
-                # self.log_print("RESETTED")
-
-                self.log_print("RESETTING")
-                self.debug_print(self.serial_interface.write_read("\x03"))
-                self.debug_print(
-                    "paste mode: " + str(self.serial_interface.write_read("\x05"))
-                )
-                self.reg_print(self.__print_break("SERIAL OUPUT"))
-                serial_response = self.serial_interface.write_read(code)
-                self.debug_print(
-                    "paste mode: " + str(self.serial_interface.write_read("\x04"))
-                )
-
-                # Scan Response for ERROR and print if found
-                # if re.search("error", serial_response.lower()):
-                self.reg_print(serial_response)
-                self.debug_print(serial_response)
-
-                # Read in Serial For Duration of Runtime
-                last_time = time.time()
-                while time.time() < last_time + runtime:
-                    temp_response = str(self.serial_interface.serial_read())
-                    lines = temp_response.split("\n")
-                    for line in lines:
-                        line = line.strip()
-                        if (
-                            line != ""
-                            and ">>>" not in line
-                            and "<awaitable>" not in line
-                        ):
-                            self.reg_print(line)
-                            serial_response = serial_response + "\n" + line
-                    time.sleep(0.5)
-
+                serial_response = self.__run_code(original_code, runtime)
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
-
-                self.reg_print(self.__print_break("END"))
-                serial_response = self.serial_interface.write_read("\x04")
-
-                # sends ctrl c to force end the program
-                self.log_print(self.serial_interface.write_read("\x04"))
-                self.serial_interface.close()
-                self.serial_interface.open_new()
-                self.serial_interface.write_read("\x03")
-
-                self.debug_print("Program ended")
 
             # Currently uninstalled
             elif name == "get_visual_feedback":
@@ -306,6 +242,7 @@ class AIAlchemy:
         )  # BUG also FREEZING here
         self.debug_print("Done submitting outputs")
 
+
     ################################################################
     #####################   IMAGE CAPTURE   ########################
     ################################################################
@@ -327,12 +264,14 @@ class AIAlchemy:
 
     def __img_collection(self, query, num, interval):
         # collect images from webcam
-        self.debug_print("TAKING IMAGES IN 3 SECONDS")
+        self.debug_print("Taking images IN 3 seconds")
         time.sleep(3)
-        self.debug_print(f"Running code: {self.curr_code}")
-
-        repl = self.serial_interface.write_read(self.curr_code)
-        self.verbose_print(f"REPL response: {repl}")
+        
+        # NOTE to Liam: I (Jesse) added the code running and related serial sending
+            # to a separate function, the only difference this makes here is that 
+            # it does the same printing as above which maybe isn't wanted?
+        repl = self.__run_code(self.curr_code, num * interval)
+        # self.verbose_print(f"REPL response: {repl}")
 
         self.debug_print("Say cheese!")
         images = []
@@ -374,6 +313,72 @@ class AIAlchemy:
         self.debug_print("Done")
         return response
 
+
+    ################################################################
+    #####################   CODE RUNNING   #########################
+    ################################################################
+
+    def __run_code(self, original_code, runtime):
+        original_code = original_code.replace("\n ", "\n")
+        code = "\n" + original_code
+
+        code = code.replace("\n", "\r\n")
+        self.curr_code = code
+        self.reg_print(self.__print_break(f"RUNNING CODE ({runtime} second(s))"))
+        self.reg_print(original_code)
+        # ctrl D (reset the robot), ctrl C (reset terminal), ctr E (enter paste mode)
+
+        # time.sleep(0.5)
+        # self.debug_print(
+        #     self.serial_interface.write_read(bytes("\x04", "utf-8"))
+        # )
+        # time.sleep(0.5)
+        # time.sleep(0.5)
+        self.log_print("RESETTING")
+        self.debug_print(self.serial_interface.write_read("\x03"))
+        self.debug_print(
+            "Paste mode start: " + str(self.serial_interface.write_read("\x05"))
+        )
+        self.reg_print(self.__print_break("SERIAL OUPUT"))
+        serial_response = self.serial_interface.write_read(code)
+        self.debug_print(
+            "Paste mode end: " + str(self.serial_interface.write_read("\x04"))
+        )
+
+        # Scan Response for ERROR and print if found
+        # if re.search("error", serial_response.lower()):
+        self.reg_print(serial_response)
+        self.debug_print(serial_response)
+
+        # Read in Serial For Duration of Runtime
+        last_time = time.time()
+        while time.time() < last_time + runtime:
+            temp_response = str(self.serial_interface.read())
+            lines = temp_response.split("\n")
+            for line in lines:
+                line = line.strip()
+                if (
+                    line != ""
+                    and ">>>" not in line
+                    and "<awaitable>" not in line
+                ):
+                    self.reg_print(line)
+                    serial_response += "\n" + line
+            time.sleep(0.5)
+
+        self.reg_print(self.__print_break("END"))
+        serial_response = self.serial_interface.write_read("\x04")
+
+        # sends ctrl c to force end the program
+        self.log_print(self.serial_interface.write_read("\x04"))
+        self.serial_interface.close()
+        self.serial_interface.open_new()
+        self.serial_interface.write_read("\x03")
+
+        self.debug_print("Program ended")
+        return serial_response
+
+
     ################################################################
     ####################   LOGGING FUNCTIONS   #####################
     ################################################################
@@ -394,7 +399,7 @@ class AIAlchemy:
     def __print_break(self, name):
         length = len(name)
         breaker = ""
-        for i in range(40 - (int(length / 2))):
+        for _ in range(40 - (int(length / 2))):
             breaker += "="
         if length % 2 == 0:
             suffix = "="
@@ -402,8 +407,9 @@ class AIAlchemy:
             suffix = ""
         result = breaker + " " + name + " " + breaker + suffix
         return result
-
-    def clean_json(self, json_text):
+    
+    # If the AI assistant returns incorrectly formatted JSON clean before returning
+    def __clean_json(self, json_text):
         try:
             return json.loads(json_text, strict=False)
         except:
@@ -420,25 +426,19 @@ class AIAlchemy:
         print(text)
         print()
 
-    def code_print(self, text):
-        self.log_print(text)
-        if self.debug:
-            print(text)
-
     def debug_print(self, text):
         if text.find("===") == -1 and text.find(">>>") == -1:
             prefix = " - Status: "
         else:
             prefix = ""
-
-        self.log_print(prefix + text)
+        self.log_print(prefix + str(text))
         if self.debug:
-            print(prefix + text)
+            print(prefix + str(text))
 
     def verbose_print(self, text):
         self.log_print(text)
         if self.verbose:
-            print(f"{text}")
+            print(text)
 
     def log_print(self, text):
         if "<awaitable>" not in text:
@@ -448,9 +448,10 @@ class AIAlchemy:
     # Public method to start the OpenAI run asynchronously
     async def run(self, message):
         self.add_message(message)
-        result = await self.__run_manager()  # Await the result from __run_manager
+        result = await self.__run_manager()
         return result
 
+    # Safely end program and save and close log files
     def close(self):
         self.debug_print("Closing")
         self.this_log.flush()

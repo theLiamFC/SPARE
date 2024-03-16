@@ -131044,3 +131044,637 @@ Submitting tool outputs: [{'tool_call_id': 'call_BTb9EglBL3RlFFR4KMtr6BDL', 'out
  - Status: Run in progress
  - Status: Status: completed
  - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:03:17
+
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:04:57
+
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:06:28
+
+ - Status: THREAD_ID: thread_iH7t7Nq6ppe4M50KRuF7k704
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_u2TfecYwG1KKAVQjwFIUjMG1', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "code": "import motor_pair \n from hub import port \n motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \n motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
+  "runtime": "5"
+}
+============================ RUNNING CODE (5 seconds) =============================
+import motor_pair 
+from hub import port 
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) 
+motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)
+RESETTING
+ - Status: 
+ - Status: paste mode: 
+================================== SERIAL OUPUT ===================================
+ - Status: paste mode: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:08:43
+
+ - Status: THREAD_ID: thread_IoblCZhfIvzA3dBXazgDthUk
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "distance_sensor"
+}
+ChatGPT: I am querying documentation for distance_sensor
+{'name': 'distance_sensor', 'description': 'a class that allows access to spike prime distance sensors', 'initialization': 'none', 'required imports': 'import distance_sensor \n from hub import port', 'function': {'name': 'get distance', 'syntax': 'distance_sensor.distance(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which distance sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1', 'values': 'integer'}}}
+Submitting tool outputs: [{'tool_call_id': 'call_SW0NPQzQNNOSM7QLffFeLuFm', 'output': '{"name": "distance_sensor", "description": "a class that allows access to spike prime distance sensors", "initialization": "none", "required imports": "import distance_sensor \\n from hub import port", "function": {"name": "get distance", "syntax": "distance_sensor.distance(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which distance sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1", "values": "integer"}}}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_RQrlhfG2TvbYuRe1fF1Pp3KG', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import distance_sensor \n from hub import port \n import motor_pair \n distance = distance_sensor.distance(port.D) \n motors = motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \n if distance < 100: \n     await motor_pair.move_for_time(motors, 500, 0, velocity=-100) \n elif distance > 100: \n     await motor_pair.move_for_time(motors, 500, 0, velocity=100) \n else: \n     await motor_pair.stop(motors)", 
+"runtime": "2"
+}
+============================ RUNNING CODE (2 seconds) =============================
+import distance_sensor 
+from hub import port 
+import motor_pair 
+distance = distance_sensor.distance(port.D) 
+motors = motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) 
+if distance < 100: 
+    await motor_pair.move_for_time(motors, 500, 0, velocity=-100) 
+elif distance > 100: 
+    await motor_pair.move_for_time(motors, 500, 0, velocity=100) 
+else: 
+    await motor_pair.stop(motors)
+RESETTING
+ - Status: 
+ - Status: paste mode: 
+================================== SERIAL OUPUT ===================================
+ - Status: paste mode: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_jhGrOAc4MjHGRC1bncYsMmPF', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Did the robot move backwards if the distance was less than 100 and forwards if the distance was greater than 100?"
+}
+ChatGPT: Hey Human, Did the robot move backwards if the distance was less than 100 and forwards if the distance was greater than 100?
+Submitting tool outputs: [{'tool_call_id': 'call_gq2DBAV93E2v4XoE4RXnQrZ3', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import distance_sensor \n from hub import port \n import motor_pair \n motors = motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \n while True: \n     distance = distance_sensor.distance(port.D) \n     if distance < 100: \n         await motor_pair.move_for_time(motors, 500, 0, velocity=-100) \n     elif distance > 100: \n         await motor_pair.move_for_time(motors, 500, 0, velocity=100) \n     else: \n         await motor_pair.stop(motors)", 
+"runtime": "5"
+}
+============================ RUNNING CODE (5 seconds) =============================
+import distance_sensor 
+from hub import port 
+import motor_pair 
+motors = motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) 
+while True: 
+    distance = distance_sensor.distance(port.D) 
+    if distance < 100: 
+        await motor_pair.move_for_time(motors, 500, 0, velocity=-100) 
+    elif distance > 100: 
+        await motor_pair.move_for_time(motors, 500, 0, velocity=100) 
+    else: 
+        await motor_pair.stop(motors)
+RESETTING
+ - Status: yes
+ - Status: paste mode: 
+================================== SERIAL OUPUT ===================================
+ - Status: paste mode: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_ljxMhstaZ6fTcKSgVE3Q2lpI', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Did the robot continually move backwards when the distance was below 100 and forwards when it was over 100?"
+}
+ChatGPT: Hey Human, Did the robot continually move backwards when the distance was below 100 and forwards when it was over 100?
+Submitting tool outputs: [{'tool_call_id': 'call_fe030ilAKRgdmCSsQlMQIY0b', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:33:17
+
+ - Status: THREAD_ID: thread_pZG2M0W6lUGySPy8RL0hceCo
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_5tw27tcgeXDqEypE2T5bRspt', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "code": "import motor_pair\nfrom hub import port\nmotor_pair.pair(motor_pair.PAIR_1, port.A, port.B)\nwhile True:\n    motor_pair.move(motor_pair.PAIR_1, 0)",
+  "runtime": "10"
+}
+============================ RUNNING CODE (10 seconds) ============================
+import motor_pair
+from hub import port
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+while True:
+   motor_pair.move(motor_pair.PAIR_1, 0)
+RESETTING
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:38:27
+
+ - Status: THREAD_ID: thread_zz311buAIC3R0yp3xe4qS6W7
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_K9HW4aakTvzFAxF8BQjq9H83', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import motor_pair \nfrom hub import port \nmotor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \nwhile True: \n    motor_pair.move(motor_pair.PAIR_1, 0)",
+"runtime": "5"
+}
+============================ RUNNING CODE (5 seconds) =============================
+import motor_pair 
+from hub import port 
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) 
+while True: 
+   motor_pair.move(motor_pair.PAIR_1, 0)
+RESETTING
+ - Status: 
+ - Status: paste mode: 
+================================== SERIAL OUPUT ===================================
+ - Status: paste mode: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_TERzq2NCcSRcdaHH9HfKIGBX', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Did the robot move forward continuously?"
+}
+ChatGPT: Hey Human, Did the robot move forward continuously?
+Submitting tool outputs: [{'tool_call_id': 'call_LwKYcMQHGtmDxx8OeyqAvTpM', 'output': 'yea'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:57:29
+
+ - Status: THREAD_ID: thread_XlY7LVwj2fMG0tVQWZfk8U6y
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_6GNW1oR0fNukIS2065owDlr3', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import motor_pair \n from hub import port \n motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \n while True: \n     motor_pair.move(motor_pair.PAIR_1, 0)", 
+"runtime": "5"
+}
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 12:58:55
+
+ - Status: THREAD_ID: thread_aCOnfDaTTxzp3DjccBeXCRzy
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_purrrBOfewJPW1nG8CFSGEKi', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import motor_pair\nfrom hub import port\nmotor_pair.pair(motor_pair.PAIR_1, port.A, port.B)\nwhile True:\n    motor_pair.move(motor_pair.PAIR_1, 0)",
+"runtime": "1"
+}
+============================ RUNNING CODE (1 seconds) =============================
+import motor_pair
+from hub import port
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+while True:
+   motor_pair.move(motor_pair.PAIR_1, 0)
+RESETTING
+ - Status: 
+ - Status: Paste mode start: 
+================================== SERIAL OUPUT ===================================
+ - Status: Paste mode end: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_ORIoqMrCG38DEDhT6VvLIktR', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Did the robot move?"
+}
+ChatGPT: Hey Human, Did the robot move?
+Submitting tool outputs: [{'tool_call_id': 'call_OF25pb4uHBeQPuK5rh2O3Euu', 'output': 'yes'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 13:10:40
+
+ - Status: THREAD_ID: thread_U0dsRwunhSHBom8ng9ot4kri
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "color_sensor"
+}
+ChatGPT: I am querying documentation for color_sensor
+{'name': 'color_sensor', 'description': 'a class that allows access to spike prime color sensors', 'initialization': 'none', 'required imports': 'import color_sensor \n from hub import port \n import color', 'function': [{'name': 'color', 'syntax': 'color_sensor.color(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which color sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the color sensed by the color sensor', 'values': 'color.RED,color.GREEN,color.BLUE,color.MAGENTA,color.YELLOW,color.ORANGE,color.AZURE,color.BLACK,color.WHITE'}}, {'name': 'reflection', 'syntax': 'color_sensor.reflection(port.A)', 'initialization': 'none', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which color sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the intensity of light sensed by the color sensor', 'values': 'integer 1:100'}}], 'example': "if color_sensor.color(port.A) is color.RED:\r\nprint('Red detected')"}
+Submitting tool outputs: [{'tool_call_id': 'call_bxLS9nIP9zs9wg4RfOb2uqZ1', 'output': '{"name": "color_sensor", "description": "a class that allows access to spike prime color sensors", "initialization": "none", "required imports": "import color_sensor \\n from hub import port \\n import color", "function": [{"name": "color", "syntax": "color_sensor.color(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which color sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the color sensed by the color sensor", "values": "color.RED,color.GREEN,color.BLUE,color.MAGENTA,color.YELLOW,color.ORANGE,color.AZURE,color.BLACK,color.WHITE"}}, {"name": "reflection", "syntax": "color_sensor.reflection(port.A)", "initialization": "none", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which color sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the intensity of light sensed by the color sensor", "values": "integer 1:100"}}], "example": "if color_sensor.color(port.A) is color.RED:\\r\\nprint(\'Red detected\')"}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "motor_pair"
+}
+ChatGPT: I am querying documentation for motor_pair
+{'name': 'motor_pair', 'description': 'a class that allows controlling two spike prime motors together', 'initialization': 'motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)', 'required imports': 'import motor_pair \n from hub import port', 'function': [{'name': 'move motor pair for degrees', 'syntax': 'motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'async': 'await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)', 'parameters': {'parameter': [{'name': 'motor pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'degrees', 'description': 'Degrees for which the motor pair should turn.', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}}, {'name': 'move motor pair for time', 'syntax': 'motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'async': 'await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'time', 'description': 'Duration for which motors should turn in milliseconds (1000 = 1 second)', 'values': 'any integer'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Move a motor pair at a constant speed until a new command is given', 'syntax': 'motor_pair.move(motor_pair.PAIR_1, 0)', 'async': 'await motor_pair.move(motor_pair.PAIR_1, 0)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'steering', 'description': 'How much the motor pair should alter motor speeds to turn', 'values': 'an integer -100:100'}, {'name': 'velocity', 'description': 'Speed at which the motors should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Perform a tank move on a motor pair at a constant speed until a new command is given.', 'syntax': 'motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'async': 'await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}, {'name': 'left velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'an integer'}, {'name': 'right velocity', 'description': 'Speed at which the right motor should run in degrees per second.', 'values': 'any integer'}]}, {'name': 'Stop a motor pair.', 'syntax': 'motor_pair.stop(motor_pair.PAIR_1)', 'async': 'await motor_pair.stop(motor_pair.PAIR_1)', 'parameters': [{'name': 'motor Pair', 'description': 'Specification of which motor pair to move', 'values': 'motor_pair.PAIR_1, motor_pair.PAIR_2'}]}]}
+Submitting tool outputs: [{'tool_call_id': 'call_BDHvWbOLeoMH97uQ41rUlaNN', 'output': '{"name": "motor_pair", "description": "a class that allows controlling two spike prime motors together", "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)", "required imports": "import motor_pair \\n from hub import port", "function": [{"name": "move motor pair for degrees", "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "async": "await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)", "parameters": {"parameter": [{"name": "motor pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "degrees", "description": "Degrees for which the motor pair should turn.", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}}, {"name": "move motor pair for time", "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "async": "await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "time", "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)", "values": "any integer"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Move a motor pair at a constant speed until a new command is given", "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)", "async": "await motor_pair.move(motor_pair.PAIR_1, 0)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "steering", "description": "How much the motor pair should alter motor speeds to turn", "values": "an integer -100:100"}, {"name": "velocity", "description": "Speed at which the motors should run in degrees per second.", "values": "any integer"}]}, {"name": "Perform a tank move on a motor pair at a constant speed until a new command is given.", "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "async": "await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}, {"name": "left velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "an integer"}, {"name": "right velocity", "description": "Speed at which the right motor should run in degrees per second.", "values": "any integer"}]}, {"name": "Stop a motor pair.", "syntax": "motor_pair.stop(motor_pair.PAIR_1)", "async": "await motor_pair.stop(motor_pair.PAIR_1)", "parameters": [{"name": "motor Pair", "description": "Specification of which motor pair to move", "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"}]}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import color_sensor \n from hub import port \n import motor_pair \n import color \n import time \n\n motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) \n\n while True: \n     if color_sensor.color(port.C) is color.BLUE: \n         motor_pair.move(motor_pair.PAIR_1, 0) \n     else: \n         motor_pair.stop(motor_pair.PAIR_1) \n     time.sleep(0.1)",
+"runtime": "10"
+}
+=========================== RUNNING CODE (10 second(s)) ===========================
+import color_sensor 
+from hub import port 
+import motor_pair 
+import color 
+import time 
+
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.B) 
+
+while True: 
+    if color_sensor.color(port.C) is color.BLUE: 
+        motor_pair.move(motor_pair.PAIR_1, 0) 
+    else: 
+        motor_pair.stop(motor_pair.PAIR_1) 
+    time.sleep(0.1)
+RESETTING
+ - Status: 
+ - Status: Paste mode start: 
+================================== SERIAL OUPUT ===================================
+ - Status: Paste mode end: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_4KMSWQr2v96NQ4ekLNctInGs', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Did the robot follow the line correctly?"
+}
+ChatGPT: Hey Human, Did the robot follow the line correctly?
+Submitting tool outputs: [{'tool_call_id': 'call_7yGNTRDmpy64TbMX0RuX3dgt', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "print('hello world')",
+"runtime": "1"
+}
+=========================== RUNNING CODE (1 second(s)) ============================
+print('hello world')
+RESETTING
+ - Status: 
+ - Status: Paste mode start: 
+================================== SERIAL OUPUT ===================================
+ - Status: Paste mode end: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_GnoraNtSbFzUvI8BEOdFR35r', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Did 'hello world' display correctly on the terminal?"
+}
+ChatGPT: Hey Human, Did 'hello world' display correctly on the terminal?
+Submitting tool outputs: [{'tool_call_id': 'call_tOCwKrrAG5KJSCreHcyYRnzW', 'output': 'yessir'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 13:20:40
+
+ - Status: THREAD_ID: thread_REFWdjBPJuzi27RrMqQp3YsJ
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "force_sensor"
+}
+ChatGPT: I am querying documentation for force_sensor
+{'name': 'force_sensor', 'description': 'a class that allows access to spike prime force sensors', 'initialization': 'none', 'required imports': 'import force_sensor \n from hub import port', 'function': [{'name': 'get force', 'syntax': 'force_sensor.force(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which force sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the force measured as a decinewton', 'values': 'integer 0-100'}}, {'name': 'pressed', 'syntax': 'force_sensor.pressed(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which force sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'a binary value indicating if the sensor is pressed or not. Will return true if pressed', 'values': 'boolean'}}]}
+Submitting tool outputs: [{'tool_call_id': 'call_Y6OXzHXjJC0DA39lc8s4BcG9', 'output': '{"name": "force_sensor", "description": "a class that allows access to spike prime force sensors", "initialization": "none", "required imports": "import force_sensor \\n from hub import port", "function": [{"name": "get force", "syntax": "force_sensor.force(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which force sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the force measured as a decinewton", "values": "integer 0-100"}}, {"name": "pressed", "syntax": "force_sensor.pressed(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which force sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "a binary value indicating if the sensor is pressed or not. Will return true if pressed", "values": "boolean"}}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "distance_sensor"
+}
+ChatGPT: I am querying documentation for distance_sensor
+{'name': 'distance_sensor', 'description': 'a class that allows access to spike prime distance sensors', 'initialization': 'none', 'required imports': 'import distance_sensor \n from hub import port', 'function': {'name': 'get distance', 'syntax': 'distance_sensor.distance(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which distance sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1', 'values': 'integer'}}}
+Submitting tool outputs: [{'tool_call_id': 'call_RkkeLDSoMcBXOLdqZkOJyNC6', 'output': '{"name": "distance_sensor", "description": "a class that allows access to spike prime distance sensors", "initialization": "none", "required imports": "import distance_sensor \\n from hub import port", "function": {"name": "get distance", "syntax": "distance_sensor.distance(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which distance sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1", "values": "integer"}}}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "sound"
+}
+ChatGPT: I am querying documentation for sound
+{'name': 'sound', 'description': 'a class that enables control of built in SPIKE Prime speakers', 'initialization': 'none', 'required imports': 'from hub import sound \n from hub import port', 'function': [{'name': 'beep', 'syntax': 'sound.beep(freq: int = 440, duration: int = 500, volume: int = 100)', 'parameters': [{'name': 'freq', 'description': 'Frequency of beep', 'values': 'positive integer'}, {'name': 'duration', 'description': 'length of beep in milliseconds', 'values': 'positive integer'}, {'name': 'volume', 'description': 'volume of beep', 'values': 'integer 1:100'}], 'returns': 'none'}]}
+Submitting tool outputs: [{'tool_call_id': 'call_Qdh7szzty2g9M77s68W2DaSp', 'output': '{"name": "sound", "description": "a class that enables control of built in SPIKE Prime speakers", "initialization": "none", "required imports": "from hub import sound \\n from hub import port", "function": [{"name": "beep", "syntax": "sound.beep(freq: int = 440, duration: int = 500, volume: int = 100)", "parameters": [{"name": "freq", "description": "Frequency of beep", "values": "positive integer"}, {"name": "duration", "description": "length of beep in milliseconds", "values": "positive integer"}, {"name": "volume", "description": "volume of beep", "values": "integer 1:100"}], "returns": "none"}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import force_sensor \n from hub import port, sound \n import distance_sensor \n import time \n \
+while True: \n \
+    if force_sensor.pressed(port.C): \n \
+        distance = distance_sensor.distance(port.F) \n \
+        if distance != -1 and distance < 400: \n \
+            freq = (400 - distance) * 10 \n \
+            sound.beep(freq=freq, duration=100, volume=100) \n \
+        time.sleep(0.1) \n \
+    else: \n \
+        time.sleep(0.1)",
+"runtime": "10"
+}
+ - Status: Closing
+
+
+
+PROGRAM OUTPUT FROM 2024-03-16 13:22:50
+
+ - Status: THREAD_ID: thread_L4KHsDmvO1VQC7j5pV2MBUAd
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "force_sensor"
+}
+ChatGPT: I am querying documentation for force_sensor
+{'name': 'force_sensor', 'description': 'a class that allows access to spike prime force sensors', 'initialization': 'none', 'required imports': 'import force_sensor \n from hub import port', 'function': [{'name': 'get force', 'syntax': 'force_sensor.force(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which force sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the force measured as a decinewton', 'values': 'integer 0-100'}}, {'name': 'pressed', 'syntax': 'force_sensor.pressed(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which force sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'a binary value indicating if the sensor is pressed or not. Will return true if pressed', 'values': 'boolean'}}]}
+Submitting tool outputs: [{'tool_call_id': 'call_4bUqFMqh5Ixs0THfdysYYQXT', 'output': '{"name": "force_sensor", "description": "a class that allows access to spike prime force sensors", "initialization": "none", "required imports": "import force_sensor \\n from hub import port", "function": [{"name": "get force", "syntax": "force_sensor.force(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which force sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the force measured as a decinewton", "values": "integer 0-100"}}, {"name": "pressed", "syntax": "force_sensor.pressed(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which force sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "a binary value indicating if the sensor is pressed or not. Will return true if pressed", "values": "boolean"}}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "distance_sensor"
+}
+ChatGPT: I am querying documentation for distance_sensor
+{'name': 'distance_sensor', 'description': 'a class that allows access to spike prime distance sensors', 'initialization': 'none', 'required imports': 'import distance_sensor \n from hub import port', 'function': {'name': 'get distance', 'syntax': 'distance_sensor.distance(port.A)', 'parameters': {'parameter': {'name': 'Port', 'description': 'Port of spike prime to which distance sensor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}}, 'returns': {'name': 'the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1', 'values': 'integer'}}}
+Submitting tool outputs: [{'tool_call_id': 'call_N5OCrAbzVwYCM0jtVfsuCLox', 'output': '{"name": "distance_sensor", "description": "a class that allows access to spike prime distance sensors", "initialization": "none", "required imports": "import distance_sensor \\n from hub import port", "function": {"name": "get distance", "syntax": "distance_sensor.distance(port.A)", "parameters": {"parameter": {"name": "Port", "description": "Port of spike prime to which distance sensor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}}, "returns": {"name": "the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1", "values": "integer"}}}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"query": "sound"
+}
+ChatGPT: I am querying documentation for sound
+{'name': 'sound', 'description': 'a class that enables control of built in SPIKE Prime speakers', 'initialization': 'none', 'required imports': 'from hub import sound \n from hub import port', 'function': [{'name': 'beep', 'syntax': 'sound.beep(freq: int = 440, duration: int = 500, volume: int = 100)', 'parameters': [{'name': 'freq', 'description': 'Frequency of beep', 'values': 'positive integer'}, {'name': 'duration', 'description': 'length of beep in milliseconds', 'values': 'positive integer'}, {'name': 'volume', 'description': 'volume of beep', 'values': 'integer 1:100'}], 'returns': 'none'}]}
+Submitting tool outputs: [{'tool_call_id': 'call_9nSh2gmu2RQgnIfDi8iTvzy0', 'output': '{"name": "sound", "description": "a class that enables control of built in SPIKE Prime speakers", "initialization": "none", "required imports": "from hub import sound \\n from hub import port", "function": [{"name": "beep", "syntax": "sound.beep(freq: int = 440, duration: int = 500, volume: int = 100)", "parameters": [{"name": "freq", "description": "Frequency of beep", "values": "positive integer"}, {"name": "duration", "description": "length of beep in milliseconds", "values": "positive integer"}, {"name": "volume", "description": "volume of beep", "values": "integer 1:100"}], "returns": "none"}]}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"code": "import distance_sensor \n from hub import sound, port \n import force_sensor \n while True: \n     if (force_sensor.pressed(port.C)): \n         sound.beep(freq=distance_sensor.distance(port.F)*10, volume=30)",
+"runtime": "10"
+}
+=========================== RUNNING CODE (10 second(s)) ===========================
+import distance_sensor 
+from hub import sound, port 
+import force_sensor 
+while True: 
+    if (force_sensor.pressed(port.C)): 
+        sound.beep(freq=distance_sensor.distance(port.F)*10, volume=30)
+RESETTING
+ - Status: 
+ - Status: Paste mode start: 
+================================== SERIAL OUPUT ===================================
+ - Status: Paste mode end: 
+
+ - Status: 
+======================================= END =======================================
+
+ - Status: Program ended
+Submitting tool outputs: [{'tool_call_id': 'call_yaGTj9Py3cOVQMzt8Z07RaKN', 'output': ''}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+"prompt": "Was the theremin working properly? Did it stop making sound when I pressed the force sensor?"
+}
+ChatGPT: Hey Human, Was the theremin working properly? Did it stop making sound when I pressed the force sensor?
+Submitting tool outputs: [{'tool_call_id': 'call_55tEqSYanaA6wWlosw2Gixse', 'output': 'yes'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: completed
+ - Status: Closing

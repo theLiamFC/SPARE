@@ -21,10 +21,12 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
 
 # Main interface loop
 async def interface_loop(ai_interface):
-    # additional_instructions = "\nAdditional instructions: Make sure to run code before returning. \
-    #     Use the get_visual_feedback function to confirm what the robot is doing"
-    additional_instructions = "don't use the get_visul_feedback, just use get_feedback"
-    intro_input_statement = "ChatGPT: What would you like your spike prime to do today?\n['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
+    use_cam = False
+    additional_instructions = ""
+    yes_cam = "Use the get_visual_feedback function to confirm what the robot is doing"
+    no_cam  = "Don't use the get_visul_feedback, just use get_feedback"
+    additional_instructions += yes_cam if use_cam else no_cam
+    intro_statement = "ChatGPT: What would you like your spike prime to do today?\n"
     input_statement = (
         "['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
     )
@@ -32,7 +34,7 @@ async def interface_loop(ai_interface):
     # Reset terminal screen
     for i in range(20):
         print("\n")
-    user_prompt = input(intro_input_statement)
+    user_prompt = input(intro_statement + input_statement)
     print()
 
     # Begin interface loop
@@ -65,7 +67,7 @@ if __name__ == "__main__":
 
     # Instantiate Serial Interface
     try:
-        serial = SerialInterface(port)
+        serial = SerialInterface(port, fake_serial=True)
     except Exception as e:
         print("Serial Connection Error: ", e)
         sys.exit()

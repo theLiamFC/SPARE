@@ -23,20 +23,23 @@ class SerialInterface:
         #     garbage = self.serial_read()
 
     def open_new(self):
-        self.ser = serial.Serial(
-            port=self.port,
-            baudrate=115200,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.EIGHTBITS,
-        )
+        if not self.fake_serial:
+            self.ser = serial.Serial(
+                port=self.port,
+                baudrate=115200,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                bytesize=serial.EIGHTBITS,
+            )
 
     def close(self):
-        self.ser.close()
+        if not self.fake_serial:
+            self.ser.close()
 
-    def serial_read(self):
+    def read(self):
         if self.fake_serial:
-            return input("Enter the simulated serial output")
+            # return input("Enter the simulated serial output")
+            return ""
         else:
             reply = b""
             start = time.time()
@@ -52,9 +55,9 @@ class SerialInterface:
         else:
             self.ser.write(string + b"\r\n")
             time.sleep(0.1)
-        return self.serial_read()
+        return self.read()
 
-    def serial_write_no_read(self, string):
+    def write_no_read(self, string):
         if self.fake_serial:
             print(f"Sending to serial: {string}")
         else:
