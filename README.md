@@ -24,10 +24,10 @@ To use this repository, follow these steps:
 
 **File Descriptions**
 
-`openAIAlchemy.py`: Contains the main class openAIAlchemy, which interfaces with the OpenAI API for communication.
+`ai_alchemy.py`: Contains the main class openAIAlchemy, which interfaces with the OpenAI API for communication.
 
 `main.py`: Orchestrates the interaction between the user, ChatGPT, and the robot coding interface.
 
 `serial_interface.py`: Handles all serial communication between the computer and LEGO SPIKE Prime.
 
-`queryDict.json`: Contains necessary syntax and documentation for MicroPython coding on the LEGO SPIKE Prime platform. Ultimately we hope that this JSON file will be replaced by documentation built into the microcontroller itself. For now, we are using this isolated JSON documentation file to mimic the idea that the AI model has no pre-established knowledge of the robotic platform it is programming.
+`query_dict.json`: Contains necessary syntax and documentation for MicroPython coding on the LEGO SPIKE Prime platform. Ultimately we hope that this JSON file will be replaced by documentation built into the microcontroller itself. For now, we are using this isolated JSON documentation file to mimic the idea that the AI model has no pre-established knowledge of the robotic platform it is programming.
