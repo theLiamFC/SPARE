@@ -4,24 +4,18 @@ import asyncio
 import sys
 import json
 
-### ByteBard_XML ID
-bb_id = "asst_CFsqmgnJhalDKnZvyjGKOtg7"
-### PrimeBot ID
-pb_id = "asst_merTUbrMxt0Fo1sc9P17G1Ax"
-### Arduino Alvik ID
-aa_id = "asst_NiIdeWySoj4RYIRU7t6r2mpG"
-### Ai Alchemist ID
+### Ai Alchemist ID - this is NOT an API key
 aa_id = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 
 default_messages = {
     "0": "Move forwards in a loop. There are motors in ports A and B",
     "1": "Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
-    "2": "Create a theramin.using a touch sensor in port C and a distance sensor in port F",
+    "2": "Create a theramin using a touch sensor in port C and a distance sensor in port F",
     "3": "Print hello world to terminal: print('hello world')",
     "4": "Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
     "5": "Make roomba like robot that moves forwards until it hits something with the touch sensor \
 and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
-    "6": "I am placing the robot on a seesaw platform, write code to balance the robot at the center of the platform",
+    "6": "I am placing the robot on a seesaw platform, balance at the center of the platform",
 }
 
 
@@ -66,12 +60,12 @@ async def interface_loop(ai_interface):
 
 # Run the main function in the event loop
 if __name__ == "__main__":
-    port_l = "/dev/cu.usbmodem3356396133381"
-    port_j = "COM13"
+    # port = "/dev/cu.usbmodem3356396133381"
+    port = "COM13"
 
     # Initiate Serial Interface
     try:
-        serial = serial_interface.serial_interface(port_l)
+        serial = serial_interface.serial_interface(port)
     except Exception as e:
         print("Serial Connection Error: ", e)
         sys.exit()

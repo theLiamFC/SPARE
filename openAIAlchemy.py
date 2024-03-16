@@ -22,17 +22,18 @@ class openAIAlchemy:
         self.serial_interface = serial
         self.serial_interface.open_new()
         self.serial_interface.write_read("\x03")
-        self.verbose = verbose
 
         # Logging
-        if verbose:
+        self.verbose = verbose
+        if self.verbose:
             self.debug = True
         else:
             self.debug = debug
         self.curr_code = ""
-        self.this_log = open("this_log.txt", "w+")  # write (and read) over this file
-        self.good_log = open("good_log.txt", "a")  # append to this files
-        self.all_log = open("all_log.txt", "a")  # append to this files
+        log_path = "logs/"
+        self.this_log = open(log_path + "this_log.txt", "w+")  # write (and read) over this file
+        self.good_log = open(log_path + "good_log.txt", "a")  # append to this files
+        self.all_log  = open(log_path + "all_log.txt", "a")  # append to this files
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
