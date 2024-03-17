@@ -23,7 +23,7 @@ To use this repository, follow these steps:
 - Find the serial port of your LEGO SPIKE Prime device and update it in `main.py`.
 - Run `main.py` to start the interactive AI powered coding session.
 
-## File Descriptions
+### File Descriptions
 
 `ai_alchemy.py`: Contains the main class openAIAlchemy, which interfaces with the OpenAI API for communication.
 
