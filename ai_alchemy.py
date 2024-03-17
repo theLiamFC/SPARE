@@ -33,6 +33,7 @@ class AIAlchemy:
         self.this_log = open(log_path + "this_log.txt", "w+")  # write (and read) over this file
         self.good_log = open(log_path + "good_log.txt", "a")  # append to this files
         self.all_log  = open(log_path + "all_log.txt", "a")  # append to this files
+        
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 

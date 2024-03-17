@@ -52,7 +52,7 @@ async def interface_loop(ai_interface):
             user_prompt = default_messages[user_prompt]
             print(f"Using default message: {user_prompt}\n")
 
-        # Call chatGPT with prompt
+        # Call ChatGPT with prompt
         result = await ai_interface.run(user_prompt + additional_instructions)
         print("ChatGPT: " + result)
 
@@ -62,6 +62,7 @@ async def interface_loop(ai_interface):
 
 # Run the main function in the event loop
 if __name__ == "__main__":
+    #### CHANGE SERIAL PORT HERE ####
     # port = "/dev/cu.usbmodem3356396133381"
     port = "COM13"
 
