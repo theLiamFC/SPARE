@@ -327,13 +327,6 @@ class AIAlchemy:
         self.reg_print(self.__print_break(f"RUNNING CODE ({runtime} second(s))"))
         self.reg_print(original_code)
         # ctrl D (reset the robot), ctrl C (reset terminal), ctr E (enter paste mode)
-
-        # time.sleep(0.5)
-        # self.debug_print(
-        #     self.serial_interface.write_read(bytes("\x04", "utf-8"))
-        # )
-        # time.sleep(0.5)
-        # time.sleep(0.5)
         self.log_print("RESETTING")
         self.debug_print(self.serial_interface.write_read("\x03"))
         self.debug_print(

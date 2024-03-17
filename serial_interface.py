@@ -8,19 +8,6 @@ class SerialInterface:
     def __init__(self, port, fake_serial=False):
         self.port = port
         self.fake_serial = fake_serial
-        # if not fake_serial:
-        #     self.ser = serial.Serial(
-        #         port=self.port,  ## <----------- REPLACE with your SPIKE's port from!!!##
-        #         baudrate=115200,
-        #         parity=serial.PARITY_NONE,
-        #         stopbits=serial.STOPBITS_ONE,
-        #         bytesize=serial.EIGHTBITS,
-        #     )
-        #     # BUG catch serial not open error
-        #     self.ser.isOpen()
-        #     self.ser.write(b"\x03")
-        #     # self.serial_write(b"\x05")
-        #     garbage = self.serial_read()
 
     def open_new(self):
         if not self.fake_serial:
@@ -58,6 +45,7 @@ class SerialInterface:
         return self.read()
 
     def write_no_read(self, string):
+        string = bytes(string, "utf-8")
         if self.fake_serial:
             print(f"Sending to serial: {string}")
         else:
