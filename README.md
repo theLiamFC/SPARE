@@ -12,10 +12,10 @@ To use this repository, follow these steps:
 - Ensure you have Python installed on your system.
 - Clone this repository to your local machine.
 - Install all required dependencies:
-  - `pip install openai`
-  - `pip install opencv-python`
-  - `pip install pillow`
-  - `pip install serial`
+  - `pip install openai` (for calling the OpenAI API)
+  - `pip install opencv-python` (for capturing images for the get_visual_feedback function)
+  - `pip install pillow` (for opening images for the get_visual_feedback function)
+  - `pip install serial` (for communicating with the robot of USB)
 - Create an OpenAI API key [here](https://platform.openai.com/api-keys).
 - Set up your API key by following the instructions [here](https://platform.openai.com/docs/quickstart/step-2-set-up-your-api-key).
 - Plug in your LEGO SPIKE Prime to your computer and turn it on.
