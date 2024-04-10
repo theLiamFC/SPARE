@@ -24,14 +24,14 @@ async def interface_loop(ai_interface):
     use_cam = False
     additional_instructions = ""
     yes_cam = "Use the get_visual_feedback function to confirm what the robot is doing"
-    no_cam  = "Don't use the get_visul_feedback, just use get_feedback"
+    no_cam = "Don't use the get_visul_feedback, just use get_feedback"
     additional_instructions += yes_cam if use_cam else no_cam
     intro_statement = "ChatGPT: What would you like your spike prime to do today?\n"
     input_statement = (
         "['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
     )
 
-    # Reset terminal screen
+    # Clear terminal screen
     for i in range(20):
         print("\n")
     user_prompt = input(intro_statement + input_statement)

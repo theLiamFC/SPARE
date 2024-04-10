@@ -1,4 +1,4 @@
-from openai import OpenAI
+from openai import asyncOpenAI
 import cv2 as cv
 import time
 import asyncio
@@ -30,15 +30,17 @@ class AIAlchemy:
             self.debug = debug
         self.curr_code = ""
         log_path = "logs/"
-        self.this_log = open(log_path + "this_log.txt", "w+")  # write (and read) over this file
+        self.this_log = open(
+            log_path + "this_log.txt", "w+"
+        )  # write (and read) over this file
         self.good_log = open(log_path + "good_log.txt", "a")  # append to this files
-        self.all_log  = open(log_path + "all_log.txt", "a")  # append to this files
-        
+        self.all_log = open(log_path + "all_log.txt", "a")  # append to this files
+
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
         # Core variables
-        self.client = OpenAI()
+        self.client = asyncOpenAI()
         self.assistant_id = assistant_id
         self.run_id = None
         if thread_id == None:
@@ -47,7 +49,6 @@ class AIAlchemy:
             self.debug_print(f"THREAD_ID: {self.thread_id}")
         else:
             self.thread_id = thread_id
-
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
@@ -98,7 +99,6 @@ class AIAlchemy:
     def get_message(self):
         messages = self.client.beta.threads.messages.list(self.thread_id)
         return messages.data[0].content[0].text.value
-
 
     ################################################################
     ###################   PRIVATE FUNCTIONS   ######################
@@ -174,7 +174,7 @@ class AIAlchemy:
             name = toolCall.function.name
             self.verbose_print(toolCall.function.arguments)
             args = self.__clean_json(toolCall.function.arguments)
-            
+
             # handling for each available function call
             if name == "get_feedback":
                 # print arg to command line and get written response from human
@@ -243,7 +243,6 @@ class AIAlchemy:
         )  # BUG also FREEZING here
         self.debug_print("Done submitting outputs")
 
-
     ################################################################
     #####################   IMAGE CAPTURE   ########################
     ################################################################
@@ -267,10 +266,10 @@ class AIAlchemy:
         # collect images from webcam
         self.debug_print("Taking images IN 3 seconds")
         time.sleep(3)
-        
+
         # NOTE to Liam: I (Jesse) added the code running and related serial sending
-            # to a separate function, the only difference this makes here is that 
-            # it does the same printing as above which maybe isn't wanted?
+        # to a separate function, the only difference this makes here is that
+        # it does the same printing as above which maybe isn't wanted?
         repl = self.__run_code(self.curr_code, num * interval)
         # self.verbose_print(f"REPL response: {repl}")
 
@@ -314,7 +313,6 @@ class AIAlchemy:
         self.debug_print("Done")
         return response
 
-
     ################################################################
     #####################   CODE RUNNING   #########################
     ################################################################
@@ -351,11 +349,7 @@ class AIAlchemy:
             lines = temp_response.split("\n")
             for line in lines:
                 line = line.strip()
-                if (
-                    line != ""
-                    and ">>>" not in line
-                    and "<awaitable>" not in line
-                ):
+                if line != "" and ">>>" not in line and "<awaitable>" not in line:
                     self.reg_print(line)
                     serial_response += "\n" + line
             time.sleep(0.5)
@@ -371,7 +365,6 @@ class AIAlchemy:
 
         self.debug_print("Program ended")
         return serial_response
-
 
     ################################################################
     ####################   LOGGING FUNCTIONS   #####################
@@ -401,7 +394,7 @@ class AIAlchemy:
             suffix = ""
         result = breaker + " " + name + " " + breaker + suffix
         return result
-    
+
     # If the AI assistant returns incorrectly formatted JSON clean before returning
     def __clean_json(self, json_text):
         try:
