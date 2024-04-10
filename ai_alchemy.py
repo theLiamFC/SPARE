@@ -1,4 +1,4 @@
-from openai import asyncOpenAI
+from openai import AsyncOpenAI
 import cv2 as cv
 import time
 import asyncio
@@ -15,7 +15,8 @@ class AIAlchemy:
     ):
         # Class assets
         self.query_dict = json.load(open("query_dict.json", "r"))
-        self.cam = cv.VideoCapture(0)
+        # self.cam = cv.VideoCapture(0)
+        self.thread_id = thread_id
 
         # Serial initiation
         self.serial_interface = serial
@@ -40,55 +41,59 @@ class AIAlchemy:
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
         # Core variables
-        self.client = asyncOpenAI()
+        self.client = AsyncOpenAI()
         self.assistant_id = assistant_id
         self.run_id = None
-        if thread_id == None:
-            new_thread = self.client.beta.threads.create()
-            self.thread_id = new_thread.id
-            self.debug_print(f"THREAD_ID: {self.thread_id}")
-        else:
-            self.thread_id = thread_id
+
+        asyncio.run(self.get_thread())
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
     ################################################################
 
+    async def get_thread(self):
+        if self.thread_id == None:
+            newThread = await self.client.beta.threads.create()
+            self.thread_id = newThread.id
+            self.debug_print(f"THREAD_ID: {self.thread_id}")
+        else:
+            self.thread_id = self.thread_id
+
     # Change model of current assistant
-    def change_model(self, modelNum):
+    async def change_model(self, modelNum):
         models = ["gpt-4-turbo-preview", "gpt-4", "gpt-3.5-turbo-0125"]
-        self.client.beta.assistants.update(
+        await self.client.beta.assistants.update(
             self.assistant_id,
             model=models[modelNum],
         )
 
     # Retreive assistants for purpose of finding IDs
-    def get_assistants(self):
-        my_assistants = self.client.beta.assistants.list(
+    async def get_assistants(self):
+        my_assistants = await self.client.beta.assistants.list(
             order="desc",
             limit="20",
         )
         return my_assistants.data
 
     # Retrieve all runs in a current thread
-    def get_runs(self):
-        runs = self.client.beta.threads.runs.list(self.thread_id)
+    async def get_runs(self):
+        runs = await self.client.beta.threads.runs.list(self.thread_id)
         return runs
 
     # Kills all runs that are in progress or requiring action
-    def kill_all_runs(self):
-        runs = self.get_runs()
+    async def kill_all_runs(self):
+        runs = await self.get_runs()
         for run in runs.data:
             if run.status == "in_progress" or run.status == "requires_action":
-                self.client.beta.threads.runs.cancel(
+                await self.client.beta.threads.runs.cancel(
                     thread_id=self.thread_id, run_id=run.id
                 )
 
     # Public Debugging Function
     # Add message to current thread
-    def add_message(self, message):
+    async def add_message(self, message):
         self.debug_print("Adding message")
-        self.client.beta.threads.messages.create(
+        await self.client.beta.threads.messages.create(
             self.thread_id,
             role="user",
             content=message,
@@ -96,8 +101,8 @@ class AIAlchemy:
 
     # Public Debugging Function
     # Get most recent message from the thread
-    def get_message(self):
-        messages = self.client.beta.threads.messages.list(self.thread_id)
+    async def get_message(self):
+        messages = await self.client.beta.threads.messages.list(self.thread_id)
         return messages.data[0].content[0].text.value
 
     ################################################################
@@ -108,7 +113,7 @@ class AIAlchemy:
     async def __run_manager(self):
         if self.run_id == None:  # check for existing run
             self.debug_print("Creating new run")
-            run = self.client.beta.threads.runs.create(
+            run = await self.client.beta.threads.runs.create(
                 thread_id=self.thread_id, assistant_id=self.assistant_id
             )  # BUG FREEZING HERE
             self.run_id = run.id
@@ -121,9 +126,10 @@ class AIAlchemy:
         # exits upon completion, failure, or tool call response required
         last_time = time.time()
         while status not in ["completed", "failed", "requires_action"]:
-            status = self.client.beta.threads.runs.retrieve(
+            response = await self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
-            ).status  # BUG this api call seems to be FREEZING code occasionally
+            )
+            status = response.status
             if self.debug and time.time() - last_time > 5:
                 self.debug_print(f"Longer than normal runtime: {status}")
                 last_time = time.time()
@@ -133,19 +139,16 @@ class AIAlchemy:
 
         # run no longer in progress, handle each possible run condition
         if status == "requires_action":  # delegate tool calls to __function_manager()
-            calls = self.client.beta.threads.runs.retrieve(
+            response = await self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id, run_id=self.run_id
-            ).required_action  # also FREEZING after this call
-            self.__function_manager(calls)
+            )
+            calls = response.required_action
+            await self.__function_manager(calls)
             return await self.__run_manager()
         elif status == "completed":  # return response
             self.run_id = None
-            return (
-                self.client.beta.threads.messages.list(self.thread_id)
-                .data[0]
-                .content[0]
-                .text.value
-            )
+            response = await self.client.beta.threads.messages.list(self.thread_id)
+            return response.data[0].content[0].text.value
         elif status == "failed":  # something went wrong
             # BUG should probably handle this better
             # and retry run up to max attempts
@@ -153,13 +156,13 @@ class AIAlchemy:
             self.run_id = None
             self.reg_print("Run failed")
             self.reg_print(
-                self.client.beta.threads.runs.retrieve(
+                await self.client.beta.threads.runs.retrieve(
                     thread_id=self.thread_id, run_id=run.id
                 )
             )
 
     # Handle tool call responses
-    def __function_manager(self, calls):
+    async def __function_manager(self, calls):
         self.debug_print("Managing functions")
         self.this_log.flush()
 
@@ -238,7 +241,7 @@ class AIAlchemy:
 
         # submit all collected tool call responses
         self.verbose_print(f"Submitting tool outputs: {tool_outputs}")
-        self.client.beta.threads.runs.submit_tool_outputs(
+        await self.client.beta.threads.runs.submit_tool_outputs(
             thread_id=self.thread_id, run_id=self.run_id, tool_outputs=tool_outputs
         )  # BUG also FREEZING here
         self.debug_print("Done submitting outputs")
@@ -434,7 +437,7 @@ class AIAlchemy:
 
     # Public method to start the OpenAI run asynchronously
     async def run(self, message):
-        self.add_message(message)
+        await self.add_message(message)
         result = await self.__run_manager()
         return result
 

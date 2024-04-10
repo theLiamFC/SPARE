@@ -21,11 +21,6 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
 
 # Main interface loop
 async def interface_loop(ai_interface):
-    use_cam = False
-    additional_instructions = ""
-    yes_cam = "Use the get_visual_feedback function to confirm what the robot is doing"
-    no_cam = "Don't use the get_visul_feedback, just use get_feedback"
-    additional_instructions += yes_cam if use_cam else no_cam
     intro_statement = "ChatGPT: What would you like your spike prime to do today?\n"
     input_statement = (
         "['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
@@ -53,7 +48,7 @@ async def interface_loop(ai_interface):
             print(f"Using default message: {user_prompt}\n")
 
         # Call ChatGPT with prompt
-        result = await ai_interface.run(user_prompt + additional_instructions)
+        result = await ai_interface.run(user_prompt)
         print("ChatGPT: " + result)
 
         user_prompt = input(input_statement)
