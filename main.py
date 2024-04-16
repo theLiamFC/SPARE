@@ -21,7 +21,7 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
 
 # Main interface loop
 async def interface_loop(ai_interface):
-    intro_statement = "ChatGPT: What would you like your spike prime to do today?\n"
+    intro_statement = "ChatGPT: What would you like to code today?\n"
     input_statement = (
         "['e','exit'] to stop the program.\n['help'] to see example prompts\n\nHuman: "
     )
@@ -53,6 +53,8 @@ async def interface_loop(ai_interface):
 
         user_prompt = input(input_statement)
         print()
+
+        asyncio.run(ai_interface.__worker_manager())
 
 
 # Run the main function in the event loop
