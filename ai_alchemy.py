@@ -5,8 +5,10 @@ import asyncio
 import json
 import base64
 import re
+from serial_interface import SerialInterface
 from PIL import Image
 from io import BytesIO
+import sys
 
 CEO_ID = "asst_CxlSfepjkDuK54otqmh3zsfV"
 WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
@@ -14,16 +16,23 @@ WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
 
 class AIAlchemy:
     def __init__(
-        self, assistant_id, serial, thread_id=None, debug=False, verbose=False
+        self, assistant_id, task, device, serial_port, thread_id=None, debug=False, verbose=False
     ):
         # Class assets
         self.query_dict = json.load(open("query_dict.json", "r"))
         # self.cam = cv.VideoCapture(0)
         self.thread_id = thread_id
         self.out_mail = None
-        self.in_mail = None
+        self.in_mail = task
 
-        # Serial initiation
+        # Serial Initiation
+        # Instantiate Serial Interface
+        try:
+            serial = SerialInterface(serial_port, fake_serial=False)
+        except Exception as e:
+            print("Serial Connection Error: ", e)
+            sys.exit()
+
         self.serial_interface = serial
         self.serial_interface.open_new()
         self.serial_interface.write_read("\x03")
@@ -52,13 +61,30 @@ class AIAlchemy:
         if self.assistant_id == CEO_ID:
             self.ceo_status = True
 
-        asyncio.run(self.get_thread())
+        self.task = task
+        self.device = device
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
     ################################################################
 
-    async def run(self, message):
+    async def run(self):
+        await asyncio.run(self.get_thread())
+        print("entering run")
+        while True:
+            # check mailbox
+            # if mailbox is full do a run with that message and put back in the mailbox
+            self.log_print("checking mail box: " + str(self.in_mail))
+            if self.in_mail != None:
+                self.log_print("running")
+                message = self.in_mail
+                self.in_mail = None
+                self.out_mail = await self.run_thread(message)
+            else:
+                await asyncio.sleep(0.5)
+
+    async def run_thread(self, message):
+        print("in run_thread")
         await self.add_message(message)
         result = await self.__run_manager()
         return result
@@ -192,36 +218,38 @@ class AIAlchemy:
             if name == "get_feedback":
                 # print arg to command line and get written response from human
                 self.reg_print(f"ChatGPT: Hey Human, {args['prompt']}")
-                self.outward_message = args['prompt']
-                if self.ceo_status:
-                    human_response = input("Human: ")
-                    print()
-                    tool_outputs.append({"tool_call_id": id, "output": human_response})
-                else:
-                    while self.response == None:
-                        asyncio.sleep(0.5)
-                    tool_outputs.append({"tool_call_id": id, "output": self.response})
-                    self.response = None
+                self.out_mail = args['prompt']
+                while self.in_mail == None:
+                    self.log_print("waiting for response")
+                    await asyncio.sleep(0.2)
+                tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
+                self.log_print("sent mail: "+self.in_mail)
+                self.in_mail = None
             elif name == "get_documentation":
+                query = args["query"].lower()
                 self.reg_print(
-                    f"ChatGPT: I am querying documentation for {args['query'].lower()}"
+                    f"ChatGPT: I am querying documentation for {query} on {self.device}"
                 )
 
                 # search query_dict json file for requested term
                 # BUG if chat has issues requesting exact term we could introduce
                 # a semantic relation search upon 0 zero result
-                for aClass in self.query_dict["class"]:
-                    if aClass["name"] == args["query"].lower():
-                        query_response = aClass
-                        break
+                if self.device == "SPIKE":
+                    if query == "help":
+                        query_response = "[motor, motor_pair, color_sensor, distance_sensor, motion_sensor, force_sensor, sound, light_matrix, runloop]"
                     else:
-                        query_response = (
-                            "No available information on "
-                            + args["query"].lower()
-                            + ". Try rephrasing the term you are querying, \
-                                for example changing underscores or phrasing, \
-                                or alternatively ask the human for help."
-                        )
+                        for aClass in self.query_dict["class"]:
+                            if aClass["name"] == query:
+                                query_response = aClass
+                                break
+                            else:
+                                query_response = (
+                                    "No available information on "
+                                    + query
+                                    + ". Try rephrasing the term you are querying, \
+                                        for example changing underscores or phrasing, \
+                                        or alternatively ask the human for help."
+                                )
                 self.verbose_print(query_response)
                 tool_outputs.append(
                     {"tool_call_id": id, "output": json.dumps(query_response)}
@@ -259,7 +287,7 @@ class AIAlchemy:
                 assistant_id = args[WORKER_ID]
                 serial = args['serial']
                 this_worker = AIAlchemy(assistant_id, serial, debug=False, verbose=False)
-                asyncio.run(this_worker.run(args['prompt']))
+                asyncio.run(this_worker.run_thread(args['prompt']))
                 self.workers.append(this_worker)
 
         # submit all collected tool call responses
@@ -457,6 +485,7 @@ class AIAlchemy:
         if "<awaitable>" not in text:
             self.this_log.write("\n" + str(text))
             self.all_log.write("\n" + str(text))
+        self.this_log.flush()
 
     # Safely end program and save and close log files
     def close(self):

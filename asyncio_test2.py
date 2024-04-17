@@ -2,8 +2,8 @@ import asyncio
 import time
 import random
 
-LIMIT = 3
-mailbox = False
+LIMIT = 5
+mailbox = None
 start = time.perf_counter()
 counter = 0
 
@@ -15,14 +15,14 @@ async def monitor_mailbox():
 
     while True:
 
-        if mailbox:
+        if mailbox != None:
             print(f"MONITOR: got the mailbox at: {time.perf_counter() - start:.2f}")
-            print(f"Mailbox status: {mailbox}, Counter: {counter}")
-            mailbox = False
+            print(f"Mailbox message: {mailbox}, Counter: {counter}")
+            mailbox = None
             counter += 1
 
             if counter > LIMIT:  # Optional: stopping condition
-                print("Counter reached 5, MONITOR stopping...")
+                print(f"Counter reached {LIMIT}, MONITOR stopping...")
                 break
         else:
             rand = random.randint(1, 3)
@@ -33,11 +33,11 @@ async def mailman():
     global mailbox
 
     while True:
-        if counter > LIMIT:  # Optional: stopping condition
-            print("Counter reached 5, MAILMAN stopping...")
-            break
-        if random.randint(0, 10) > 3 and not mailbox:
-            mailbox = True
+        # if counter > LIMIT:  # Optional: stopping condition
+        #     print("Counter reached 5, MAILMAN stopping...")
+        #     break
+        if random.randint(0, 10) > 3 and mailbox == None:
+            mailbox = input("A message for the mailbox: ")
             print(f"MAILMAN: put something in the mailbox at {time.perf_counter() - start:.2f}")
             print(f"Mailbox status: {mailbox}, Counter: {counter}")
         else:
