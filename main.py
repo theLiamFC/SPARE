@@ -4,8 +4,8 @@ import sys
 import json
 import time
 ### AI Alchemist Assistant ID - this is NOT an API key
-SPIKE_ID = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
-WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
+# SPIKE_ID = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
+# WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
 
 default_messages = {
     "0": "Move forwards in a loop. There are motors in ports A and B",
@@ -18,7 +18,7 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
     "6": "I am placing the robot on a seesaw platform, balance at the center of the platform",
 }
 
-
+'''
 # Main interface loop
 async def interface_loop(ai_interface):
     intro_statement = "ChatGPT: What would you like to code today?\n"
@@ -53,7 +53,7 @@ async def interface_loop(ai_interface):
 
         user_prompt = input(input_statement)
         print()
-
+'''
 
 async def run_assistant(ai_interface):
     result = await ai_interface.run()
@@ -77,7 +77,8 @@ if __name__ == "__main__":
     # Instantiate AIAlchemy Class
     task = default_messages["0"]
     device = "SPIKE"
-    ai_interface = AIAlchemy(WORKER_ID, task, device, serial_port, debug=False, verbose=False)
+    role = "ceo"
+    ai_interface = AIAlchemy(role, task, device, serial_port, debug=False, verbose=False)
 
     # start loop
     fred = asyncio.new_event_loop()

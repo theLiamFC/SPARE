@@ -10,13 +10,10 @@ from PIL import Image
 from io import BytesIO
 import sys
 
-CEO_ID = "asst_CxlSfepjkDuK54otqmh3zsfV"
-WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
-
 
 class AIAlchemy:
     def __init__(
-        self, assistant_id, task, device, serial_port, thread_id=None, debug=False, verbose=False
+        self, role, task, device, serial_port, thread_id=None, debug=False, verbose=False
     ):
         # Class assets
         self.query_dict = json.load(open("query_dict.json", "r"))
@@ -52,17 +49,29 @@ class AIAlchemy:
         formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
+        # other variables
+        self.CEO_ID    = "asst_CxlSfepjkDuK54otqmh3zsfV"
+        self.WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
+
         # Core variables
         self.client = AsyncOpenAI()
-        self.assistant_id = assistant_id
+        if role == "ceo":
+            self.assistant_id = self.CEO_ID
+            self.ceo_status = True
+        elif role == "worker":
+            self.assistant_id = self.WORKER_ID
+            self.ceo_status = False
+        else:
+            raise Exception("invalid role, use 'ceo' or 'worker'")
+
+
         self.run_id = None
         self.workers = []
-        self.ceo_status = False
-        if self.assistant_id == CEO_ID:
-            self.ceo_status = True
 
         self.task = task
         self.device = device
+
+
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
@@ -284,10 +293,10 @@ class AIAlchemy:
                     {"tool_call_id": id, "output": json.dumps(img_response)}
                 )
             elif name == "create_worker":
-                assistant_id = args[WORKER_ID]
                 serial = args['serial']
-                this_worker = AIAlchemy(assistant_id, serial, debug=False, verbose=False)
-                asyncio.run(this_worker.run_thread(args['prompt']))
+                task = args['prompt']
+                this_worker = AIAlchemy("worker", serial, debug=False, verbose=False)
+                # asyncio.run(this_worker.run_thread(args['prompt']))
                 self.workers.append(this_worker)
 
         # submit all collected tool call responses
