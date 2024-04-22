@@ -2,4 +2,114 @@
 
 
 
-PROGRAM OUTPUT FROM 2024-04-17 12:56:35
+PROGRAM OUTPUT FROM 2024-04-22 12:59:36
+
+ - Status: THREAD_ID: thread_VVTD6Attp9bCVMwEDkfUtoKB
+checking mail box: Please write a program for a robot that makes it move forwards in a loop. The robot has motors connected to ports A and B.
+running
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "query": "motor"
+}
+forward_loop_bot: I am querying documentation for motor on spike
+{'name': 'motor', 'description': 'a class that allows access to spike prime motors', 'initialization': 'none', 'required imports': 'import motor \n from hub import port \n import runloop', 'function': {'name': 'Run motor for degrees', 'syntax': 'motor.run_for_degrees(port.B, 360, 75)', 'awaitable': 'yes, query async and runloop', 'parameters': {'parameter': [{'name': 'Port', 'description': 'Port of spike prime to which motor is connected', 'values': 'port.A,port.B,port.C,port.D,port.E,port.F'}, {'name': 'Degrees', 'description': 'Degrees for which the motor should turn.', 'values': 'any integer'}, {'name': 'Speed', 'description': 'Speed at which the motor should run in degrees per second.', 'values': 'any integer'}]}}}
+Submitting tool outputs: [{'tool_call_id': 'call_6P4MpFeeJKGth58uMI9aME1s', 'output': '{"name": "motor", "description": "a class that allows access to spike prime motors", "initialization": "none", "required imports": "import motor \\n from hub import port \\n import runloop", "function": {"name": "Run motor for degrees", "syntax": "motor.run_for_degrees(port.B, 360, 75)", "awaitable": "yes, query async and runloop", "parameters": {"parameter": [{"name": "Port", "description": "Port of spike prime to which motor is connected", "values": "port.A,port.B,port.C,port.D,port.E,port.F"}, {"name": "Degrees", "description": "Degrees for which the motor should turn.", "values": "any integer"}, {"name": "Speed", "description": "Speed at which the motor should run in degrees per second.", "values": "any integer"}]}}}'}]
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "code": "import motor \n from hub import port \n import runloop \n while True: \n     motor.run_for_degrees(port.A, 360, 75) \n     motor.run_for_degrees(port.B, 360, 75)",
+  "runtime": "5"
+}
+=========================== RUNNING CODE (5 second(s)) ============================
+import motor 
+from hub import port 
+import runloop 
+while True: 
+    motor.run_for_degrees(port.A, 360, 75) 
+    motor.run_for_degrees(port.B, 360, 75)
+RESETTING
+
+>>> 
+>>> 
+Paste mode start: 
+paste mode; Ctrl-C to cancel, Ctrl-D to finish
+=== 
+=== 
+
+================================== SERIAL OUPUT ===================================
+
+=== 
+import motor 
+=== 
+from hub import port 
+=== 
+import runloop 
+=== 
+while True: 
+=== 
+    motor.run_for_degrees(port.A, 360, 75) 
+=== 
+    motor.run_for_degrees(port.B, 360, 75)
+=== 
+
+
+=== 
+import motor 
+=== 
+from hub import port 
+=== 
+import runloop 
+=== 
+while True: 
+=== 
+    motor.run_for_degrees(port.A, 360, 75) 
+=== 
+    motor.run_for_degrees(port.B, 360, 75)
+=== 
+
+able>
+<
+awaitable>
+<awaitabl
+e>
+<awa
+itable>
+======================================= END =======================================
+ - Status: Program ended
+ - Status: Done submitting outputs
+ - Status: Using existing run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "prompt": "Did the robot move forward as expected?"
+}
+forward_loop_bot: Hey CEO, Did the robot move forward as expected?
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response
+forward_loop_bot is waiting for response

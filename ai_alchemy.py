@@ -13,7 +13,7 @@ import sys
 
 class AIAlchemy:
     def __init__(
-        self, role, task, device, serial_port, thread_id=None, debug=False, verbose=False
+        self, name, role, task, parent_name, device=None, serial_port=None, thread_id=None, debug=False, verbose=False
     ):
         # Class assets
         self.query_dict = json.load(open("query_dict.json", "r"))
@@ -21,18 +21,6 @@ class AIAlchemy:
         self.thread_id = thread_id
         self.out_mail = None
         self.in_mail = task
-
-        # Serial Initiation
-        # Instantiate Serial Interface
-        try:
-            serial = SerialInterface(serial_port, fake_serial=False)
-        except Exception as e:
-            print("Serial Connection Error: ", e)
-            sys.exit()
-
-        self.serial_interface = serial
-        self.serial_interface.open_new()
-        self.serial_interface.write_read("\x03")
 
         # Logging
         self.verbose = verbose
@@ -58,42 +46,66 @@ class AIAlchemy:
         if role == "ceo":
             self.assistant_id = self.CEO_ID
             self.ceo_status = True
+            self.workers = []
         elif role == "worker":
             self.assistant_id = self.WORKER_ID
             self.ceo_status = False
-        else:
-            raise Exception("invalid role, use 'ceo' or 'worker'")
+            self.device = device
 
+            # Serial Initiation
+            # Instantiate Serial Interface
+            try:
+                serial = SerialInterface(serial_port, fake_serial=False)
+            except Exception as e:
+                print("Serial Connection Error: ", e)
+                sys.exit()
+
+            self.serial_interface = serial
+            self.serial_interface.open_new()
+            self.serial_interface.write_read("\x03")
+
+        else:
+            raise Exception("Invalid role, use 'ceo' or 'worker'")
 
         self.run_id = None
-        self.workers = []
-
+        self.name = name
         self.task = task
-        self.device = device
-
-
+        self.parent_name = parent_name
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
     ################################################################
 
     async def run(self):
-        await asyncio.run(self.get_thread())
-        print("entering run")
+        await self.get_thread()
         while True:
             # check mailbox
             # if mailbox is full do a run with that message and put back in the mailbox
             self.log_print("checking mail box: " + str(self.in_mail))
+            print(self.name + "is checking mail box: " + str(self.in_mail))
             if self.in_mail != None:
                 self.log_print("running")
                 message = self.in_mail
                 self.in_mail = None
                 self.out_mail = await self.run_thread(message)
             else:
-                await asyncio.sleep(0.5)
+                print("CEO is checking workers")
+                await self.check_workers()
+            await asyncio.sleep(0.5)
+
+    async def check_workers(self):
+        for worker in self.workers:
+            if worker.out_mail != None:
+                name = worker.name
+                header = "You got a message from " + name + ". Please respond to their message: "
+                worker.in_mail = await self.run_thread(header + worker.out_mail)
+                worker.out_mail = None
+
+    async def run_worker(self, worker):
+        await worker.run()
+        return
 
     async def run_thread(self, message):
-        print("in run_thread")
         await self.add_message(message)
         result = await self.__run_manager()
         return result
@@ -226,10 +238,11 @@ class AIAlchemy:
             # handling for each available function call
             if name == "get_feedback":
                 # print arg to command line and get written response from human
-                self.reg_print(f"ChatGPT: Hey Human, {args['prompt']}")
+                self.reg_print(f"{self.name}: Hey {self.parent_name}, {args['prompt']}")
                 self.out_mail = args['prompt']
                 while self.in_mail == None:
-                    self.log_print("waiting for response")
+                    self.log_print(self.name + " is waiting for response")
+                    print(self.name + " is waiting for response")
                     await asyncio.sleep(0.2)
                 tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
                 self.log_print("sent mail: "+self.in_mail)
@@ -237,13 +250,13 @@ class AIAlchemy:
             elif name == "get_documentation":
                 query = args["query"].lower()
                 self.reg_print(
-                    f"ChatGPT: I am querying documentation for {query} on {self.device}"
+                    f"{self.name}: I am querying documentation for {query} on {self.device}"
                 )
 
                 # search query_dict json file for requested term
                 # BUG if chat has issues requesting exact term we could introduce
                 # a semantic relation search upon 0 zero result
-                if self.device == "SPIKE":
+                if self.device.lower() == "spike":
                     if query == "help":
                         query_response = "[motor, motor_pair, color_sensor, distance_sensor, motion_sensor, force_sensor, sound, light_matrix, runloop]"
                     else:
@@ -259,6 +272,9 @@ class AIAlchemy:
                                         for example changing underscores or phrasing, \
                                         or alternatively ask the human for help."
                                 )
+                else:
+                    query_response = "DEVICE NOT FOUND"
+                    raise Exception("Device not found")
                 self.verbose_print(query_response)
                 tool_outputs.append(
                     {"tool_call_id": id, "output": json.dumps(query_response)}
@@ -278,7 +294,7 @@ class AIAlchemy:
                 interval = float(args["interval"])  # time interval between images
 
                 self.debug_print(
-                    f"ChatGPT: I am getting visual feedback for {query.lower()}"
+                    f"{self.name}: I am getting visual feedback for {query.lower()}"
                 )
 
                 img_response = (
@@ -293,12 +309,24 @@ class AIAlchemy:
                     {"tool_call_id": id, "output": json.dumps(img_response)}
                 )
             elif name == "create_worker":
+                self.reg_print("CREATING WORKER")
+                print(args)
+                name   = args['name']
+                role   =  "worker"
                 serial = args['serial']
-                task = args['prompt']
-                this_worker = AIAlchemy("worker", serial, debug=False, verbose=False)
-                # asyncio.run(this_worker.run_thread(args['prompt']))
+                task   = args['task']
+                device = args['device']
+                parent_name = self.name
+                this_worker = AIAlchemy(name, role, task, parent_name, device, serial, debug=False, verbose=False)
+                # fred = asyncio.new_event_loop()
+                # fred.create_task(self.run_worker(this_worker))
+                # fred.run_forever()
+                asyncio.run(this_worker.run())
                 self.workers.append(this_worker)
-
+                tool_outputs.append(
+                    {"tool_call_id": id, "output": f"You successfully created worker {name}"}
+                )
+                print("asdjfhlgkal;'fji")
         # submit all collected tool call responses
         self.verbose_print(f"Submitting tool outputs: {tool_outputs}")
         await self.client.beta.threads.runs.submit_tool_outputs(
