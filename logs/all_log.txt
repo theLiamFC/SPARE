@@ -138752,3 +138752,52 @@ forward_loop_bot is waiting for response
 forward_loop_bot is waiting for response
 forward_loop_bot is waiting for response
 forward_loop_bot is waiting for response
+
+
+
+PROGRAM OUTPUT FROM 2024-04-22 14:07:37
+
+ - Status: THREAD_ID: thread_16zIQncgCCKse5QtNPtZiFZy
+checking mail box: Move forwards in a loop. There are motors in ports A and B use serial port /dev/cu.usbmodem3356396133381
+running
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "task": "Please create a script to control two motors connected to ports A and B. The motors should continually drive the robot forward in an uninterrupted loop.",
+  "name": "Forward_Loop_Worker",
+  "serial": "/dev/cu.usbmodem3356396133381",
+  "device": "spike"
+}
+CREATING WORKER
+
+
+
+PROGRAM OUTPUT FROM 2024-04-22 14:07:47
+
+
+
+
+PROGRAM OUTPUT FROM 2024-04-23 13:32:22
+
+ - Status: THREAD_ID: thread_TMIXljblDUIB7yqP7nTZtvAB
+checking mail box: Move forwards in a loop. There are motors in ports A and B use serial port /dev/cu.usbmodem3356396133381
+running
+ - Status: Adding message
+ - Status: Creating new run
+ - Status: Run in progress
+ - Status: Status: requires_action
+ - Status: Managing functions
+{
+  "task": "Create a program to move the robot forward in a loop. Motors are connected on ports A and B.",
+  "name": "worker1",
+  "serial": "/dev/cu.usbmodem3356396133381",
+  "device": "spike"
+}
+CREATING WORKER
+
+
+
+PROGRAM OUTPUT FROM 2024-04-23 13:32:30

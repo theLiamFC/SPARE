@@ -76,13 +76,14 @@ class AIAlchemy:
     ####################   PUBLIC FUNCTIONS   ######################
     ################################################################
 
-    async def run(self):
+    async def run(self,tg):
+        self.tg = tg
         await self.get_thread()
         while True:
             # check mailbox
             # if mailbox is full do a run with that message and put back in the mailbox
             self.log_print("checking mail box: " + str(self.in_mail))
-            print(self.name + "is checking mail box: " + str(self.in_mail))
+            print(self.name + " is checking mail box: " + str(self.in_mail))
             if self.in_mail != None:
                 self.log_print("running")
                 message = self.in_mail
@@ -321,7 +322,8 @@ class AIAlchemy:
                 # fred = asyncio.new_event_loop()
                 # fred.create_task(self.run_worker(this_worker))
                 # fred.run_forever()
-                asyncio.run(this_worker.run())
+                #asyncio.run(this_worker.run())
+                task = self.tg.create_task(this_worker.run(self.tg))
                 self.workers.append(this_worker)
                 tool_outputs.append(
                     {"tool_call_id": id, "output": f"You successfully created worker {name}"}

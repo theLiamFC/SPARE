@@ -57,8 +57,8 @@ async def interface_loop(ceo_assistant):
         print()
 '''
 
-async def run_assistant(ceo_assistant):
-    result = await ceo_assistant.run()
+async def run_assistant(ceo_assistant,tg):
+    result = await ceo_assistant.run(tg)
     return result
 
 async def check_mailbox(ceo_assistant):
@@ -73,7 +73,7 @@ async def check_mailbox(ceo_assistant):
 async def main():
     async with asyncio.TaskGroup() as tg:
         task1 = tg.create_task(check_mailbox(ceo_assistant))
-        task2 = tg.create_task(run_assistant(ceo_assistant)) # pass TG through
+        task2 = tg.create_task(run_assistant(ceo_assistant,tg)) # pass TG through
 
 if __name__ == "__main__":
     #### CHANGE SERIAL PORT HERE ####
