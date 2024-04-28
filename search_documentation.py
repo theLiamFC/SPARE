@@ -34,6 +34,3 @@ def searchDoc(device,query):
         return noResults
     except KeyError as e:
         return noResults
-
-
-print(json.dumps(searchDoc('spike','motor')))
