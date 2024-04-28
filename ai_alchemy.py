@@ -6,6 +6,7 @@ import json
 import base64
 import re
 from serial_interface import SerialInterface
+from search_documentation import searchDoc
 from PIL import Image
 from io import BytesIO
 import sys
@@ -284,33 +285,10 @@ class AIAlchemy:
                     f"{self.name}: I am querying documentation for {query} on {self.device}"
                 )
 
-                # search query_dict json file for requested term
-                # BUG if chat has issues requesting exact term we could introduce
-                # a semantic relation search upon 0 zero result
-                if self.device == "spike":
-                    if query == "help":
-                        query_response = "[motor, motor_pair, color_sensor, distance_sensor, motion_sensor, force_sensor, sound, light_matrix, runloop]"
-                    else:
-                        for aClass in self.query_dict["class"]:
-                            if aClass["name"] == query:
-                                query_response = aClass
-                                break
-                            else:
-                                query_response = (
-                                    "No available information on "
-                                    + query
-                                    + ". Try rephrasing the term you are querying, \
-                                        for example changing underscores or phrasing, \
-                                        or alternatively ask the human for help."
-                                )
-                elif self.device == "openmv":
-                    pass
-                elif self.device == "pico":
-                    pass
-                else:
-                    query_response = "DEVICE NOT FOUND"
-                    raise Exception("Device not found")
+                query_response = json.dumps(searchDoc(self.device,query))
+
                 self.verbose_print(query_response)
+                
                 tool_outputs.append(
                     {"tool_call_id": id, "output": json.dumps(query_response)}
                 )
