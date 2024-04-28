@@ -11,6 +11,18 @@ from io import BytesIO
 import sys
 
 
+default_messages = {
+    "0": "Move the spike prime forwards in a loop. There are motors in ports A and B",
+    "1": "Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
+    "2": "Create a theramin using a touch sensor in port C and a distance sensor in port F",
+    "3": "Print hello world to terminal: print('hello world')",
+    "4": "Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
+    "5": "Make roomba like robot that moves forwards until it hits something with the touch sensor \
+and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
+    "6": "I am placing the robot on a seesaw platform, balance at the center of the platform",
+}
+
+
 class AIAlchemy:
     def __init__(
         self, name, role, task, parent_name, device=None, serial_port=None, thread_id=None, debug=False, verbose=False
@@ -45,17 +57,17 @@ class AIAlchemy:
         self.client = AsyncOpenAI()
         if role == "ceo":
             self.assistant_id = self.CEO_ID
-            self.ceo_status = True
+            self.is_ceo = True
             self.workers = []
         elif role == "worker":
             self.assistant_id = self.WORKER_ID
-            self.ceo_status = False
-            self.device = device
+            self.is_ceo = False
+            self.device = device.lower()
 
             # Serial Initiation
             # Instantiate Serial Interface
             try:
-                serial = SerialInterface(serial_port, fake_serial=False)
+                serial = SerialInterface(serial_port, fake_serial=True)
             except Exception as e:
                 print("Serial Connection Error: ", e)
                 sys.exit()
@@ -82,24 +94,42 @@ class AIAlchemy:
         while True:
             # check mailbox
             # if mailbox is full do a run with that message and put back in the mailbox
-            self.log_print("checking mail box: " + str(self.in_mail))
-            print(self.name + " is checking mail box: " + str(self.in_mail))
-            if self.in_mail != None:
-                self.log_print("running")
-                message = self.in_mail
+            self.reg_print(f"{self.name} checking mail box: {self.in_mail}")
+            if self.in_mail != None and self.in_mail != "":
+                message = self.in_mail.lower()
+                self.reg_print(f"MAIN RUN: {self.name} GOT A MESSAGE: {message}")
                 self.in_mail = None
-                self.out_mail = await self.run_thread(message)
-            else:
+                if message == "help":
+                    self.out_mail = str(json.dumps(default_messages, indent=4)) + "\n"
+                    pass
+                else:
+                    if message == "e" or message == "exit":
+                        print("Exiting the program...")
+                        await self.close()
+
+                    if message in default_messages:
+                        message = default_messages[message]
+                        print(f"Using default message: {message}\n")
+
+                    tags = (f"\n['e','exit'] to stop the program.\n['help'] to see example prompts\n")
+                    self.in_mail = None
+                    self.out_mail = await self.run_thread(message) + tags
+            if self.is_ceo:
                 print("CEO is checking workers")
                 await self.check_workers()
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
 
     async def check_workers(self):
+        # self.reg_print(str(self.workers))
         for worker in self.workers:
             if worker.out_mail != None:
+                self.reg_print(f"CW found: {worker.name} -> {self.name}: {worker.out_mail}")
                 name = worker.name
-                header = "You got a message from " + name + ". Please respond to their message: "
-                worker.in_mail = await self.run_thread(header + worker.out_mail)
+                header = f"{self.name} got a message from " + name + ". Please respond to their message: "
+                self.reg_print(header + worker.out_mail)
+                response = await self.run_thread(header + worker.out_mail)
+                self.reg_print(f"CW response: {self.name} -> {name}: {response}")
+                worker.in_mail = response
                 worker.out_mail = None
 
     async def run_worker(self, worker):
@@ -238,13 +268,13 @@ class AIAlchemy:
 
             # handling for each available function call
             if name == "get_feedback":
+                self.reg_print("USING GET FEEDBACK")
                 # print arg to command line and get written response from human
-                self.reg_print(f"{self.name}: Hey {self.parent_name}, {args['prompt']}")
+                self.reg_print(f"fmgf - {self.name} -> {self.parent_name}: {args['prompt']}")
                 self.out_mail = args['prompt']
-                while self.in_mail == None:
-                    self.log_print(self.name + " is waiting for response")
-                    print(self.name + " is waiting for response")
-                    await asyncio.sleep(0.2)
+                self.reg_print(f"{self.name} is waiting for response from {self.parent_name}")
+                while self.in_mail == None or self.in_mail == "":
+                    await asyncio.sleep(1)
                 tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
                 self.log_print("sent mail: "+self.in_mail)
                 self.in_mail = None
@@ -257,7 +287,7 @@ class AIAlchemy:
                 # search query_dict json file for requested term
                 # BUG if chat has issues requesting exact term we could introduce
                 # a semantic relation search upon 0 zero result
-                if self.device.lower() == "spike":
+                if self.device == "spike":
                     if query == "help":
                         query_response = "[motor, motor_pair, color_sensor, distance_sensor, motion_sensor, force_sensor, sound, light_matrix, runloop]"
                     else:
@@ -282,7 +312,8 @@ class AIAlchemy:
                 )
             elif name == "run_code":
                 original_code = args["code"]
-                runtime = int(args["runtime"])  # in seconds
+                # convert runtime value to an int (in case of malformed response from chat)
+                runtime = int(re.sub("[^0-9]", "", args["runtime"])) 
 
                 serial_response = self.__run_code(original_code, runtime)
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
@@ -310,8 +341,7 @@ class AIAlchemy:
                     {"tool_call_id": id, "output": json.dumps(img_response)}
                 )
             elif name == "create_worker":
-                self.reg_print("CREATING WORKER")
-                print(args)
+                self.reg_print(f"{self.name} is creating a worker named: {args['name']} \nGoal: {args['task']} \nDevice: {args['device']}")
                 name   = args['name']
                 role   =  "worker"
                 serial = args['serial']
@@ -322,7 +352,7 @@ class AIAlchemy:
                 # fred = asyncio.new_event_loop()
                 # fred.create_task(self.run_worker(this_worker))
                 # fred.run_forever()
-                #asyncio.run(this_worker.run())
+                # asyncio.run(this_worker.run())
                 task = self.tg.create_task(this_worker.run(self.tg))
                 self.workers.append(this_worker)
                 tool_outputs.append(
@@ -442,7 +472,7 @@ class AIAlchemy:
             lines = temp_response.split("\n")
             for line in lines:
                 line = line.strip()
-                if line != "" and ">>>" not in line and "<awaitable>" not in line:
+                if line != "" and ">>>" not in line and line != "<awaitable>":
                     self.reg_print(line)
                     serial_response += "\n" + line
             time.sleep(0.5)
@@ -527,7 +557,7 @@ class AIAlchemy:
         self.this_log.flush()
 
     # Safely end program and save and close log files
-    def close(self):
+    async def close(self):
         self.debug_print("Closing")
         self.this_log.flush()
         self.this_log.seek(0)
@@ -542,5 +572,5 @@ class AIAlchemy:
         self.good_log.close()
         self.all_log.close()
 
-        self.kill_all_runs()
+        await self.kill_all_runs()
         print("Files closed and runs killed")

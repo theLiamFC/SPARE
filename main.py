@@ -8,9 +8,8 @@ nest_asyncio.apply()
 ### AI Alchemist Assistant ID - this is NOT an API key
 # SPIKE_ID = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 # WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
-
 default_messages = {
-    "0": "Move forwards in a loop. There are motors in ports A and B",
+    "0": "Move the spike prime forwards in a loop. There are motors in ports A and B",
     "1": "Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
     "2": "Create a theramin using a touch sensor in port C and a distance sensor in port F",
     "3": "Print hello world to terminal: print('hello world')",
@@ -20,7 +19,7 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
     "6": "I am placing the robot on a seesaw platform, balance at the center of the platform",
 }
 
-'''
+
 # Main interface loop
 async def interface_loop(ceo_assistant):
     intro_statement = "ChatGPT: What would you like to code today?\n"
@@ -55,7 +54,6 @@ async def interface_loop(ceo_assistant):
 
         user_prompt = input(input_statement)
         print()
-'''
 
 async def run_assistant(ceo_assistant,tg):
     result = await ceo_assistant.run(tg)
@@ -64,27 +62,47 @@ async def run_assistant(ceo_assistant,tg):
 async def check_mailbox(ceo_assistant):
     while True:
         if ceo_assistant.out_mail != None:
-            print(f"{ceo_assistant.name}: {ceo_assistant.out_mail}")
+            print(f"mcm - {ceo_assistant.name} -> {user_name}: {ceo_assistant.out_mail}")
             ceo_assistant.out_mail = None
-            ceo_assistant.in_mail = input("Human: ")
+            user_prompt = input(f"mcminput - {user_name} ->  {ceo_assistant.name}: ")
+            
+            ceo_assistant.in_mail = user_prompt
+
         else:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
 
 async def main():
     async with asyncio.TaskGroup() as tg:
         task1 = tg.create_task(check_mailbox(ceo_assistant))
-        task2 = tg.create_task(run_assistant(ceo_assistant,tg)) # pass TG through
+        task2 = tg.create_task(run_assistant(ceo_assistant, tg)) # pass TG through
 
 if __name__ == "__main__":
+    
+    # Clear terminal screen
+    for i in range(20):
+        print("\n")
+
     #### CHANGE SERIAL PORT HERE ####
     serial_port = "/dev/cu.usbmodem3356396133381"
-    
-    # Instantiate AIAlchemy Class
-    task = f"{default_messages["0"]} use serial port /dev/cu.usbmodem3356396133381"
     device = "SPIKE"
     role = "ceo"
     name = "CEO"
-    ceo_assistant = AIAlchemy(name, role, task, "Jesse/Liam", debug=False, verbose=False)
+
+    user_name = input("Hi! Whats your name? ")
+    intro_statement = f"{name}: What would you like to code today?\n"
+    input_statement = (
+        f"['e','exit'] to stop the program.\n['help'] to see example prompts\n"
+    )
+
+    user_prompt = input(intro_statement + input_statement + f"{user_name} ->  {name}: ")
+    print()
+
+    # Instantiate AIAlchemy Class
+    task = f"{default_messages['0']} use serial port /dev/cu.usbmodem3356396133381"
+    device = "SPIKE"
+    role = "ceo"
+    name = "CEO"
+    ceo_assistant = AIAlchemy(name, role, task, user_name, debug=False, verbose=False)
 
     asyncio.run(main())
 
