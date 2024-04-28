@@ -67,7 +67,7 @@ class AIAlchemy:
             # Serial Initiation
             # Instantiate Serial Interface
             try:
-                serial = SerialInterface(serial_port, fake_serial=True)
+                serial = SerialInterface(serial_port, fake_serial=False)
             except Exception as e:
                 print("Serial Connection Error: ", e)
                 sys.exit()
@@ -303,6 +303,10 @@ class AIAlchemy:
                                         for example changing underscores or phrasing, \
                                         or alternatively ask the human for help."
                                 )
+                elif self.device == "openmv":
+                    pass
+                elif self.device == "pico":
+                    pass
                 else:
                     query_response = "DEVICE NOT FOUND"
                     raise Exception("Device not found")

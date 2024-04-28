@@ -77,7 +77,7 @@ async def main():
         task2 = tg.create_task(run_assistant(ceo_assistant, tg)) # pass TG through
 
 if __name__ == "__main__":
-    
+
     # Clear terminal screen
     for i in range(20):
         print("\n")
@@ -98,7 +98,8 @@ if __name__ == "__main__":
     print()
 
     # Instantiate AIAlchemy Class
-    task = f"{default_messages['0']} use serial port /dev/cu.usbmodem3356396133381"
+    # task = f"{default_messages['0']} use serial port /dev/cu.usbmodem3356396133381"
+    task = user_prompt + "use serial port /dev/cu.usbmodem3356396133381"
     device = "SPIKE"
     role = "ceo"
     name = "CEO"
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     # fred.create_task(check_mailbox(ceo_assistant))
     # fred.create_task(run_assistant(ceo_assistant))
     # fred.run_forever()
-    
+
     # asyncio.run(check_mailbox(ceo_assistant))
     # asyncio.run(run_assistant(ceo_assistant))
 
@@ -130,4 +131,3 @@ if __name__ == "__main__":
         print("Main Loop Error: ", e)
     finally:
         ceo_assistant.close()
- 
