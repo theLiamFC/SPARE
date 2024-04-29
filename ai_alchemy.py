@@ -1,5 +1,5 @@
 from openai import AsyncOpenAI
-import cv2 as cv
+# import cv2 as cv
 import time
 import asyncio
 import json
@@ -27,7 +27,7 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
 
 class AIAlchemy:
     def __init__(
-        self, name, role, parent_name, task=None, device=None, serial_port=None, thread_id=None, debug=False, verbose=False
+        self, name, role, parent_name, task=None, worker_num=None, device=None, serial_port=None, thread_id=None, debug=False, verbose=False
     ):
         # Class assets
         # self.query_dict = json.load(open("query_dict.json", "r"))
@@ -49,6 +49,7 @@ class AIAlchemy:
             self.debug = debug
         self.curr_code = ""
         log_path = "logs/"
+        worker_log_path = "logs/worker_logs/"
         self.this_log = open(log_path + "this_log.txt", "w+")  # write (and read) over this file
         self.good_log = open(log_path + "good_log.txt", "a")  # append to this files
         self.all_log = open(log_path + "all_log.txt", "a")  # append to this files
@@ -70,6 +71,8 @@ class AIAlchemy:
             self.assistant_id = self.CEO_ID
             self.is_ceo = True
             self.workers = []
+            for log_num in range(3): # clear worker files
+                open(worker_log_path + f"worker{log_num}_log.txt", "w").close()
         elif role == "worker":
             self.assistant_id = self.WORKER_ID
             self.is_ceo = False
@@ -77,8 +80,8 @@ class AIAlchemy:
 
             # if os.path.exists(log_path + "worker1_log.txt"):
             #     os.remove(log_path + "worker1_log.txt")
-            self.my_log = open(log_path + "worker1_log.txt", "w")
-
+            self.my_log = open(worker_log_path + f"worker{worker_num}_log.txt", "w")
+            
             # print worker specs to the start of the filea
             self.reg_print(f"Time        : {formatted_time}\n")
             self.reg_print(f"Worker name : {self.name}")
@@ -89,7 +92,7 @@ class AIAlchemy:
             # Serial Initiation
             # Instantiate Serial Interface
             try:
-                serial = SerialInterface(serial_port, fake_serial=False)
+                serial = SerialInterface(serial_port, fake_serial=True)
             except Exception as e:
                 print("Serial Connection Error: ", e)
                 sys.exit()
@@ -285,10 +288,12 @@ class AIAlchemy:
             if name == "get_feedback":
                 # print arg to command line and get written response from human
                 self.out_mail = args['prompt']
+                self.reg_print(f"{self.name}: {args['prompt']}")
                 while self.in_mail == None or self.in_mail == "":
                     await asyncio.sleep(1)
+                if not self.is_ceo:
+                    self.reg_print(f"{self.parent_name}: {self.in_mail}")
                 tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
-                self.log_print("sent mail: "+self.in_mail)
                 self.in_mail = None
             elif name == "get_documentation":
                 query = args["query"].lower()
@@ -308,7 +313,7 @@ class AIAlchemy:
                 # convert runtime value to an int (in case of malformed response from chat)
                 runtime = int(re.sub("[^0-9]", "", args["runtime"])) 
 
-                serial_response = self.__run_code(original_code, runtime)
+                serial_response = await self.__run_code(original_code, runtime)
                 tool_outputs.append({"tool_call_id": id, "output": serial_response})
 
             # Currently uninstalled
@@ -341,14 +346,17 @@ class AIAlchemy:
                 role   =  "worker"
                 serial = args['serial']
                 task   = args['task']
+                worker_num = len(self.workers)
                 device = args['device']
                 parent_name = self.name
                 this_worker = AIAlchemy(
                     name,
                     role,
                     parent_name,
-                    task, device,
-                    serial,
+                    task=task, 
+                    worker_num=worker_num,
+                    device=device,
+                    serial_port=serial,
                     debug=False,
                     verbose=False,
                 )
@@ -402,7 +410,7 @@ class AIAlchemy:
         images = []
         for i in range(num):
             _, frame = self.cam.read()
-            cv.imwrite("images/image" + str(i) + ".jpg", frame)
+            # cv.imwrite("images/image" + str(i) + ".jpg", frame)
             base64_image = self.__encode_image("images/image" + str(i) + ".jpg")
             url = f"data:image/jpeg;base64,{base64_image}"
             images.append(url)
@@ -442,7 +450,7 @@ class AIAlchemy:
     #####################   CODE RUNNING   #########################
     ################################################################
 
-    def __run_code(self, original_code, runtime):
+    async def __run_code(self, original_code, runtime):
         original_code = original_code.replace("\n ", "\n")
         code = "\n" + original_code
         print("~~RUNNING CODE~~")
@@ -477,7 +485,7 @@ class AIAlchemy:
                 if line != "" and ">>>" not in line and line != "<awaitable>":
                     self.reg_print(line)
                     serial_response += "\n" + line
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
 
         self.reg_print(self.__print_break("END"))
         serial_response = self.serial_interface.write_read("\x04")

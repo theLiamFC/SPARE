@@ -1,0 +1,7 @@
+Time        : 2024-04-29 17:48:39
+
+Worker name : spike_worker
+Created by  : CEO
+Device      : spike
+Serial port : /dev/cu.usbmodem3356396133381
+Task        : Connect to the Raspberry Pi Pico via Bluetooth. When you receive a signal from the Pico, toggle the motor connected to port B.

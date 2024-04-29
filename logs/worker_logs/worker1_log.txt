@@ -1,0 +1,8 @@
+Time        : 2024-04-29 17:48:32
+
+Worker name : openmv_worker
+Created by  : CEO
+Device      : openmv
+Serial port : /dev/tty.usbmodem14301
+Task        : Configure your camera to identify faces. When a face is recognized, send a 'high' signal to GPIO pin 11
+openmv_worker: I am querying documentation for opencv on openmv

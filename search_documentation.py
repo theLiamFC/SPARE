@@ -1,8 +1,10 @@
 import json
 
+folder = "doc_files"
 documentation = {}
-documentation['spike'] = json.load(open("doc_spike.json", "r"))
-documentation['openmv'] = json.load(open("doc_openmv.json", "r"))
+documentation['spike'] = json.load(open(f"{folder}/doc_spike.json", "r"))
+documentation['openmv'] = json.load(open(f"{folder}/doc_openmv.json", "r"))
+documentation['pico'] = json.load(open(f"{folder}/doc_pico.json", "r"))
 
 def searchDoc(device,query):
     noResults = (
@@ -32,5 +34,5 @@ def searchDoc(device,query):
                     if secondaryModule == querySplit[1]:
                         return documentation[device][module][secondaryModule]
         return noResults
-    except KeyError as e:
+    except KeyError:
         return noResults

@@ -1,0 +1,411 @@
+{
+    "motor":{
+      "name": "motor",
+      "description": "a class that allows access to spike prime motors",
+      "initialization": "none",
+      "required imports": "import motor \n from hub import port \n import runloop",
+      "function": {
+        "name": "Run motor for degrees",
+        "syntax": "motor.run_for_degrees(port.B, 360, 75)",
+        "awaitable":"yes, query async and runloop",
+        "parameters": {
+          "parameter": [
+            {
+              "name": "Port",
+              "description": "Port of spike prime to which motor is connected",
+              "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+            },
+            {
+              "name": "Degrees",
+              "description": "Degrees for which the motor should turn.",
+              "values": "any integer"
+            },
+            {
+              "name": "Speed",
+              "description": "Speed at which the motor should run in degrees per second.",
+              "values": "any integer"
+            }
+          ]
+        }
+      }
+    },
+    "color_sensor":{
+      "name": "color_sensor",
+      "description": "a class that allows access to spike prime color sensors",
+      "initialization": "none",
+      "required imports": "import color_sensor \n from hub import port \n import color",
+      "function": [
+        {
+          "name": "color",
+          "syntax": "color_sensor.color(port.A)",
+          "parameters": {
+            "parameter": {
+              "name": "Port",
+              "description": "Port of spike prime to which color sensor is connected",
+              "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+            }
+          },
+          "returns": {
+            "name": "the color sensed by the color sensor",
+            "values": "color.RED,color.GREEN,color.BLUE,color.MAGENTA,color.YELLOW,color.ORANGE,color.AZURE,color.BLACK,color.WHITE"
+          }
+        },
+        {
+          "name": "reflection",
+          "syntax": "color_sensor.reflection(port.A)",
+          "initialization": "none",
+          "parameters": {
+            "parameter": {
+              "name": "Port",
+              "description": "Port of spike prime to which color sensor is connected",
+              "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+            }
+          },
+          "returns": {
+            "name": "the intensity of light sensed by the color sensor",
+            "values": "integer 1:100"
+          }
+        }
+      ],
+      "example":"if color_sensor.color(port.A) is color.RED:\r\nprint('Red detected')"
+    },
+    "motor_pair":{
+      "name": "motor_pair",
+      "description": "a class that allows controlling two spike prime motors together",
+      "initialization": "motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)",
+      "required imports": "import motor_pair \n from hub import port",
+      "function": [
+        {
+          "name": "move motor pair for degrees",
+          "syntax": "motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
+          "async":"await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=200)",
+          "parameters": {
+            "parameter": [
+              {
+                "name": "motor pair",
+                "description": "Specification of which motor pair to move",
+                "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+              },
+              {
+                "name": "degrees",
+                "description": "Degrees for which the motor pair should turn.",
+                "values": "any integer"
+              },
+              {
+                "name": "steering",
+                "description": "How much the motor pair should alter motor speeds to turn",
+                "values": "an integer -100:100"
+              },
+              {
+                "name": "velocity",
+                "description": "Speed at which the motors should run in degrees per second.",
+                "values": "any integer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "move motor pair for time",
+          "syntax": "motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
+          "async":"await motor_pair.move_for_time(motor_pair.PAIR_1, 1000, 0, velocity=200)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+            },
+            {
+              "name": "time",
+              "description": "Duration for which motors should turn in milliseconds (1000 = 1 second)",
+              "values": "any integer"
+            },
+            {
+              "name": "steering",
+              "description": "How much the motor pair should alter motor speeds to turn",
+              "values": "an integer -100:100"
+            },
+            {
+              "name": "velocity",
+              "description": "Speed at which the motors should run in degrees per second.",
+              "values": "any integer"
+            }
+          ]
+        },
+        {
+          "name": "Move a motor pair at a constant speed until a new command is given",
+          "syntax": "motor_pair.move(motor_pair.PAIR_1, 0)",
+          "async":"await motor_pair.move(motor_pair.PAIR_1, 0)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+            },
+            {
+              "name": "steering",
+              "description": "How much the motor pair should alter motor speeds to turn",
+              "values": "an integer -100:100"
+            },
+            {
+              "name": "velocity",
+              "description": "Speed at which the motors should run in degrees per second.",
+              "values": "any integer"
+            }
+          ]
+        },
+        {
+          "name": "Perform a tank move on a motor pair at a constant speed until a new command is given.",
+          "syntax": "motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)",
+          "async":"await motor_pair.move_tank(motor_pair.PAIR_1, 1000, 1000)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+            },
+            {
+              "name": "left velocity",
+              "description": "Speed at which the right motor should run in degrees per second.",
+              "values": "an integer"
+            },
+            {
+              "name": "right velocity",
+              "description": "Speed at which the right motor should run in degrees per second.",
+              "values": "any integer"
+            }
+          ]
+        },
+        {
+          "name": "Stop a motor pair.",
+          "syntax": "motor_pair.stop(motor_pair.PAIR_1)",
+          "async":"await motor_pair.stop(motor_pair.PAIR_1)",
+          "parameters": [
+            {
+              "name": "motor Pair",
+              "description": "Specification of which motor pair to move",
+              "values": "motor_pair.PAIR_1, motor_pair.PAIR_2"
+            }
+          ]
+        }
+      ]
+    },
+    "distance_sensor":{
+      "name": "distance_sensor",
+      "description": "a class that allows access to spike prime distance sensors",
+      "initialization": "none",
+      "required imports": "import distance_sensor \n from hub import port",
+      "function": {
+        "name": "get distance",
+        "syntax": "distance_sensor.distance(port.A)",
+        "parameters": {
+          "parameter": {
+            "name": "Port",
+            "description": "Port of spike prime to which distance sensor is connected",
+            "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+          }
+        },
+        "returns": {
+          "name": "the distance measured by the sensor in millimeters. If the distance sensor cannot read a valid distance it will return -1",
+          "values": "integer"
+        }
+      }
+    },
+    "force_sensor":{
+      "name": "force_sensor",
+      "description": "a class that allows access to spike prime force sensors",
+      "initialization": "none",
+      "required imports": "import force_sensor \n from hub import port",
+      "function": [
+        {
+          "name": "get force",
+          "syntax": "force_sensor.force(port.A)",
+          "parameters": {
+            "parameter": {
+              "name": "Port",
+              "description": "Port of spike prime to which force sensor is connected",
+              "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+            }
+          },
+          "returns": {
+            "name": "the force measured as a decinewton",
+            "values": "integer 0-100"
+          }
+        },
+        {
+          "name": "pressed",
+          "syntax": "force_sensor.pressed(port.A)",
+          "parameters": {
+            "parameter": {
+              "name": "Port",
+              "description": "Port of spike prime to which force sensor is connected",
+              "values": "port.A,port.B,port.C,port.D,port.E,port.F"
+            }
+          },
+          "returns": {
+            "name": "a binary value indicating if the sensor is pressed or not. Will return true if pressed",
+            "values": "boolean"
+          }
+        }
+      ]
+    },
+    "motion_sensor":{
+      "name": "motion_sensor",
+      "description": "a class that allows access to spike prime motion sensors",
+      "initialization": "none",
+      "required imports": "from hub import motion_sensor",
+      "function": [
+        {
+          "name": "acceleration",
+          "syntax": "motion_sensor.acceleration()",
+          "parameters": "none",
+          "returns": {
+            "name": "a tuple containing x, y & z acceleration values as integers. The values are mili G, so 1 / 1000 G",
+            "values": "[int, int, int]"
+          }
+        },
+        {
+          "name": "tilt angles",
+          "syntax": "motion_sensor.tilt_angles()",
+          "parameters": "none",
+          "returns": {
+            "name": "a tuple containing yaw pitch and roll values as integers. Values are decidegrees",
+            "values": "[int, int, int]"
+          }
+        },
+        {
+          "name": "angular velocity",
+          "syntax": "motion_sensor.angular_velocity()",
+          "parameters": "none",
+          "returns": {
+            "name": "a tuple containing x, y & z angular velocity values as integers. The values are decidegrees per second",
+            "values": "[int, int, int]"
+          }
+        }
+      ]
+    },
+    "sound":{
+      "name": "sound",
+      "description": "a class that enables control of built in SPIKE Prime speakers",
+      "initialization": "none",
+      "required imports": "from hub import sound \n from hub import port",
+      "function": [
+        {
+          "name": "beep",
+          "syntax": "sound.beep(freq: int = 440, duration: int = 500, volume: int = 100)",
+          "parameters": [
+            {
+              "name": "freq",
+              "description": "Frequency of beep",
+              "values": "positive integer"
+            },
+            {
+              "name": "duration",
+              "description": "length of beep in milliseconds",
+              "values": "positive integer"
+            },
+            {
+              "name": "volume",
+              "description": "volume of beep",
+              "values": "integer 1:100"
+            }
+          ],
+          "returns": "none"
+        }
+      ]
+    },
+    "runloop":{
+      "name": "runloop",
+      "description": "The runloop module contains all functions and constants to use the Runloop. To effectively use awaitable code with the flexibility to run commands either concurrently or sequentially, you must run your code in an asynchronous function using a run loop. The runloop module controls the run loop on the Hub, and lets you run asynchronous functions with its run() function. An asynchronous function, also known as a coroutine, is an awaitable that uses the async keyword before the function definition. The convention is to name the coroutine containing your main program main(). In the body of a coroutine, you can use the await keyword before calling an awaitable command. This pauses the coroutine until the command completes. Without the keyword, the program immediately continues to the next line of code in the coroutine. You can still use regular (not awaitable) code inside the coroutine. However, doing so will always pause or block the whole program until the command completes.",
+      "initialization": "none",
+      "required imports": "import runloop",
+      "function": [
+        {
+          "name": "run",
+          "description":"Start any number of parallel async functions. This is the function you should use to create programs with a similar structure to Word Blocks.",
+          "syntax": "runloop.run(some_async_function())",
+          "parameters": "none",
+          "returns": "none",
+          "example":"import runloop\r\nasync def main():\r\n    # Write your program here.\r\n        runloop.run(main())"
+        },
+        {
+          "name": "sleep",
+          "description":"Pause the execution of the application for any amount of milliseconds.",
+          "syntax": "await runloop.sleep_ms(10000)",
+          "parameters": "time in milliseconds",
+          "returns": "none",
+          "example":["from hub import light_matrix\r\nimport runloop\r\nasync def main():\r\n    light_matrix.write('Hi!')\r\n    # Wait for ten seconds \r\n    await runloop.sleep_ms(10000)\r\n    light_matrix.write('Are you still here?')                \r\nrunloop.run(main())",
+                    "import motor\r\nimport runloop\r\nfrom hub import port\r\n async def main():\r\n  # Run two motors on ports A and B for 360 degrees at 720 degrees per second.\r\n  # The motors run after each other.\r\n  await motor.run_for_degrees(port.A, 360, 720)\r\n  await motor.run_for_degrees(port.B, 360, 720)\r\nrunloop.run(main())"]
+        }
+      ]
+    },
+    "light_matrix":{
+      "name": "light_matrix",
+      "description": "a class that enables control of built in SPIKE Prime led matrix",
+      "initialization": "none",
+      "required imports": "from hub import light_matrix",
+      "function": [
+        {
+          "name": "clear",
+          "syntax": "color_matrix.clear()",
+          "parameters": "none",
+          "returns": "none"
+        },
+        {
+          "name": "set_pixel",
+          "syntax": "light_matrix.set_pixel(2,2,100)",
+          "parameters": [
+            {
+              "name": "x value",
+              "description": "the x position of led on the matrix",
+              "values": "integer 0:4"
+            },
+            {
+              "name": "y value",
+              "description": "the y position of led on the matrix",
+              "values": "integer 0:4"
+            },
+            {
+              "name": "brightness",
+              "description": "the light intensity of the pixel",
+              "values": "integer 1:100"
+            }
+          ]
+        },
+        {
+          "name": "show",
+          "syntax": "light_matrix.show(list[int])",
+          "parameters": [
+            {
+              "name": "pixel list",
+              "description": "a list of length 25 corresponding to each pixel in the 5x5 led matrix",
+              "values": "legnth 25 list of integers with values 1:100"
+            }
+          ],
+          "example": "# Create a list with 25 identical intensity values \r\n pixels = [100] * 25 \r\n # Update all pixels to show same intensity \r\n light_matrix.show(pixels)"
+        },
+        {
+          "name": "show_image",
+          "syntax": "light_matrix.show_image(light_matrix.IMAGE_HAPPY)",
+          "parameters": [
+            {
+              "name": "image id",
+              "description": "The id of the image to show. The range of available images is 1 to 67. There are consts on the light_matrix module for these.",
+              "values": "IMAGE_HEART = 1, IMAGE_HEART_SMALL = 2, IMAGE_HAPPY = 3, IMAGE_SMILE = 4, IMAGE_SAD = 5, IMAGE_CONFUSED = 6, IMAGE_ANGRY = 7, IMAGE_ASLEEP = 8, IMAGE_SURPRISED = 9, IMAGE_SILLY = 10, IMAGE_FABULOUS = 11, IMAGE_MEH = 12, IMAGE_YES = 13, IMAGE_NO = 14"
+            }
+          ],
+          "example":"from hub import light_matrix\r\n# Show a small heart\r\nlight_matrix.show_image(2)"
+        },
+        {
+          "name": "write",
+          "syntax": "light_matrix.write(text)",
+          "parameters": [
+            {
+              "name": "text",
+              "description": "the text to display on the matrix",
+              "values": "string"
+            }
+          ]
+        }
+      ]
+    }
+}

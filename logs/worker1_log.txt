@@ -1,7 +1,0 @@
-Time        : 2024-04-29 13:34:24
-
-Worker name : SpikePrimeWorker
-Created by  : CEO
-Device      : spike
-Serial port : /dev/cu.usbmodem3356396133381
-Task        : Program the Spike Prime to move forward. The motors are connected in ports A and B.
