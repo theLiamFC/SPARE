@@ -1,8 +1,8 @@
 import json
 
 documentation = {}
-documentation['spike'] = json.load(open("spike_Doc.json", "r"))
-documentation['openmv'] = json.load(open("openMV_Doc.json", "r"))
+documentation['spike'] = json.load(open("doc_spike.json", "r"))
+documentation['openmv'] = json.load(open("doc_openmv.json", "r"))
 
 def searchDoc(device,query):
     noResults = (

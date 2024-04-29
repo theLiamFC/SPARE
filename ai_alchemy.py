@@ -10,6 +10,7 @@ from search_documentation import searchDoc
 from PIL import Image
 from io import BytesIO
 import sys
+import os
 
 
 default_messages = {
@@ -26,14 +27,19 @@ and then it backs up, turns and moves forwards again. There are motors in ports 
 
 class AIAlchemy:
     def __init__(
-        self, name, role, task, parent_name, device=None, serial_port=None, thread_id=None, debug=False, verbose=False
+        self, name, role, parent_name, task=None, device=None, serial_port=None, thread_id=None, debug=False, verbose=False
     ):
         # Class assets
-        self.query_dict = json.load(open("query_dict.json", "r"))
+        # self.query_dict = json.load(open("query_dict.json", "r"))
         # self.cam = cv.VideoCapture(0)
         self.thread_id = thread_id
-        self.out_mail = None
-        self.in_mail = task
+
+        if task == None:
+            self.out_mail = "What would you like me to do today?\n"
+            self.in_mail = None
+        else:
+            self.out_mail = None
+            self.in_mail = task
 
         # Logging
         self.verbose = verbose
@@ -54,6 +60,10 @@ class AIAlchemy:
         self.CEO_ID    = "asst_CxlSfepjkDuK54otqmh3zsfV"
         self.WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
 
+        self.run_id = None
+        self.name = name
+        self.parent_name = parent_name
+
         # Core variables
         self.client = AsyncOpenAI()
         if role == "ceo":
@@ -65,6 +75,17 @@ class AIAlchemy:
             self.is_ceo = False
             self.device = device.lower()
 
+            # if os.path.exists(log_path + "worker1_log.txt"):
+            #     os.remove(log_path + "worker1_log.txt")
+            self.my_log = open(log_path + "worker1_log.txt", "w")
+
+            # print worker specs to the start of the filea
+            self.reg_print(f"Time        : {formatted_time}\n")
+            self.reg_print(f"Worker name : {self.name}")
+            self.reg_print(f"Created by  : {self.parent_name}")
+            self.reg_print(f"Device      : {self.device}")
+            self.reg_print(f"Serial port : {serial_port}")
+            self.reg_print(f"Task        : {task}")
             # Serial Initiation
             # Instantiate Serial Interface
             try:
@@ -76,14 +97,8 @@ class AIAlchemy:
             self.serial_interface = serial
             self.serial_interface.open_new()
             self.serial_interface.write_read("\x03")
-
         else:
             raise Exception("Invalid role, use 'ceo' or 'worker'")
-
-        self.run_id = None
-        self.name = name
-        self.task = task
-        self.parent_name = parent_name
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
@@ -95,10 +110,9 @@ class AIAlchemy:
         while True:
             # check mailbox
             # if mailbox is full do a run with that message and put back in the mailbox
-            self.reg_print(f"{self.name} checking mail box: {self.in_mail}")
+            # self.reg_print(f"{self.name} checking mail box: {self.in_mail}")
             if self.in_mail != None and self.in_mail != "":
                 message = self.in_mail.lower()
-                self.reg_print(f"MAIN RUN: {self.name} GOT A MESSAGE: {message}")
                 self.in_mail = None
                 if message == "help":
                     self.out_mail = str(json.dumps(default_messages, indent=4)) + "\n"
@@ -116,7 +130,6 @@ class AIAlchemy:
                     self.in_mail = None
                     self.out_mail = await self.run_thread(message) + tags
             if self.is_ceo:
-                print("CEO is checking workers")
                 await self.check_workers()
             await asyncio.sleep(1)
 
@@ -124,12 +137,13 @@ class AIAlchemy:
         # self.reg_print(str(self.workers))
         for worker in self.workers:
             if worker.out_mail != None:
-                self.reg_print(f"CW found: {worker.name} -> {self.name}: {worker.out_mail}")
+                # self.reg_print(f"CW found: {worker.name} -> {self.name}: {worker.out_mail}")
                 name = worker.name
                 header = f"{self.name} got a message from " + name + ". Please respond to their message: "
-                self.reg_print(header + worker.out_mail)
+                self.reg_print(f"The {self.name} is talking to {name} ...")
+                # self.reg_print(header + worker.out_mail)
                 response = await self.run_thread(header + worker.out_mail)
-                self.reg_print(f"CW response: {self.name} -> {name}: {response}")
+                # self.reg_print(f"CW response: {self.name} -> {name}: {response}")
                 worker.in_mail = response
                 worker.out_mail = None
 
@@ -269,11 +283,8 @@ class AIAlchemy:
 
             # handling for each available function call
             if name == "get_feedback":
-                self.reg_print("USING GET FEEDBACK")
                 # print arg to command line and get written response from human
-                self.reg_print(f"fmgf - {self.name} -> {self.parent_name}: {args['prompt']}")
                 self.out_mail = args['prompt']
-                self.reg_print(f"{self.name} is waiting for response from {self.parent_name}")
                 while self.in_mail == None or self.in_mail == "":
                     await asyncio.sleep(1)
                 tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
@@ -288,7 +299,7 @@ class AIAlchemy:
                 query_response = json.dumps(searchDoc(self.device,query))
 
                 self.verbose_print(query_response)
-                
+
                 tool_outputs.append(
                     {"tool_call_id": id, "output": json.dumps(query_response)}
                 )
@@ -323,14 +334,24 @@ class AIAlchemy:
                     {"tool_call_id": id, "output": json.dumps(img_response)}
                 )
             elif name == "create_worker":
-                self.reg_print(f"{self.name} is creating a worker named: {args['name']} \nGoal: {args['task']} \nDevice: {args['device']}")
+                self.reg_print(
+                    f"{self.name} is creating a worker named: {args['name']} \nGoal: {args['task']} \nDevice: {args['device']}\nPort: {args['serial']}"
+                )
                 name   = args['name']
                 role   =  "worker"
                 serial = args['serial']
                 task   = args['task']
                 device = args['device']
                 parent_name = self.name
-                this_worker = AIAlchemy(name, role, task, parent_name, device, serial, debug=False, verbose=False)
+                this_worker = AIAlchemy(
+                    name,
+                    role,
+                    parent_name,
+                    task, device,
+                    serial,
+                    debug=False,
+                    verbose=False,
+                )
                 # fred = asyncio.new_event_loop()
                 # fred.create_task(self.run_worker(this_worker))
                 # fred.run_forever()
@@ -340,7 +361,6 @@ class AIAlchemy:
                 tool_outputs.append(
                     {"tool_call_id": id, "output": f"You successfully created worker {name}"}
                 )
-                print("asdjfhlgkal;'fji")
         # submit all collected tool call responses
         self.verbose_print(f"Submitting tool outputs: {tool_outputs}")
         await self.client.beta.threads.runs.submit_tool_outputs(
@@ -425,7 +445,7 @@ class AIAlchemy:
     def __run_code(self, original_code, runtime):
         original_code = original_code.replace("\n ", "\n")
         code = "\n" + original_code
-
+        print("~~RUNNING CODE~~")
         code = code.replace("\n", "\r\n")
         self.curr_code = code
         self.reg_print(self.__print_break(f"RUNNING CODE ({runtime} second(s))"))
@@ -514,9 +534,14 @@ class AIAlchemy:
 
     # Printing functions (also write to the log file)
     def reg_print(self, text):
-        self.log_print(text)
-        print(text)
-        print()
+        if not self.is_ceo:
+            self.my_log.write(f"{text}\n")
+            self.my_log.flush()
+            # os.fsync()
+        else:
+            self.log_print(text)
+            print(text)
+            print()
 
     def debug_print(self, text):
         if text.find("===") == -1 and text.find(">>>") == -1:
@@ -536,7 +561,7 @@ class AIAlchemy:
         if "<awaitable>" not in text:
             self.this_log.write("\n" + str(text))
             self.all_log.write("\n" + str(text))
-        self.this_log.flush()
+            self.this_log.flush()
 
     # Safely end program and save and close log files
     async def close(self):
@@ -553,6 +578,9 @@ class AIAlchemy:
         self.this_log.close()
         self.good_log.close()
         self.all_log.close()
+
+        if not self.is_ceo:
+            self.my_log
 
         await self.kill_all_runs()
         print("Files closed and runs killed")
