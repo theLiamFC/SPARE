@@ -407,5 +407,8 @@
           ]
         }
       ]
+    },
+    "bluetooth":{
+      "usage": "from bluetooth_functions import central, peripheral\n\ncen = central('fred')\ncen.scan(5000)   #Scans for 5 seconds\nif cen.per_name != '' and cen.per_name != None:\n    print('Found', cen.per_name)\n    msg = cen.per_name[-1]\n    if msg==\"1\":\n        # wave\n        print(\"waving\")\nelse:\n    print('No peripheral fits criteria')\n\n"
     }
 }

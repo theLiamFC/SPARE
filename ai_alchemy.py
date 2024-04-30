@@ -16,6 +16,7 @@ import os
 serial_1 = "/dev/cu.usbmodem3356396133381"
 serial_2 = "/dev/tty.usbmodem3844343A31371" # liam's
 serial_2 = "/dev/tty.usbmodem14301" # jesse's
+serial_2 = "/dev/tty.usbmodem14601" # jesse's
 serial_3 = serial_2
 default_messages = {
     "0": f"Move the spike prime forwards. There are motors in ports A and B. Use serial port {serial_1}",
@@ -27,7 +28,11 @@ default_messages = {
 and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
     "6": f"I am placing the robot on a seesaw platform, balance at the center of the platform",
     "7": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and an OpenMV camera in Port {serial_2}. I want to you make the SPIKE wave a motor when the OpenMV camera sees a face.",
-    "8": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and a Raspberry Pi Pico in Port {serial_2}. I want to you make the SPIKE wave a motor when Pin 11 on the Pico goes high.",
+    "8": f"I have two micropython microcontrollers connected over serial. \
+        - A SPIKE in Port {serial_1} (which has motors in ports A and B) \
+        - A Raspberry Pi Pico in Port {serial_2}. \
+        I want to you make the SPIKE wave a motor when Pin 11 on the Pico goes high. \
+        Use bluetooth to communicate (the pico will yell and the SPIKE will listen)",
     "9": f"I have three micropython microcontrollers connected over serial. \
         - A SPIKE in Port {serial_1} (which has motors in ports A and B) \
         - A Raspberry Pi Pico in Port {serial_2} \

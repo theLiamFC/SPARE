@@ -1,25 +1,33 @@
-Time        : 2024-04-30 10:15:47
+Time        : 2024-04-30 18:02:29
 
-Worker name : openmv_worker
-Created by  : CEO
-Device      : openmv
-Serial port : /dev/tty.usbmodem14301
-Task        : Implement a MicroPython script that will continuously read the signal from pin 8, then if a high signal is detected, provide a digital output
-openmv_worker: I am querying documentation for machine.pin on openmv
-openmv_worker: I am querying documentation for help on openmv
-openmv_worker: I am querying documentation for pyb on openmv
-openmv_worker: I am querying documentation for pyb.pin on openmv
-openmv_worker: I'm having trouble finding documentation for handling input/output on specific pins using MicroPython. Could you please provide some guidance?
-CEO: Thank you for the feedback. Openmv worker, to output a high signal on pin 9, you can use `machine.pin(9, machine.Pin.OUT).high()`. Continue working and let me know if you need further assistance. 
-
-Now, let's check pico_worker. Do you have any updates or need any assistance?
+Worker name : spike_worker
+Created by  : MANAGER
+Device      : spike
+Serial port : /dev/cu.usbmodem3356396133381
+Task        : Please handle the second part of the task and set the Spike Prime to listen for the Bluetooth signal from the Raspberry Pi Pico. When it receives the signal, it will cause one of the motors in ports A or B to wave. You should also have a default position for the motor and a movement pattern that represents "waving".
+spike_worker: I am querying documentation for bluetooth on spike
+spike_worker: I am querying documentation for motor on spike
 =========================== RUNNING CODE (10 second(s)) ===========================
-import pyb
+import motor 
+from hub import port 
+import runloop 
+from bluetooth_functions import central 
 
-while True:
-   if pyb.Pin(8, pyb.Pin.IN).value() == 1:
-       pyb.Pin(9, pyb.Pin.OUT).high()
+def wave_motor(): 
+    motor.run_for_degrees(port.A, 45, 75) 
+    motor.run_for_degrees(port.A, -45, 75) 
+
+cen = central('fred') 
+cen.scan(5000) # Scans for 5 seconds 
+if cen.per_name != '' and cen.per_name != None: 
+    print('Found', cen.per_name) 
+    msg = cen.per_name[-1] 
+    if msg=='1': 
+        wave_motor() 
+else: 
+    print('No peripheral fits criteria')
 ================================== SERIAL OUPUT ===================================
 
 ======================================= END =======================================
-openmv_worker: Could you please verify whether the code correctly outputs a high signal on pin 9 when a high signal is detected on pin 8?
+spike_worker: What is the output after running the code?
+MANAGER: The code executed by the spike_worker did not produce any output. Let's have them confirm that the device is correctly listening for Bluetooth signals and that the motor is in the correct initial position. Please ensure that the device is also ready to move the motor in a waving pattern upon receiving the signal. If there are any issues or errors, please let me know so I can assist.
