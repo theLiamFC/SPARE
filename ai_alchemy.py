@@ -72,7 +72,7 @@ class AIAlchemy:
         self.log_print(f"\n\n\nPROGRAM OUTPUT FROM {formatted_time}\n")
 
         # other variables
-        self.CEO_ID    = "asst_CxlSfepjkDuK54otqmh3zsfV"
+        self.MANAGER_ID    = "asst_CxlSfepjkDuK54otqmh3zsfV"
         self.WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
 
         self.run_id = None
@@ -81,15 +81,15 @@ class AIAlchemy:
 
         # Core variables
         self.client = AsyncOpenAI()
-        if role == "ceo":
-            self.assistant_id = self.CEO_ID
-            self.is_ceo = True
+        if role == "manager":
+            self.assistant_id = self.MANAGER_ID
+            self.is_manager = True
             self.workers = []
             for log_num in range(3): # clear worker files
                 open(worker_log_path + f"worker{log_num}_log.txt", "w").close()
         elif role == "worker":
             self.assistant_id = self.WORKER_ID
-            self.is_ceo = False
+            self.is_manager = False
             self.device = device.lower()
 
             # if os.path.exists(log_path + "worker1_log.txt"):
@@ -115,7 +115,7 @@ class AIAlchemy:
             self.serial_interface.open_new()
             self.serial_interface.write_read("\x03")
         else:
-            raise Exception("Invalid role, use 'ceo' or 'worker'")
+            raise Exception("Invalid role, use 'manager' or 'worker'")
 
     ################################################################
     ####################   PUBLIC FUNCTIONS   ######################
@@ -146,7 +146,7 @@ class AIAlchemy:
                     tags = (f"\n['e','exit'] to stop the program.\n['help'] to see example prompts\n")
                     self.in_mail = None
                     self.out_mail = await self.run_thread(message) + tags
-            if self.is_ceo:
+            if self.is_manager:
                 await self.check_workers()
             await asyncio.sleep(1)
 
@@ -305,7 +305,7 @@ class AIAlchemy:
                 self.reg_print(f"{self.name}: {args['prompt']}")
                 while self.in_mail == None or self.in_mail == "":
                     await asyncio.sleep(1)
-                if not self.is_ceo:
+                if not self.is_manager:
                     self.reg_print(f"{self.parent_name}: {self.in_mail}")
                 tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
                 self.in_mail = None
@@ -556,7 +556,7 @@ class AIAlchemy:
 
     # Printing functions (also write to the log file)
     def reg_print(self, text):
-        if not self.is_ceo:
+        if not self.is_manager:
             self.my_log.write(f"{text}\n")
             self.my_log.flush()
             # os.fsync()
@@ -601,7 +601,7 @@ class AIAlchemy:
         self.good_log.close()
         self.all_log.close()
 
-        if not self.is_ceo:
+        if not self.is_manager:
             self.my_log
 
         await self.kill_all_runs()

@@ -12,11 +12,11 @@ import tkinter
 # SPIKE_ID = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 # WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
 
-async def run_assistant(ceo_assistant,tg):
-    result = await ceo_assistant.run(tg)
+async def run_assistant(manager_assistant,tg):
+    result = await manager_assistant.run(tg)
     return result
 
-async def check_mailbox(ceo_assistant):
+async def check_mailbox(manager_assistant):
     intro_statement = f"{name}: What would you like to code today?\n"
     input_statement = (
         f"['e','exit'] to stop the program.\n['help'] to see example prompts\n"
@@ -24,13 +24,13 @@ async def check_mailbox(ceo_assistant):
     print(intro_statement)
     print(input_statement)
     while True:
-        if ceo_assistant.out_mail != None:
-            print(f"{ceo_assistant.name}: {ceo_assistant.out_mail}\n")
-            ceo_assistant.out_mail = None
+        if manager_assistant.out_mail != None:
+            print(f"{manager_assistant.name}: {manager_assistant.out_mail}\n")
+            manager_assistant.out_mail = None
             user_prompt = input(f"{user_name}: ")
             print()
             if user_prompt == "e" or user_prompt == "exit":
-                await ceo_assistant.close()
+                await manager_assistant.close()
                 return
             elif user_prompt == "help":
                 print(default_messages)
@@ -38,16 +38,16 @@ async def check_mailbox(ceo_assistant):
             elif user_prompt in default_messages:
                 user_prompt = default_messages[user_prompt]
             
-            ceo_assistant.log_print(user_prompt)
-            ceo_assistant.in_mail = user_prompt
+            manager_assistant.log_print(user_prompt)
+            manager_assistant.in_mail = user_prompt
 
         else:
             await asyncio.sleep(1)
 
 async def main():
     async with asyncio.TaskGroup() as tg:
-        task1 = tg.create_task(check_mailbox(ceo_assistant))
-        task2 = tg.create_task(run_assistant(ceo_assistant, tg)) # pass TG through
+        task1 = tg.create_task(check_mailbox(manager_assistant))
+        task2 = tg.create_task(run_assistant(manager_assistant, tg)) # pass TG through
 
 if __name__ == "__main__":
 
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     #### CHANGE SERIAL PORT HERE ####
     serial_port = "/dev/cu.usbmodem3356396133381"
     device = "SPIKE"
-    role = "ceo"
-    name = "CEO"
+    role = "manager"
+    name = "MANAGER"
 
     user_name = "JESSE"
     # user_name = input("Hi! Whats your name? ")
@@ -78,9 +78,9 @@ if __name__ == "__main__":
 
     # Instantiate AIAlchemy Class
     device = "SPIKE"
-    role = "ceo"
-    name = "CEO"
-    ceo_assistant = AIAlchemy(name, role, user_name, debug=False, verbose=False)
+    role = "manager"
+    name = "MANAGER"
+    manager_assistant = AIAlchemy(name, role, user_name, debug=False, verbose=False)
 
     asyncio.run(main())
 
@@ -88,8 +88,8 @@ if __name__ == "__main__":
     sys.exit()
     # Initiate Main Loop
     # try:
-    #     asyncio.run(interface_loop(ceo_assistant))
+    #     asyncio.run(interface_loop(manager_assistant))
     # except Exception as e:
     #     print("Main Loop Error: ", e)
     # finally:
-    #     ceo_assistant.close()
+    #     manager_assistant.close()
