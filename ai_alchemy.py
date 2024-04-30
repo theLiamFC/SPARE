@@ -13,15 +13,29 @@ import sys
 import os
 
 
+serial_1 = "/dev/cu.usbmodem3356396133381"
+serial_2 = "/dev/tty.usbmodem3844343A31371" # liam's
+serial_2 = "/dev/tty.usbmodem14301" # jesse's
+serial_3 = serial_2
 default_messages = {
-    "0": "Move the spike prime forwards in a loop. There are motors in ports A and B",
-    "1": "Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
-    "2": "Create a theramin using a touch sensor in port C and a distance sensor in port F",
-    "3": "Print hello world to terminal: print('hello world')",
-    "4": "Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
-    "5": "Make roomba like robot that moves forwards until it hits something with the touch sensor \
+    "0": f"Move the spike prime forwards. There are motors in ports A and B. Use serial port {serial_1}",
+    "1": f"Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
+    "2": f"Create a theramin using a touch sensor in port C and a distance sensor in port F",
+    "3": f"Print hello world to terminal: print('hello world')",
+    "4": f"Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
+    "5": f"Make roomba like robot that moves forwards until it hits something with the touch sensor \
 and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
-    "6": "I am placing the robot on a seesaw platform, balance at the center of the platform",
+    "6": f"I am placing the robot on a seesaw platform, balance at the center of the platform",
+    "7": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and an OpenMV camera in Port {serial_2}. I want to you make the SPIKE wave a motor when the OpenMV camera sees a face.",
+    "8": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and a Raspberry Pi Pico in Port {serial_2}. I want to you make the SPIKE wave a motor when Pin 11 on the Pico goes high.",
+    "9": f"I have three micropython microcontrollers connected over serial. \
+        - A SPIKE in Port {serial_1} (which has motors in ports A and B) \
+        - A Raspberry Pi Pico in Port {serial_2} \
+        - an OpenMV cameria in Port {serial_3}. \
+        I want to you make the SPIKE wave the motors when the OpenMV camera sees a face \
+        The OpenMV camera and the Pico are connected by a digital pin (pin 8 on the OpenMV camera and pin 9 on the camera). \
+        You can communicate between the OpenMV camera and SPIKE by sending a digital output from the the OpenMV camera \
+        to the Pico and then communicate over bluetooth between the Pico and SPIKE",
 }
 
 
@@ -140,7 +154,7 @@ class AIAlchemy:
         # self.reg_print(str(self.workers))
         for worker in self.workers:
             if worker.out_mail != None:
-                # self.reg_print(f"CW found: {worker.name} -> {self.name}: {worker.out_mail}")
+                self.reg_print(f"CW found: {worker.name} -> {self.name}: {worker.out_mail}")
                 name = worker.name
                 header = f"{self.name} got a message from " + name + ". Please respond to their message: "
                 self.reg_print(f"The {self.name} is talking to {name} ...")

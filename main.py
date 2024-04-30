@@ -1,4 +1,5 @@
 from ai_alchemy import AIAlchemy
+from ai_alchemy import default_messages
 import asyncio
 import sys
 import json
@@ -10,24 +11,6 @@ import tkinter
 ### AI Alchemist Assistant ID - this is NOT an API key
 # SPIKE_ID = "asst_8WN5ksXpnNaBeAr1IKrLq4yd"
 # WORKER_ID = "asst_gCp1YejKuc6X1progQ99C2fL"
-serial_1 = "/dev/cu.usbmodem3356396133381"
-serial_2 = "/dev/tty.usbmodem3844343A31371" # liam's
-serial_2 = "/dev/tty.usbmodem14301" # jesse's
-serial_3 = serial_2
-default_messages = {
-    "0": f"Move the spike prime forwards. There are motors in ports A and B. Use serial port {serial_1}",
-    "1": f"Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
-    "2": f"Create a theramin using a touch sensor in port C and a distance sensor in port F",
-    "3": f"Print hello world to terminal: print('hello world')",
-    "4": f"Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
-    "5": f"Make roomba like robot that moves forwards until it hits something with the touch sensor \
-and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
-    "6": f"I am placing the robot on a seesaw platform, balance at the center of the platform",
-    "7": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and an OpenMV camera in Port {serial_2}. I want to you make the SPIKE wave a motor when the OpenMV camera sees a face.",
-    "8": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and a Raspberry Pi Pico in Port {serial_2}. I want to you make the SPIKE wave a motor when Pin 11 on the Pico goes high.",
-    "9": f"I have three micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B), a Raspberry Pi Pico in Port {serial_2}, and an OpenMV cameria in Port {serial_3}. I want to you make the SPIKE wave a motor when the OpenMV camera sees a face, which will send a high signal of pin 11 to the pic owhich will then send a bluetooth signal to the SPIKE.",
-}
-
 
 async def run_assistant(ceo_assistant,tg):
     result = await ceo_assistant.run(tg)

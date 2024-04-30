@@ -1,15 +1,8 @@
-Time        : 2024-04-29 17:48:25
+Time        : 2024-04-30 10:15:38
 
 Worker name : pico_worker
 Created by  : CEO
 Device      : pico
 Serial port : /dev/tty.usbmodem14301
-Task        : First, setup your GPIO pin 11 as an INPUT. Then, create a loop that consistently observes the state of GPIO pin 11. When it reads a 'high' signal, send a Bluetooth signal to the Spike Prime microcontroller.
-=========================== RUNNING CODE (10 second(s)) ===========================
-from machine import Pin
-pin = Pin(11, Pin.IN)
-while True:
-   if pin.value():
-       print('HIGH signal detected!')
-================================== SERIAL OUPUT ===================================
-
+Task        : Write a MicroPython script that will run continuously and send a bluetooth signal when it detects an input from pin 9. You should be sure to set the pin as an input pin and initialize your bluetooth.
+pico_worker: I am querying documentation for bluetooth on pico
