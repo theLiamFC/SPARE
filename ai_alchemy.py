@@ -15,9 +15,8 @@ import os
 
 serial_1 = "/dev/cu.usbmodem3356396133381"
 serial_2 = "/dev/tty.usbmodem3844343A31371" # liam's
-serial_2 = "/dev/tty.usbmodem14301" # jesse's
-serial_2 = "/dev/tty.usbmodem14601" # jesse's
-serial_3 = serial_2
+# serial_2 = "/dev/tty.usbmodem14301" # jesse's
+serial_3 = "/dev/tty.usbmodem14601" # jesse's
 default_messages = {
     "0": f"Move the spike prime forwards. There are motors in ports A and B. Use serial port {serial_1}",
     "1": f"Move forward and backwards in order to maintin a distance of 100 using distance senor in port D and motors in ports A and B",
@@ -26,21 +25,21 @@ default_messages = {
     "4": f"Make a blue line following robot. There are motors in ports A and B and a color sensor in port C",
     "5": f"Make roomba like robot that moves forwards until it hits something with the touch sensor \
 and then it backs up, turns and moves forwards again. There are motors in ports A and B and a force senor in port F",
-    "6": f"I am placing the robot on a seesaw platform, balance at the center of the platform",
-    "7": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and an OpenMV camera in Port {serial_2}. I want to you make the SPIKE wave a motor when the OpenMV camera sees a face.",
-    "8": f"I have two micropython microcontrollers connected over serial. \
-        - A SPIKE in Port {serial_1} (which has motors in ports A and B) \
-        - A Raspberry Pi Pico in Port {serial_2}. \
-        I want to you make the SPIKE wave a motor when Pin 11 on the Pico goes high. \
-        Use bluetooth to communicate (the pico will yell and the SPIKE will listen)",
-    "9": f"I have three micropython microcontrollers connected over serial. \
-        - A SPIKE in Port {serial_1} (which has motors in ports A and B) \
-        - A Raspberry Pi Pico in Port {serial_2} \
-        - an OpenMV cameria in Port {serial_3}. \
-        I want to you make the SPIKE wave the motors when the OpenMV camera sees a face \
-        The OpenMV camera and the Pico are connected by a digital pin (pin 8 on the OpenMV camera and pin 9 on the camera). \
-        You can communicate between the OpenMV camera and SPIKE by sending a digital output from the the OpenMV camera \
-        to the Pico and then communicate over bluetooth between the Pico and SPIKE",
+"6": f"I am placing the robot on a seesaw platform, balance at the center of the platform",
+"7": f"I have two micropython microcontrollers connected over serial. A SPIKE in Port {serial_1} (which has motors in ports A and B) and an OpenMV camera in Port {serial_2}. I want to you make the SPIKE wave a motor when the OpenMV camera sees a face.",
+"8": f"I have two micropython microcontrollers connected over serial. \n\
+- A SPIKE in Port {serial_1} (which has motors in ports A and B) \n\
+- A Raspberry Pi Pico in Port {serial_2}. \n\
+I want to you make the SPIKE wave a motor when Pin 11 on the Pico goes high. \n\
+Use bluetooth to communicate (the pico will yell and the SPIKE will listen)",
+    "9": f"I have three micropython microcontrollers connected over serial. \n\
+- A SPIKE in Port {serial_1} (which has a motor in ports A) \n\
+- A Raspberry Pi Pico in Port {serial_2} \n\
+- an OpenMV cameria in Port {serial_3}. \n\
+I want to you make the SPIKE wave the motors when the OpenMV camera sees a face \n\
+The OpenMV camera and the Pico are connected by a digital pin (pin 9 on the OpenMV camera and pin 9 on the pico). \n\
+You can communicate between the OpenMV camera and SPIKE by sending a digital output from the the OpenMV camera \n\
+to the Pico and then communicate over bluetooth between the Pico and SPIKE (use get docoumentation for 'bluetooth' to see how)",
 }
 
 
@@ -53,8 +52,10 @@ class AIAlchemy:
         # self.cam = cv.VideoCapture(0)
         self.thread_id = thread_id
 
+        self.input_statement = (f"\n['e','exit'] to stop the program.\n['help'] to see example prompts")
         if task == None:
-            self.out_mail = "What would you like me to do today?\n"
+
+            self.out_mail = "What would you like me to do today?" + self.input_statement
             self.in_mail = None
         else:
             self.out_mail = None
@@ -108,10 +109,11 @@ class AIAlchemy:
             self.reg_print(f"Device      : {self.device}")
             self.reg_print(f"Serial port : {serial_port}")
             self.reg_print(f"Task        : {task}")
+            self.reg_print("")
             # Serial Initiation
             # Instantiate Serial Interface
             try:
-                serial = SerialInterface(serial_port, fake_serial=True)
+                serial = SerialInterface(serial_port, fake_serial=False)
             except Exception as e:
                 print("Serial Connection Error: ", e)
                 sys.exit()
@@ -148,9 +150,8 @@ class AIAlchemy:
                         message = default_messages[message]
                         print(f"Using default message: {message}\n")
 
-                    tags = (f"\n['e','exit'] to stop the program.\n['help'] to see example prompts\n")
                     self.in_mail = None
-                    self.out_mail = await self.run_thread(message) + tags
+                    self.out_mail = await self.run_thread(message) + self.input_statement
             if self.is_manager:
                 await self.check_workers()
             await asyncio.sleep(1)
@@ -159,7 +160,7 @@ class AIAlchemy:
         # self.reg_print(str(self.workers))
         for worker in self.workers:
             if worker.out_mail != None:
-                self.reg_print(f"CW found: {worker.name} -> {self.name}: {worker.out_mail}")
+                # self.reg_print(f"{worker.name} -> {self.name}: {worker.out_mail}")
                 name = worker.name
                 header = f"{self.name} got a message from " + name + ". Please respond to their message: "
                 self.reg_print(f"The {self.name} is talking to {name} ...")
@@ -273,18 +274,21 @@ class AIAlchemy:
         elif status == "completed":  # return response
             self.run_id = None
             response = await self.client.beta.threads.messages.list(self.thread_id)
-            return response.data[0].content[0].text.value
+            text_response = response.data[0].content[0].text.value
+            self.reg_print(f"{self.name}: {text_response}\n")
+            return text_response
         elif status == "failed":  # something went wrong
             # BUG should probably handle this better
             # and retry run up to max attempts
             # though we have not seen a run fail yet
             self.run_id = None
             self.reg_print("Run failed")
-            self.reg_print(
-                await self.client.beta.threads.runs.retrieve(
-                    thread_id=self.thread_id, run_id=run.id
-                )
-            )
+            raise Exception("The OpenAI run has failed.")
+            # self.reg_print(
+            #     await self.client.beta.threads.runs.retrieve(
+            #         thread_id=self.thread_id, run_id=run.id
+            #     )
+            # )
 
     # Handle tool call responses
     async def __function_manager(self, calls):
@@ -307,17 +311,18 @@ class AIAlchemy:
             if name == "get_feedback":
                 # print arg to command line and get written response from human
                 self.out_mail = args['prompt']
-                self.reg_print(f"{self.name}: {args['prompt']}")
+                if not self.is_manager:
+                    self.reg_print(f"{self.name}: {args['prompt']}")
                 while self.in_mail == None or self.in_mail == "":
                     await asyncio.sleep(1)
                 if not self.is_manager:
-                    self.reg_print(f"{self.parent_name}: {self.in_mail}")
+                    self.reg_print(f"{self.parent_name}: {self.in_mail}\n")
                 tool_outputs.append({"tool_call_id": id, "output": self.in_mail})
                 self.in_mail = None
             elif name == "get_documentation":
                 query = args["query"].lower()
                 self.reg_print(
-                    f"{self.name}: I am querying documentation for {query} on {self.device}"
+                    f"{self.name}: I am querying documentation for {query} on {self.device}\n"
                 )
 
                 query_response = json.dumps(searchDoc(self.device,query))
@@ -359,7 +364,7 @@ class AIAlchemy:
                 )
             elif name == "create_worker":
                 self.reg_print(
-                    f"{self.name} is creating a worker named: {args['name']} \nGoal: {args['task']} \nDevice: {args['device']}\nPort: {args['serial']}"
+                    f"{self.name} is creating a worker named: {args['name']} \nGoal: {args['task']} \nDevice: {args['device']}"
                 )
                 name   = args['name']
                 role   =  "worker"
@@ -472,7 +477,7 @@ class AIAlchemy:
     async def __run_code(self, original_code, runtime):
         original_code = original_code.replace("\n ", "\n")
         code = "\n" + original_code
-        print("~~RUNNING CODE~~")
+        # print("~~RUNNING CODE~~")
         code = code.replace("\n", "\r\n")
         self.curr_code = code
         self.reg_print(self.__print_break(f"RUNNING CODE ({runtime} second(s))"))
@@ -606,8 +611,9 @@ class AIAlchemy:
         self.good_log.close()
         self.all_log.close()
 
-        if not self.is_manager:
-            self.my_log
+        if self.is_manager:
+            for worker in self.workers:
+                worker.my_log.close()
 
         await self.kill_all_runs()
         print("Files closed and runs killed")

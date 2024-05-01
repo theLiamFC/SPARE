@@ -1,5 +1,5 @@
 from ai_alchemy import AIAlchemy
-from ai_alchemy import default_messages
+# from ai_alchemy import default_messages
 import asyncio
 import sys
 import json
@@ -17,26 +17,26 @@ async def run_assistant(manager_assistant,tg):
     return result
 
 async def check_mailbox(manager_assistant):
-    intro_statement = f"{name}: What would you like to code today?\n"
-    input_statement = (
-        f"['e','exit'] to stop the program.\n['help'] to see example prompts\n"
-    )
-    print(intro_statement)
-    print(input_statement)
+    # intro_statement = f"{name}: What would you like to code today?\n"
+    # input_statement = (
+    #     f"['e','exit'] to stop the program.\n['help'] to see example prompts\n"
+    # )
+    # print(intro_statement)
+    # print(input_statement)
     while True:
         if manager_assistant.out_mail != None:
             print(f"{manager_assistant.name}: {manager_assistant.out_mail}\n")
             manager_assistant.out_mail = None
             user_prompt = input(f"{user_name}: ")
             print()
-            if user_prompt == "e" or user_prompt == "exit":
-                await manager_assistant.close()
-                return
-            elif user_prompt == "help":
-                print(default_messages)
-                pass
-            elif user_prompt in default_messages:
-                user_prompt = default_messages[user_prompt]
+            # if user_prompt == "e" or user_prompt == "exit":
+            #     await manager_assistant.close()
+            #     return
+            # elif user_prompt == "help":
+            #     print(default_messages)
+            #     pass
+            # elif user_prompt in default_messages:
+            #     user_prompt = default_messages[user_prompt]
             
             manager_assistant.log_print(user_prompt)
             manager_assistant.in_mail = user_prompt
@@ -70,11 +70,6 @@ if __name__ == "__main__":
 
     user_name = "JESSE"
     # user_name = input("Hi! Whats your name? ")
-
-    intro_statement = f"{name}: What would you like to code today?\n"
-    input_statement = (
-        f"['e','exit'] to stop the program.\n['help'] to see example prompts\n"
-    )
 
     # Instantiate AIAlchemy Class
     device = "SPIKE"
