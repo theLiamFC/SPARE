@@ -1,0 +1,40 @@
+Time        : 2024-05-01 14:46:59
+
+Worker name : Spike_worker
+Created by  : Manager
+Device      : spike
+Serial port : /dev/cu.usbmodem3356396133381
+Task        : You need to program the LEGO SPIKE Prime such that it waits for a Bluetooth message from the Raspberry Pi Pico. Upon receiving a message, it should make the connected motor on port A wave (rotate back and forth). Use the 'bluetooth' documentation as needed.
+
+Spike_worker: I am querying documentation for bluetooth on spike
+
+Spike_worker: I am querying documentation for motor on spike
+
+=========================== 
+RUNNING CODE (30 second(s))
+ ===========================
+import motor 
+from hub import port 
+import runloop 
+from bluetooth_functions import central
+
+cen = central('fred')
+
+def wave():
+   motor.run_for_degrees(port.A, 180, 75) 
+   sleep(1) 
+   motor.run_for_degrees(port.A, -180, 75)
+
+while True:
+   cen.scan(5000)   #Scans for 5 seconds
+   if cen.per_name != '' and cen.per_name != None:
+       print('Found', cen.per_name)
+       msg = cen.per_name[-1]
+       if msg=="1":
+           wave()
+       else:
+           print('No peripheral fits criteria')
+================================== 
+SERIAL OUPUT
+ ===================================
+

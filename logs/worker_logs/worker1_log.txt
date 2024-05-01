@@ -1,0 +1,21 @@
+Time        : 2024-05-01 14:46:50
+
+Worker name : OpenMV_worker
+Created by  : Manager
+Device      : openmv
+Serial port : /dev/tty.usbmodem14601
+Task        : Your task is to make OpenMV camera recognize a human face. When a face is detected, it should send a high signal over pin 9 to the Raspberry Pi Pico. Note: you need to use the digitalOut function on the pin to send this signal.
+
+OpenMV_worker: I am querying documentation for openmv on openmv
+
+OpenMV_worker: I am querying documentation for help on openmv
+
+OpenMV_worker: I am querying documentation for face_detection on openmv
+
+OpenMV_worker: I am querying documentation for pyb on openmv
+
+OpenMV_worker: I am querying documentation for pyb.pin on openmv
+
+OpenMV_worker: I am querying documentation for pyb.pin on openmv
+
+OpenMV_worker: How can I utilize the digitalout function on a pin in MicroPython?

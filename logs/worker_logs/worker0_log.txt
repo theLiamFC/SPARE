@@ -1,0 +1,51 @@
+Time        : 2024-05-01 14:46:41
+
+Worker name : Pico_worker
+Created by  : Manager
+Device      : pico
+Serial port : /dev/tty.usbmodem3844343A31371
+Task        : You need to code the Raspberry Pi Pico to receive a digital output signal from the OpenMV camera over pin 9. When the Pico receives a high signal, it should send a bluetooth message (with any content) to the LEGO SPIKE Prime. You can assume that the SPIKE Prime is already paired with the Raspberry Pi Pico over Bluetooth. Use the provided 'bluetooth' documentation as needed.
+
+Pico_worker: I am querying documentation for bluetooth on pico
+
+Pico_worker: I am querying documentation for machine.pin on pico
+
+Pico_worker: I am querying documentation for help on pico
+
+Pico_worker: I am querying documentation for pin on pico
+
+========================== 
+RUNNING CODE (600 second(s))
+ ===========================
+from machine import Pin
+import bluetooth
+import struct
+import time
+
+class Yell:
+   def __init__(self):
+       self._ble = bluetooth.BLE()
+       self._ble.active(True)
+       
+   def advertise(self, name = 'HighSignal', interval_us=100000):
+       short = name[:8]
+       payload = struct.pack('BB', len(short) + 1, NAME_FLAG) + name[:8]  # byte length, byte type, value
+       self._ble.gap_advertise(interval_us, adv_data=payload)
+       
+   def stop_advertising(self):
+       self._ble.gap_advertise(None)
+
+
+digital_in = Pin(9, Pin.IN)
+
+yell = Yell()
+
+while True:
+   if digital_in.value() == 1:
+       yell.advertise()
+       time.sleep(2)
+       yell.stop_advertising()
+================================== 
+SERIAL OUPUT
+ ===================================
+

@@ -38,7 +38,8 @@ class SerialInterface:
     def write_read(self, string):
         string = bytes(string, "utf-8")
         if self.fake_serial:
-            print(f"Sending to serial: {string}")
+            # print(f"Sending to serial: {string}")
+            pass
         else:
             self.ser.write(string + b"\r\n")
             time.sleep(0.1)
@@ -47,7 +48,8 @@ class SerialInterface:
     def write_no_read(self, string):
         string = bytes(string, "utf-8")
         if self.fake_serial:
-            print(f"Sending to serial: {string}")
+            # print(f"Sending to serial: {string}")
+            pass
         else:
             self.ser.write(string + b"\r\n")
             time.sleep(0.1)

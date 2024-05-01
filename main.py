@@ -51,15 +51,12 @@ async def main():
 
 if __name__ == "__main__":
 
-    # import os
-    # os.system("python log_printing_gui.py")
     import subprocess
-    # call(["python", "log_printing_gui.py"])
     subprocess.Popen(["python", "log_printing_gui.py"])
 
 
     # Clear terminal screen
-    for i in range(20):
+    for i in range(25):
         print("\n")
 
     #### CHANGE SERIAL PORT HERE ####
@@ -69,12 +66,12 @@ if __name__ == "__main__":
     name = "MANAGER"
 
     user_name = "JESSE"
-    # user_name = input("Hi! Whats your name? ")
+    user_name = input("Hi! Whats your name? ")
 
     # Instantiate AIAlchemy Class
     device = "SPIKE"
     role = "manager"
-    name = "MANAGER"
+    name = "Manager"
     manager_assistant = AIAlchemy(name, role, user_name, debug=False, verbose=False)
 
     asyncio.run(main())

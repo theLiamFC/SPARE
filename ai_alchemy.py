@@ -39,7 +39,8 @@ Use bluetooth to communicate (the pico will yell and the SPIKE will listen)",
 I want to you make the SPIKE wave the motors when the OpenMV camera sees a face \n\
 The OpenMV camera and the Pico are connected by a digital pin (pin 9 on the OpenMV camera and pin 9 on the pico). \n\
 You can communicate between the OpenMV camera and SPIKE by sending a digital output from the the OpenMV camera \n\
-to the Pico and then communicate over bluetooth between the Pico and SPIKE (use get docoumentation for 'bluetooth' to see how)",
+to the Pico and then communicate over bluetooth between the Pico and SPIKE (speficy to these workers that both \n\
+microcontrollers have bluetooth capabilities and the workers can use get docoumentation for 'bluetooth' to see how)",
 }
 
 
@@ -113,7 +114,7 @@ class AIAlchemy:
             # Serial Initiation
             # Instantiate Serial Interface
             try:
-                serial = SerialInterface(serial_port, fake_serial=False)
+                serial = SerialInterface(serial_port, fake_serial=True)
             except Exception as e:
                 print("Serial Connection Error: ", e)
                 sys.exit()
@@ -542,6 +543,7 @@ class AIAlchemy:
     # Format content for text output
     def __print_break(self, name):
         length = len(name)
+        name = "\n" + name + "\n"
         breaker = ""
         for _ in range(40 - (int(length / 2))):
             breaker += "="
